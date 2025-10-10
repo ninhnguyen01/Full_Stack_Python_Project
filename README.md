@@ -1,3 +1,3 @@
 # Full_Stack_Python_Project
-<h1>Python Guide</h1>
-Now you want to take your initial Python knowledge and make something real, like a web application to show off to friends or sell as a service to customers. That's where Full Stack Python comes in. You have come to the right place to learn everything you need to create, deploy and operate Python-powered applications. - Matt Makai
+<h1>What is full stack development?</h1>
+<p>Full stack development is the process of developing both the frontend and backend of applications. Any application has a frontend (user-facing) component and a backend (database and logic) component. The frontend contains the user interface and code related to user interactions with the application. The backend contains all the code required for the application to run, including integrations with data systems, communicating with other applications, and processing data. - AWS</p>
