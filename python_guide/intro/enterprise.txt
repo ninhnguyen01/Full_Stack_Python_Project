@@ -1,0 +1,22 @@
+"Enterprise Python"
+
+One of the misconceptions around Python and other dynamically-typed languages is that they cannot be reliably used to build enterprise-grade software. 
+However, almost all commercial and government enterprises already use Python in some capacity, either as glue code between disparate applications or to build the applications themselves. 
+
+"What is enterprise software?"
+
+Enterprise software is built for the requirements of an organization rather than the needs of an individual. 
+Software written for enterprises often needs to integrate with legacy systems, such as existing databases and non-web applications.
+
+Organizations develop enterprise software with numerous custom requirements to fit the specific needs of their operating model. 
+Therefore the software development process often becomes far more complicated due to disparate factions within an organization vying for the software to handle their needs at the expense of other factions.
+
+The complexity due to the many stakeholders involved in the building of enterprise software leads to large budgets and extreme scrutiny by non-technical members of an organization. 
+Typically those non-technical people place irrational emphasis on the choice of programming language and frameworks when otherwise they should not make technical design decisions.
+
+"Why is Python now appropriate for building enterprise software?"
+
+Python, Ruby and other previously derided languages now have vast, well-maintained open source ecosystems backed by both independent developers and large companies including Microsoft, IBM, Google, Facebook, Dropbox, Twilio and many, many others.
+
+Python's open source libraries, especially for web development and data analysis, are some of the best maintained and fully featured pieces of code for any language.
+
