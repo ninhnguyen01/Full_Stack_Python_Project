@@ -20,3 +20,4 @@ Python, Ruby and other previously derided languages now have vast, well-maintain
 
 Python's open source libraries, especially for web development and data analysis, are some of the best maintained and fully featured pieces of code for any language.
 
+Author: Matt Makai
