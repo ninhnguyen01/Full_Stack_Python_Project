@@ -1,0 +1,1 @@
+sales_file = open('ch6_file/text/sales2.txt', 'w')
