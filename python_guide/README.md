@@ -1,4 +1,6 @@
 # HARDWARE AND SOFTWARE INTRODUCTION
+<h2>Note: This markdown along with intro and ch2-10 files are from an old Python book (2021)</h2>
+<p>If the code works for you, it shows the timelessness of Python where the basic code still works despite incremental future changes to a Python version.</p>
 
 <h2> What is a program?</h2>
 A set of instructions that a computer follows to perform a task.
