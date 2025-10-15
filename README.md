@@ -8,9 +8,9 @@
 <p>(3) Web Development (Framework, Engines, Design, Task Queue, SSG, Testing, Networking, APIs, Security)</p>
 <p>(4) Web App Deployment (Hosting, VPS, PaaS, OS, Servers, CI, CM, Containers, Architectures)</p>
 <p>(5) DevOps (Monitoring, Performance)</p>
+<p>(7) AI (LLM, RAG, MCP, Agents)</p>
 
 <h2>Business Applications Example</h2>
 <p>Python is also used to build ERP and e-commerce systems:</p>
 <p>(1) Odoo is an all-in-one management software that offers a range of business applications that form a complete suite of enterprise management applications.</p>
-<p>(2) Tryton is a three-tier high-level general purpose application platform.</p>
 <p>Source: python.org</p>
