@@ -14,3 +14,10 @@
 <p>Python is also used to build ERP and e-commerce systems:</p>
 <p>(1) Odoo is an all-in-one management software that offers a range of business applications that form a complete suite of enterprise management applications.</p>
 <p>Source: python.org</p>
+
+<h2>Open Source Enterprise Example</h2>
+<p>Python is widely used across large enterprise organizations but the code is often not put out as open source.</p>
+<p>(1) Collab by the U.S. government's Consumer Financial Protection Bureau (CFPB) agency is a corporate intranet and collaboration platform for large organizations. The project is currently running and in-use by thousands of CFPB employees.</p>
+<p>(2) Pants is a build system for software projects with many distinct parts and built with many different programming languages as is often the case in large organizations.</p>
+<p>Source: Matt Makai</p>
+</h2>
