@@ -15,9 +15,28 @@
 <p>(1) Odoo is an all-in-one management software that offers a range of business applications that form a complete suite of enterprise management applications.</p>
 <p>Source: python.org</p>
 
-<h2>Open Source Enterprise Example</h2>
+<h2>Enterprise Example</h2>
+<h3>Government agencies</h3>
 <p>Python is widely used across large enterprise organizations but the code is often not put out as open source.</p>
+
 <p>(1) Collab by the U.S. government's Consumer Financial Protection Bureau (CFPB) agency is a corporate intranet and collaboration platform for large organizations. The project is currently running and in-use by thousands of CFPB employees.</p>
-<p>(2) Pants is a build system for software projects with many distinct parts and built with many different programming languages as is often the case in large organizations.</p>
+<p>(2) Python usage in government agencies is widespread despite the reputation of agencies as stodgy late technology adopters. Organizations range from financial industry regulators like the SEC and CFPB, to intelligence agencies like the CIA, FBI and NSA.</p>
+<p>(3) NASA uses Python extensively and open sources much of their software.</p>
+<p>(4) A quick search for government jobs that require or recommend Python via USAJobs turns up numerous listings at organizations such as the Smithsonian Institution, Department of Education, Department of the Navy and National Institute of Standards and Technology (NIST).</p>
+
+<h3>Large tech companies</h3>
+<p>Large technology companies tend to be polyglot (use many programming languages rather than standardizing on one), with Python either as a primary language or the "glue" that helps all the other languages fit together.</p>
+
+<p>(1) Uber's tech stack contains a significant amount of Python, which they documented in a series of engineering posts. Part one describes the lower backend levels, which are written in Python, with Node.js, Go and Java mixed in. Part two explains the higher levels of the marketplace and user interfaces.</p>
+<p>(2) Twilio uses Python with Django and the Wagtail content management system to power the amazing Twilio documentation as well as TwilioQuest. They wrote a post about how TwilioQuest was built that goes into detail on the code including the usage of the front-end Vue.js framework. Twilio also uses Flask to run the REST API endpoints and open sourced the Flask-RESTful framework so other developers could cut down the boilerplate in their web APIs.</p>
+<p>(3) Netflix uses Python throughout their organization to run chaos engineering tests and generally glue together the code from their high-functioning polyglot teams. Netflix also wrote a 2019 update for PyCon US to give more detail on what teams and projects work in Python.</p>
+<p>(4) Python 3 at Mozilla explains how their "build system, CI configuration, test harnesses, command line tooling and countless other scripts, tools or Github projects are all handled by Python". So just about everything a developer touches every day to build anything else needs Python to hook into the larger organization!</p>
+<p>(5) Google uses Python extensively and officially supports it internally as one of their three core languages, the other two being Java and Golang. While Google likely has every programming language running somewhere in their infrastructure, Python receives priority support due to its core language status.</p>
+<p>(6) Dropbox is well-known for using Python across their application development, infrastructure and operations. They also did a good job of cornering the market on hiring well-known Python core contributors for a period of time, such as Guido van Rossum and Jessica McKellar (although Jessica is now at a new company that she co-founded).</p>
+<p> (7) Facebook (Meta) and Instagram use Python 3 at scale. They've been very vocal about successfully making the migration from the Python 2 world into Python 3.</p>
+<p> (8) A significant portion of Reddit is built in Python and it is one of the largest sites at scale to use the programming language.</p>
+
+<p>"Many companies do not even realize they are using Python across their organizations. For example, if a company is a "Java-only shop" but they use IBM WebSphere as a web application server then they have to use Python to script the server's configuration! Python has a habit of getting in everywhere regardless of whether the usage is intentional."</p>
+
 <p>Source: Matt Makai</p>
 </h2>
