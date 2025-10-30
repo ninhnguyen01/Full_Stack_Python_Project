@@ -39,4 +39,12 @@
 <p><b>"Many companies do not even realize they are using Python across their organizations. For example, if a company is a "Java-only shop" but they use IBM WebSphere as a web application server then they have to use Python to script the server's configuration! Python has a habit of getting in everywhere regardless of whether the usage is intentional."</b></p>
 
 <p>Source: Matt Makai</p>
+
+<h2>7 Years of YouTube Scalability</h2>
+<p>Python - most of the lines of code for YouTube are still in Python. Everytime you watch a
+YouTube video you are executing a bunch of Python code.</p>
+<p><b>A lot of YouTube systems start as one Python file and become large ecosystems after
+many many years. All their prototype were written in Python and survived for a surprising
+amount of time.</b></p>
+<p>Source: High Scalability</p>
 </h2>
