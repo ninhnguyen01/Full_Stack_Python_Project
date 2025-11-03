@@ -10,6 +10,9 @@
 <p>(5) DevOps (Monitoring, Performance)</p>
 <p>(7) AI (LLM, RAG, MCP, Agents)</p>
 
+<img src="asset/lib2025.WEBP" width=700 height=700>
+<p>Image source: Internet</p>
+
 <h2>Business Applications Example</h2>
 <p><b>Python is also used to build ERP and e-commerce systems:</b></p>
 <p>(1) Odoo is an all-in-one management software that offers a range of business applications that form a complete suite of enterprise management applications.</p>
