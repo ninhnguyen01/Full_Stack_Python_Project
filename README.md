@@ -11,6 +11,12 @@
 <p>(7) AI (LLM, RAG, MCP, Agents)</p>
 
 <img src="asset/lib2025.WEBP" width=700 height=700>
+<img src="asset/webdev.PNG" width=700 height=700>
+<img src="asset/automation.PNG" width=700 height=700>
+<img src="asset/webscrape.PNG" width=700 height=700>
+<img src="asset/datasci.PNG" width=700 height=700>
+<img src="asset/ML.PNG" width=700 height=700>
+<img src="asset/ERP.PNG" width=700 height=700>
 <p>Image source: Internet</p>
 
 <h2>Business Applications Example</h2>
@@ -22,10 +28,8 @@
 <h3>Government agencies</h3>
 <p><b>Python is widely used across large enterprise organizations but the code is often not put out as open source.</b></p>
 
-<p>(1) Collab by the U.S. government's Consumer Financial Protection Bureau (CFPB) agency is a corporate intranet and collaboration platform for large organizations. The project is currently running and in-use by thousands of CFPB employees.</p>
-<p>(2) Python usage in government agencies is widespread despite the reputation of agencies as stodgy late technology adopters. Organizations range from financial industry regulators like the SEC and CFPB, to intelligence agencies like the CIA, FBI and NSA.</p>
-<p>(3) NASA uses Python extensively and open sources much of their software.</p>
-<p>(4) A quick search for government jobs that require or recommend Python via USAJobs turns up numerous listings at organizations such as the Smithsonian Institution, Department of Education, Department of the Navy and National Institute of Standards and Technology (NIST).</p>
+<p>(1) Python usage in government agencies is widespread despite the reputation of agencies as stodgy late technology adopters. Organizations range from financial industry regulators like the SEC and CFPB, to intelligence agencies like the CIA, FBI and NSA.</p>
+<p>(2) NASA uses Python extensively and open sources much of their software.</p>
 
 <h3>Large tech companies</h3>
 <p><b>Large technology companies tend to be polyglot (use many programming languages rather than standardizing on one), with Python either as a primary language or the "glue" that helps all the other languages fit together.</b></p>
