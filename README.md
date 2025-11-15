@@ -8,7 +8,7 @@
 <p>(3) Web Development (Framework, Engines, Design, Task Queue, SSG, Testing, Networking, APIs, Security)</p>
 <p>(4) Web App Deployment (Hosting, VPS, PaaS, OS, Servers, CI, CM, Containers, Architectures)</p>
 <p>(5) DevOps (Monitoring, Performance)</p>
-<p>(7) AI (LLM, RAG, MCP, Agents)</p>
+<p>(6) AI (LLM, RAG, MCP, Agents)</p>
 
 <img src="asset/lib2025.WEBP" width=700 height=700>
 <img src="asset/webdev.PNG" width=700 height=700>
