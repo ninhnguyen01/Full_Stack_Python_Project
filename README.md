@@ -19,15 +19,9 @@
 <img src="asset/ERP.PNG" width=700 height=700>
 <p>Image source: Internet</p>
 
-<h2>Business Applications Example</h2>
-<p><b>Python is also used to build ERP and e-commerce systems:</b></p>
-<p>(1) Odoo is an all-in-one management software that offers a range of business applications that form a complete suite of enterprise management applications.</p>
-<p>Source: python.org</p>
-
 <h2>Enterprise Example</h2>
 <h3>Government agencies</h3>
 <p><b>Python is widely used across large enterprise organizations but the code is often not put out as open source.</b></p>
-
 <p>(1) Python usage in government agencies is widespread despite the reputation of agencies as stodgy late technology adopters. Organizations range from financial industry regulators like the SEC and CFPB, to intelligence agencies like the CIA, FBI and NSA.</p>
 <p>(2) NASA uses Python extensively and open sources much of their software.</p>
 
