@@ -1,0 +1,4 @@
+Plain Entry: hello world
+Plain Entry: python
+Plain Entry: programming
+Plain Entry: coding
