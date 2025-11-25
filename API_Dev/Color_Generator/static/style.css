@@ -1,0 +1,20 @@
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Remove: background-color: ; */
+    color: white;
+    font-size: 100px;
+    font-family: monospace;
+}
+
+#copy-button {
+    position: relative;
+    font-size: 1.4rem;
+}
+
+#copy-button:hover {
+    cursor: pointer;
+    border: 2px solid white;
+}
