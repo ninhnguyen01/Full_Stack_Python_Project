@@ -12,7 +12,6 @@
 
 <img src="asset/lib2025.WEBP" width=700 height=700>
 <img src="asset/webdev.PNG" width=700 height=700>
-<img src="asset/automation.PNG" width=700 height=700>
 <img src="asset/ML.PNG" width=700 height=700>
 <p>Image source: Internet</p>
 
