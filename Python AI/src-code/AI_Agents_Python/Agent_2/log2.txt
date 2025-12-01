@@ -1,0 +1,18 @@
+Conversation log: 
+User Input: hello, how are u
+AI Response: Hello! I'm doing great, thank you. How can I assist you today?
+
+User Input: which gpt model are free 
+AI Response: As of now, OpenAI offers access to different GPT models through various platforms and pricing tiers. Typically, the **GPT-3.5** model is available for free usage with some limits, such as on ChatGPT's free tier, while more advanced models like **GPT-4** usually require a subscription (e.g., ChatGPT Plus).
+
+Here’s a quick summary:
+
+- **GPT-3.5**: Often available for free on platforms like ChatGPT's free tier.
+- **GPT-4**: Generally requires a paid subscription or usage fees.
+- Other GPT models (like GPT-2) are open source and free to use by anyone with the technical ability to run them locally.
+
+If you’re using OpenAI’s services directly, check their current pricing and access details since these can evolve over time.
+
+Would you like help accessing or using a specific model?
+
+End Conversation
