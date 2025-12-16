@@ -1,0 +1,2 @@
+The smaller the function, the greater the management.
+- C. Northcote Parkinson
