@@ -10,6 +10,10 @@
 <p>(5) DevOps (Monitoring, Performance)</p>
 <p>(6) AI (LLM, RAG, MCP, Agents)</p>
 
+<h2>Buy me a Boba</h2>
+<img src="asset/qr-code.png" width=200 height=200>
+<hr>
+
 <img src="asset/lib2025.WEBP" width=700 height=700>
 <img src="asset/webdev.PNG" width=700 height=700>
 <img src="asset/ML.PNG" width=700 height=700>
