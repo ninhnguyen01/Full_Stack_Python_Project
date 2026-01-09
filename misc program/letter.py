@@ -1,0 +1,3 @@
+letters = 'abcdefghijklmnopqrstuvwxyz'
+
+len(letters)
