@@ -1,0 +1,41 @@
+Chapter 5. Bytes and Bytearray
+
+I’m feeling a bit off.
+
+  Byte calling in sick
+
+Python 3 introduced the following sequences of eight-bit integers, with possible values from 0 to 255, in two types:
+
+  An immutable sequence of 8-bit values: bytes
+
+  A mutable sequence of 8-bit values: bytearray
+
+Here’s one way to think of bytes versus strings:
+
+  Bytes are like equally sized beads on a wire.
+
+  Strings are like a charm bracelet.
+
+Bytes
+
+Bytes, like strings, are immutable. You can’t append, insert, or change the contents of a bytes value after you’ve created it.
+
+A literal bytes object is surrounded by quotes like a text string, but has a b right before the initial quote character. 
+Each byte in it is specified either as an ASCII character or a two-character hex literal:
+
+Now we’ll delve into the mutable cousin of bytes: bytearray. 
+The first (read-only) group of operations that follow are similar to those of immutable bytes and strings.
+
+The function bytearray() is, shockingly, used to create a Python bytearray. 
+
+As with strings and bytes, you can access multiple elements with a slice:
+
+The replace() method finds the byte sequence that matches its first argument and replaces it with its second argument:
+
+Use insert(index, value) to insert the byte value at the offset index:
+
+Append One Byte with append()
+
+Append Multiple Bytes with extend()
+
+Unlike text strings, which have only an immutable version, byte sequences can be mutable (bytearray) or immutable (bytes).
