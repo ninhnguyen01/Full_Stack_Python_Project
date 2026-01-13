@@ -1,0 +1,182 @@
+Preface
+
+1 of the world’s most popular programming languages: Python. 
+Contrast Python with other languages, to catch assumptions about how it works, especially with subtle differences.
+
+Computing languages are easier to learn than human languages—they’re more concise and precise. 
+Python is recognized as one of the easiest computing languages to learn, read, and write. 
+It consists of data (like nouns in spoken languages), as well as instructions, or code (like verbs). 
+
+Python language and its “batteries included” standard library, 
+and advance to finding, downloading, installing, and using some good third-party packages. 
+My emphasis is on whatever I’ve found useful in 20 years of production Python development.
+
+A Python programmer might now be expected to know something about machine learning, queues, or Unicode. 
+
+Outline
+
+Part I (Chapters 1–12) explores the Python fortress, the basics of the Python language. 
+You should read these chapters in order. 
+I work up from the simplest data and code structures, combining them on the way into more detailed and realistic programs. 
+You can try all the code in this part on your own machine.
+
+Chapter 1, “Introduction”
+
+    Computer programs are not that different from directions that you see every day. 
+    Some little Python programs give you a glimpse of the language’s looks, capabilities, and uses in the real world. 
+    You’ll see how to run a Python program within its interactive interpreter (or shell) or from a text file saved on your computer.
+
+Chapter 2, “Types and Variables”
+
+    Computer languages mix data and instructions. 
+    Different types of data are stored and treated differently by the computer. 
+    They may allow their values to be changed (mutable) or not (immutable). 
+    In a Python program, data can be literal (numbers like 78, text strings like waffle) or represented by named variables. 
+    Python treats variables like names or labels, which is different from many other languages and has important consequences.
+
+Chapter 3, “Numbers”
+
+    This chapter shows Python’s simplest data types: Booleans, integers, and floating-point numbers. 
+    You’ll also learn the basic math operations. 
+    The examples use Python’s interactive interpreter like a calculator.
+
+Chapter 4, “Strings”
+
+    Learn how to create, combine, change, retrieve, and print text strings. You’ll see much more in Chapter 19.
+
+Chapter 5, “Bytes and Bytearray”
+
+    Many data examples are binary and can be represented in Python by the bytes and bytearray data types. 
+    Binary files are discussed in Chapter 20.
+
+Chapter 6, “If and Match”
+
+    We’ll bounce between Python’s nouns (data types) and verbs (program structures) for a few chapters. 
+    Python code normally runs a line at a time, from the start to the end of a program. 
+    The if code structure lets you run different lines of code, depending on a data comparison.
+
+Chapter 7, “For and While”
+
+    We’ll look at verbs again, and two ways to repeat code in a loop: for and while. 
+    You’ll be introduced to a core Python concept: iterators.
+
+Chapter 8, “Tuples and Lists”
+
+    It’s time for the first of Python’s higher-level built-in data structures: lists and tuples. 
+    These are sequences of values, like LEGOs for building much more complex data structures. 
+    Step through them with iterators, and build lists quickly with comprehensions.
+
+Chapter 9, “Dictionaries and Sets”
+
+    Dictionaries (aka dicts) and sets let you save data by their values rather than their position. 
+    This turns out to be handy and will be among your favorite Python features.
+
+Chapter 10, “Functions”
+
+    Weave the data and code structures of the previous chapters to compare, choose, or repeat. 
+    Package code in functions and handle errors with exceptions.
+
+Chapter 11, “Objects”
+
+    The term object is a bit fuzzy—but important in many computer languages, including Python. 
+    If you’ve done object-oriented programming in other languages, Python is a bit more relaxed. 
+    This chapter explains how to use objects and classes, and when it’s better to use alternatives.
+
+Chapter 12, “Modules and Packages”
+
+    This chapter demonstrates how to scale out to larger code structures: modules, packages, and programs. 
+    You’ll see where to put code and data, how to get data in and out, handle options, tour the Python standard library, 
+    and take a glance at what lies beyond.
+
+Part II (Chapters 13–16) goes beyond the language, into the tools and techniques you’ll need to do serious Python programming. 
+This is an expansion of the single “Be a Pythonista” chapter of the second edition.
+
+Chapter 13, “Development Environment”
+
+    Here, we get into virtual environments (Python version control) and package management with pip and other tools.
+
+Chapter 14, “Type Hints and Documentation”
+
+    Although they’re completely optional to the Python interpreter itself, type hints really help make your code readable, 
+    and they’re essential for FastAPI, Mojo, and other recent applications.
+
+Chapter 15, “Testing”
+
+    How do you know that your code works? Some techniques can save you a lot of time and grief.
+
+Chapter 16, “Debugging”
+
+    Sometimes you need to dig to find the problem.
+
+Part III (Chapters 17–27) explores Python-inspired quests into specific application areas such as the web, databases, networks, and so on; 
+read these chapters in any order you like.
+
+Chapter 17, “Text Data”
+
+    Go beyond the basic string description in Chapter 4: Unicode characters, regular expressions for text pattern matching, and more.
+
+Chapter 18, “Binary Data”
+
+    This area doesn’t seem to get much discussion in Python books. 
+    You can do some tricky things in Python with nontextual data that you might think require a lower-level language like C.
+
+Chapter 19, “Dates and Times”
+
+    Dates and times can be messy to handle. This chapter shows common problems and useful solutions.
+
+Chapter 20, “Files”
+
+    Basic data storage uses files and directories. This chapter shows you how to create and use them.
+
+Chapter 21, “Data in Time: Concurrency”
+
+    This is the first hardcore system chapter. 
+    Its theme is data in time—how to use programs, processes, threads, and asyncio to do more things at a time (concurrency).
+
+Chapter 22, “Data in Space: Networks”
+
+    Send your code and data through space in networks with services, protocols, and APIs. 
+    Examples range from low-level TCP sockets, to messaging libraries and queuing systems, to cloud deployment.
+
+Chapter 23, “Data in a Box: Persistent Storage”
+
+    Data can be stored and retrieved with basic flat files and directories within filesystems. 
+    They gain some structure with common text formats such as CSV, JSON, and XML. 
+    As data gets larger and more complex, it needs the services of databases—traditional relational ones and newer NoSQL data stores.
+
+Chapter 24, “The Web”
+
+    The web gets its own chapter—clients, servers, APIs, and frameworks. 
+    You’ll crawl and scrape websites and then build web applications with request parameters and templates.
+
+Chapter 25, “Data Science”
+
+    Python is right at home here, with a wide variety of tools and methods that are used in production systems every day.
+
+Chapter 26, “AI”
+
+    This new chapter is devoted to the timely subject of artificial intelligence. 
+    Python has risen to prominence largely from its heavy use in data modeling and AI development. 
+    This chapter documents various approaches to using and developing AI-based systems.
+
+Chapter 27, “Performance”
+
+    This is another new chapter, showing various methods of speeding up Python when it isn’t frisky enough. 
+    I’ll introduce a recent Python superset called Mojo, which I think could have quite an impact if its development plans go well.
+
+The Appendix, “Practice Answers”, contains answers to the end-of-chapter exercises.
+
+Computer languages change over time as developers add features and fix mistakes. 
+The examples in this book were written and tested with Python version 3.13, the most current as this book was being edited, 
+and I’ll talk about its notable additions. The “What’s New in Python” page is a technical reference—a bit heavy when you’re just starting with Python, 
+but may be useful in the future if you ever need to deal with different Python versions.
+
+Even today, when you read about some cool-sounding tech (say, microservices or serverless), look for war stories:
+
+    What are its limits?
+
+    How do you fix it when it breaks?
+
+    How does it perform?
+
+    What are the security implications?

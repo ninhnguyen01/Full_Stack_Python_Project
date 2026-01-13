@@ -1,0 +1,136 @@
+Chapter 3. Numbers
+
+That action is best which procures the greatest happiness for the greatest numbers.
+
+  Francis Hutcheson
+
+In this chapter, we begin by looking at Python’s simplest built-in data types:
+
+  Booleans (which have the value True or False)
+
+  Integers (nonfractional numbers such as 42, 0, -90, and 100000000)
+
+  Floats (numbers with decimal points such as 3.14159, or sometimes exponents like 1.0e8, which means one times ten to the eighth power, or 100000000.0)
+
+In Python, the only values for the Boolean data type are True and False. 
+Essentially, this is a bit. Sometimes you’ll use Booleans directly; 
+other times you’ll evaluate the “truthiness” of other types from their values.
+
+The special Python function bool() can convert any Python data type to a Boolean. 
+Functions get their own focus in Chapter 10, but for now you just need to know that a function has the following:
+
+  A name.
+
+  Zero or more comma-separated input arguments, surrounded by parentheses. 
+  Even if the function has no arguments, you still need the parentheses (()).
+
+  A return value.
+
+When I refer to a function in the text, I’ll include the parentheses after it to help you recognize it.
+
+The bool() function takes any value as its argument and returns the Boolean equivalent.
+
+Nonzero numbers are considered True:
+
+And zero-valued ones are considered False:
+
+Integers are whole numbers—no fractions, no decimal points, nothing fancy. 
+Well, aside from a possible initial positive (+) or negative (-) sign. 
+And bases, if you want to express numbers in other ways than the usual decimal (base 10); 
+I’ll say more about that in “Bases”.
+
+Any sequence of digits in Python represents a literal integer:
+
+But you can’t have an initial 0 followed by a digit from 1 to 9:
+
+SyntaxError is a specific kind of Python exception. 
+An exception warns that you typed something that breaks Python’s rules. 
+I explain what this means in “Bases”. 
+You’ll see many more examples of exceptions in this book because they’re Python’s main error-handling mechanism.
+
+You can start an integer with 0b, 0o, or 0x.
+
+A sequence of digits specifies a positive integer. If you put a plus sign (+) before the digits, the number stays the same:
+
+To specify a negative integer, insert a hyphen (-) before the digits:
+
+The sign doesn’t need to be right next to the digits:
+
+Sorry, you can’t have any commas when typing in an integer:
+
+Instead of a million, you’d get a tuple (a sequence of values, separated by a comma; see Chapter 8). 
+Python uses the comma (,) to create tuples. 
+But you can use the underscore character (_) as a digit separator (in Python 3.6 and newer):
+
+The underscore can’t be the first or last character; anywhere after the first digit, it’s ignored:
+
+You can include as many numbers and operators as you’d like:
+
+Integers are assumed to be decimal (base 10) unless you use a prefix to specify another base. 
+You might never need to use these other bases, but you’ll probably see them in Python code somewhere, sometime.
+
+Most of us have 10 fingers and 10 toes, so we count 0, 1, 2, 3, 4, 5, 6, 7, 8, 9. 
+Next, we run out of single digits and carry the one to the “ten’s place” and put a 0 in the one’s place: 
+10 means “1 ten and 0 ones.”1 Then, it’s 11, 12, up to 19, carry the one to make 20 (2 tens and 0 ones), and so on.
+
+A base is the number of digits you can use until you need to “carry the one.” 
+In base 2 (binary), the only digits are 0 and 1. 
+This is the famous bit. 
+The 0 is the same as a plain old decimal 0, and 1 is the same as a decimal 1. 
+However, in base 2, if you add a 1 to a 1, you get 10 (1 decimal two plus 0 decimal ones).
+
+In Python, you can express literal integers in three bases besides decimal with these integer prefixes:
+
+    0b or 0B for binary (base 2)
+
+    0o or 0O for octal (base 8)
+
+    0x or 0X for hex (base 16)
+
+If you mix numeric types, Python will sometimes try to automatically convert them for you:
+
+The Boolean value False is treated as 0 or 0.0 when mixed with integers or floats, and True is treated as 1 or 1.0:
+
+Integers are whole numbers, but floating-point numbers (called floats in Python) have decimal points:
+
+Floats can include a decimal integer exponent after the letter e:
+
+You can use an underscore (_) to separate digits for clarity, as you can for integers:
+
+Floats are handled similarly to integers: you can use the operators (+, –, *, /, //, **, and %) and the divmod() function.
+
+To convert other types to floats, you use the float() function. As before, Booleans act like tiny integers:
+
+Converting an integer to a float just makes it the proud possessor of a decimal point:
+
+And you can convert a string containing characters that would be a valid float (digits, signs, decimal point, or an e followed by an exponent) to a real float:
+
+All the integer operations that use a symbol before the equals sign work for floats as they do for ints. Here’s a floating-point division example, like a = a / 3:
+
+When you mix integers and floats, Python automatically promotes the integer values to float values:
+
+Python also promotes Booleans to integers or floats:
+
+One last point: rounding. Sometimes you don’t care about all those numbers after the decimal point. The Python round() function is what you need. Give it your number and the number of (rounded) digits to show after the decimal point. If you don’t provide the number of digits, round() assumes zero and rounds to the nearest whole number:
+
+Floats Are Not Exact
+
+Every base will have many common numbers that can’t be represented exactly as floating-point values:
+
+Therefore, you need to be careful with floats. The official Python documentation has a discussion at “Floating-Point Arithmetic: Issues and Limitations”.
+
+Python has a standard module named fractions that handles these difficult rational numbers. We don’t get to modules until Chapter 12 and objects until Chapter 11, so this is a sneak peek. The examples define, in various ways, a Fraction object that stores and displays a numerator and denominator. This is a more exact way of defining some numbers than as floats:
+
+Read “fractions—Rational Numbers” at python.org for details.
+
+Decimals
+
+If it’s a penny for your thoughts and you put in your two cents’ worth, then someone, somewhere, is making a penny.
+
+-- Steven Wright
+
+Another standard Python module called decimal handles exact representation of decimal numbers. This is useful for Python accounting applications. Again, check the official decimal documentation.
+
+Python supports complex numbers and has the usual math functions such as square roots, cosines, and so on. Let’s save them for Chapter 25, in which we also discuss using Python in scientific contexts. If you’re curious now, I’ll again point you to the standard Python math documentation.
+
+This chapter introduced the atoms of Python: numbers, Booleans, and variables. Let’s try a few small exercises with them in the interactive interpreter. Try these exercises before looking up the answers in the Appendix.

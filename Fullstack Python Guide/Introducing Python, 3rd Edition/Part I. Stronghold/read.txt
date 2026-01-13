@@ -1,0 +1,19 @@
+Part I. Stronghold
+
+In the movie Monty Python and the Holy Grail, King Arthur and his knights come upon a castle, where they are taunted by a French knight from atop a parapet. The taunter claims that the master of his castle is named Guido, although the surname is a bit garbled.
+
+I’ll now exercise my counterfeit artistic license far beyond its limits and link several points:
+
+    In 1991, the Dutch computer scientist Guido van Rossum invented a computer language called Python.
+
+    The name referred to the Monty Python comedy group, instead of an esteemed scientist or reptile.
+
+    I assert that the castle master’s surname should be van Rossum, because this is a book about the Python computer language.
+
+    QED (Latin for so there).
+
+The first part of this book explores the Python language as a stronghold: its components, construction, strengths, peculiarities, and weaknesses.
+
+The second part informs you how to best use the castle: tools and techniques that complement the basic structure.
+
+Finally, the third part consists of individual campaigns and quests that could issue from the castle, some more difficult than others, but none hopeless.

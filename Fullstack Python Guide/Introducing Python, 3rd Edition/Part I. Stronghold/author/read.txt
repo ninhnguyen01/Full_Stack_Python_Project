@@ -1,0 +1,22 @@
+About the Author
+
+Bill Lubanovic has been busy with Unix since 1977, GUIs since 1981, databases since 1990, and the web since 1993:
+
+    1973–1980 (Chronobiology Labs): Circadian rhythm research under Franz Halberg.
+    1982–1988 (Intran): Developed MetaForm on the first commercial graphic workstation.
+    1990–1995 (Northwest Airlines): Wrote a graphic yield management system; got the airline on the internet; 
+    wrote its first internet marketing test.
+    1994 (Tela): Cofounded an early ISP; presented internet seminars.
+    1995–1999 (WAM!NET): Developed web dashboards and the 3M Digital Media Repository.
+    1999–2005 (Mad Scheme): Cofounded a web development/hosting company.
+    2002 (O’Reilly): Wrote parts of Building Secure Servers with Linux.
+    2005 (O’Reilly): Wrote parts of Linux Server Security.
+    2007 (O’Reilly): Coauthored Linux System Administration.
+    2010–2013 (Keep): Designed and built Core Services between web frontend and database backends.
+    2014 (O’Reilly): Wrote the first edition of Introducing Python.
+    2015–2016 (Internet Archive): Worked on APIs and a Python version of the Wayback Machine.
+    2016–2018 (CrowdStrike): Managed Python-based services processing billions of daily security events.
+    2019 (O’Reilly): Wrote the second edition of Introducing Python.
+    2019–2023 (Flywheel): Developed medical imaging systems.
+    2023 (O’Reilly): Wrote FastAPI.
+

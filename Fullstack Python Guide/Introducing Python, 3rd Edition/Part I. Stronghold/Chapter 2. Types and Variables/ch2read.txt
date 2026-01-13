@@ -1,0 +1,168 @@
+Chapter 2. Types and Variables
+
+A good name is rather to be chosen than great riches.
+
+    Proverbs 22:1
+
+Computer programs consist of commands (often shorthanded as code) and data. 
+This chapter introduces the basics of how computers handle data, 
+and how Python is a bit different from many programming languages.
+
+What’s in a typical computer?
+
+A central processing unit (CPU), or chip
+
+    The brains of the operation. Most computers now have multiple cores per CPU, 
+    and we’ll say more about this in Chapters 23 and 27.
+
+Random access memory (RAM)
+
+    The fast but limited storage area for data and programs.
+
+Cache memory
+
+    Like RAM, but smaller and faster.
+
+A disk
+
+    Stores much more data than RAM does but is thousands of times slower.
+
+Local input devices
+
+    Keyboards, touchscreens, mice, cameras, and microphones.
+
+Local output devices
+
+    Displays and printers.
+
+A network
+
+    Communicates with other computers, either through cables or the air.
+
+The American Standard Code for Information Interchange (ASCII) standard was defined many decades ago to fill in these slots. 
+It also included common punctuation symbols and some nonprinting values. 
+It handled everything you’d see on a typewriter or computer keyboard in a single byte—but only if it was an American keyboard, 
+because that’s what the A in ASCII stands for. 
+In Chapter 17, you’ll see how Unicode allows all the world’s languages (and symbols and even emojis) to be expressed in computers. 
+Unicode has millions of unique symbols; we can’t stuff them all into a single byte anymore.
+
+A Python program has code (the instructions) and data (the values and their types). 
+Like most computing languages, Python has the concept of a variable: a unique name inside the code that refers to a specific data value. 
+It keeps track of exactly where the data is stored on these long memory bookshelves.
+
+Now, here’s an important distinction: in many programming languages (but not Python), 
+a variable points to the value directly in memory. 
+The variable in those languages can be thought of as a box that can contain values of the same type. 
+The variable is essentially an address or a pointer, 
+and any valid value can be assigned to its memory destination slot and replace the previous value. 
+Computer languages that work this way are called statically typed. They remember where x points, 
+and that its value in memory needs to be a valid four-byte integer.
+
+But, as I said, Python is different. Instead of tracking the type with the variable in the code, 
+the value in memory is bundled with the type and extra bookkeeping info. 
+This means that the variable is just a name, like a sticky note that you attach to something. 
+Besides a name, a Python variable might also be called a reference or label. 
+Python variables are dynamically typed.
+
+Many Python discussions mention that every data type in Python is implemented as an object. 
+The problem is that object can have multiple meanings. 
+You’ll see how to create new data types with classes and objects in Chapter 11. 
+When I use the term here, I mean a minimal data structure that describes the core features of this particular data, 
+including the raw value that the CPU uses.
+
+An object with a zero reference count is no longer addressable by the code, so Python eventually garbage collects it (frees the memory it uses).
+
+Memory management is difficult and notoriously error-prone in many other languages. One of the big advantages of Python is that you don’t need to manually manage memory (say this fast three times). There are no C-style malloc() or free() calls.
+
+Name Variables
+
+Python variable names have rules:
+
+    They can contain these characters:2
+
+        Lowercase letters (a through z)
+
+        Uppercase letters (A through Z)
+
+        Digits (0 through 9)
+
+        Underscore (_)
+
+    They are case-sensitive: thing, Thing, and THING are different names.
+
+    They must begin with a letter or an underscore, not a digit.
+
+    They cannot be one of Python’s reserved words (also known as keywords).
+
+The reserved words are listed here:
+
+False      await      else       import     pass
+None       break      except     in         raise
+True       class      finally    is         return
+and        continue   for        lambda     try
+as         def        from       nonlocal   while
+assert     del        global     not        with
+async      elif       if         or         yield
+
+Within Python, you can find the reserved words with
+
+help("keywords")
+
+or
+
+import keyword
+keyword.kwlist
+
+These are valid names:
+
+    a
+
+    a1
+
+    a_b_c___95
+
+    _abc
+
+    _1a
+
+These names, however, are not valid:
+
+    1
+
+    1a
+
+    1_
+
+    name!
+
+    another-name
+
+Follow Naming Conventions
+
+Python also has conventions when naming variables. They aren’t rules, like those I just mentioned, but they’ll help you be consistent with other Python code out there:
+
+    Python variables should use snake case: lowercase letters (and possibly digits) separated by the underscore (_) character. Examples: x_squared, num_ghosts.
+
+    Other languages (like Java and JavaScript) prefer camel case (an initial lowercase letter and uppercase humps inside): xSquared, numGhosts.
+
+    Other languages capitalize the first letter too: XSquared, NumGhosts. Python also likes this convention when you’re defining object classes, which are coming in Chapter 11. Sometimes this is called Pascal case or upper camel case.
+
+    Although Python doesn’t have true constants (variables whose value can’t change), it recommends snake case with all caps to help everyone remember that this variable should not be modified after its initial assignment: MAX_ITEMS, SECRET_CODE.
+
+Python really seems to like that humble underscore character:
+
+    A name that starts with a single underscore (_) is treated as sort of private by the import statement (see Chapter 12).
+
+    A name that starts with two underscores (__) is treated specially when creating object classes (see Chapter 11).
+
+    Names that start and end with double underscores are used for so-called magic, or dunder, methods in object classes (also in Chapter 11).
+
+
+You can think of an object as a clear plastic box on that memory shelf. 
+Some content has a fixed size (ID, type, reference count), and other content varies in size (the value bits themselves). 
+All Python data is like this. You could have an int object sitting next to a list object, 
+and a user-defined object next to that.
+
+Python code lives somewhere else in memory (on another shelf). 
+A variable in Python code can be pictured as a sticky note attached to its data object, or a tag on a thread taped to it. 
+Python keeps track of all this code and data so we don’t have to.

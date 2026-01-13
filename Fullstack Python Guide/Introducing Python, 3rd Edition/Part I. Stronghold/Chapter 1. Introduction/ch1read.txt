@@ -1,0 +1,148 @@
+Chapter 1. Introduction
+
+Only ugly languages become popular. Python is the one exception.
+
+    Don Knuth
+
+Let’s begin with two mini-mysteries and their solutions. What do you think the following two lines mean?
+
+(Row 1): (RS) K18,ssk,k1,turn work.
+(Row 2): (WS) Sl 1 pwise,p5,p2tog,p1,turn.
+
+This text snippet looks technical, like some kind of computer program. Actually, it’s a knitting pattern—specifically, 
+a fragment describing how to turn the heel of a sock.
+
+This fragment makes as much sense to me as a Sudoku puzzle does to my cat, 
+but if you’re a knitter, you probably understand it perfectly.
+
+Let’s try another mysterious text, found on an index card. 
+You’ll figure out its purpose right away, although you might not know its final product:
+
+  1/2 c. butter or margarine
+  1/2 c. cream
+  2 1/2 c. flour
+  1 t. salt
+  1 T. sugar
+  4 c. riced potatoes (cold)
+
+Be sure all ingredients are cold before adding flour.
+Mix all ingredients.
+Knead thoroughly.
+Form into 20 balls. Store cold until the next step.
+For each ball:
+  Spread flour on cloth.
+  Roll ball into a circle with a grooved rolling pin.
+  Fry on griddle until brown spots appear.
+  Turn over and fry other side.
+
+Even if you don’t cook, you probably recognize that it’s a recipe,
+a list of food ingredients followed by directions for preparation. 
+But what does it make? It’s lefse, a Norwegian delicacy that resembles a tortilla.
+Slather on some butter and jam or whatever you like, roll it up, and enjoy.
+
+The knitting pattern and the recipe share some features:
+
+    A regular vocabulary of words, abbreviations, and symbols. Some might be familiar, others mystifying.
+
+    Rules about what can be said, and where—syntax.
+
+    A sequence of operations to be performed in order.
+
+    Sometimes, a repetition of some operations (a loop), such as the method for frying each piece of lefse.
+
+    Sometimes, a reference to another sequence of operations (in computer terms, a function). 
+    In the recipe, you might need to refer to another recipe for ricing potatoes.
+
+    Assumed knowledge about the context. 
+    The recipe assumes you that know what water is and how to boil it. 
+    The knitting pattern assumes that you can knit and purl without stabbing yourself too often.
+
+    Some data to be used, created, or modified—potatoes and yarn.
+
+    The tools used to work with the data—pots, mixers, ovens, knitting sticks.
+
+    An expected result. 
+    In our examples, something for your feet and something for your stomach. 
+    Just don’t mix them up.
+
+Python is all of the following:
+
+    A computer programming language
+
+    Created in 1991 by the Dutch computer scientist Guido van Rossum
+
+    Grown and guided by van Rossum and others since then
+
+    Well designed
+
+    Easier to read and write than most alternative languages
+
+    A core of modern data science and artificial intelligence (AI) computing
+
+    A valuable skill in today’s computing job market
+
+    Useful for small scripts, but also huge systems like Instagram
+
+The Python program has special words and symbols (for, in, print, commas, colons, parentheses, and so on) 
+that are important parts of the language’s syntax (rules). 
+The good news is that Python has a nicer syntax, and less of it to remember, than most computer languages. 
+It seems more natural—almost like a recipe.
+
+Most likely, you’re working on one of the three most prominent platforms:
+
+    Microsoft Windows
+
+    Apple macOS
+
+    Linux or other Unix-like system
+
+Programming is a text-heavy process. Modern operating systems highlight graphical user interfaces (GUIs) 
+for most operations, but to write programs, you’ll need two tools on your computer:
+
+    A terminal window for typing commands
+
+    A text editor for creating and modifying files
+
+In computing, it’s common to number software releases as x.y.z, where x is referred to as the major version, 
+y is a minor (less extensive) version within x, and z is a small bug fix or other change within y.
+
+As this book was written, the most recent major.minor release of Python was version 3.13. 
+The major version 3 took about 10 years to replace the previous major version 2. 
+The minor versions come out roughly annually
+
+In your terminal window, your shell program (command interpreter) shows a prompt 
+that indicates you can type a command right after it. 
+The stuff that you type is shown in boldface. 
+In this book, I’m using the simple $ as the prompt. Type the command python -V. You should see something like this:
+
+$ python -V
+Python 3.13
+
+The program python can be run in two ways:
+
+    Interactively—you type a line at a time and see what happens
+
+    Execute a Python file
+
+You save Python code in files with a .py extension. 
+And you run a Python file by typing the command python, followed by the Python filename.
+
+Always use a simple text editor or IDE to create your Python files. 
+Programs like Microsoft Word may add font changes, quote substitutions, and other effects. You want plain old text.
+
+Then, in your terminal window, tell Python to run the file:
+
+$ python hello.py
+Hello? World?
+
+Normally, we use the interactive interpreter to test little chunks of code, and Python files for anything bigger.
+
+You can install Python code written by anyone and can access it the same as you do the standard library. 
+
+Most computing languages use character delimiters to indicate the start and end of multiline code blocks. 
+Some use literal words like start and end, and the “curly brace” languages (C, C++, Java, JavaScript, and many others) 
+use { and }. Python uses consistent indentation instead. It makes the code a bit less busy and easier to read.
+
+This chapter listed the minimal tools that you’ll need to write Python programs, 
+with code examples showing some basic Python data types like lists and strings. 
+The chapter also included a larger sample program and its output.
