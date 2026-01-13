@@ -1,0 +1,220 @@
+Chapter 4. Strings
+
+I always liked strange characters.
+
+  Tim Burton
+
+Computer books often give the impression that programming is all about math. 
+Actually, most programmers work with strings of text more often than numbers. 
+Logical (and creative!) thinking is often more important than math skills.
+
+Strings are our first example of a Python sequence. 
+A sequence is an ordered collection of elements. 
+Some of the information that you can get from any sequence are as follows:
+
+  Whether an element is in the sequence
+
+  The index of an element by its value
+
+  The element at a particular index
+
+  A slice of elements in a given range
+
+  The length of the sequence
+
+  The minimum and maximum element values
+
+A Python string is a sequence of characters. But what’s a character? 
+It’s the smallest unit in a writing system, and includes letters, digits, symbols, punctuation, 
+and even whitespace or directives like line feeds. 
+A character is defined by its meaning (how it’s used), not how it looks. 
+It can have more than one visual representation (in different fonts), 
+and more than one character can have the same appearance (such as the visual H, 
+which means the H sound in the Latin alphabet but the Latin N sound in Cyrillic).
+
+Unlike other languages, strings in Python are immutable. 
+You can’t change a string in place, 
+but you can copy parts of strings to a new string to get the same effect. 
+
+Python has a few special types of strings, indicated by a letter before the first quote:
+
+  f or F starts an f-string, used for formatting, and described near the end of this chapter.
+
+  r or R starts a raw string, used to prevent escape sequences in the string (see “Escape with \” and 
+  Chapter 19 for its use in string pattern matching).
+
+  Then, there’s the combination fr (or FR, Fr, or fR) that starts a raw f-string.
+
+  A u starts a Unicode string, which is the same as a plain string.
+
+  And a b starts a value of type bytes (Chapter 5).
+
+Why have two kinds of quote characters? The main purpose is to create strings containing quote characters. 
+You can have single quotes inside double-quoted strings, or double quotes inside single-quoted strings:
+
+Triple quotes aren’t very useful for short strings like these. 
+Their most common use is to create multiline strings, like this classic poem from Edward Lear:
+
+(EOL means an end-of-line exception.)
+
+If you have multiple lines within triple quotes, the line-ending characters will be preserved in the string. 
+If you have leading or trailing spaces, they’ll also be kept:
+
+You can make a string from another data type by using the str() function:
+
+Python lets you escape the meaning of some characters within strings to achieve effects that would otherwise be difficult to express. 
+By preceding a character with a backslash (\), you give it a special meaning. 
+The most common escape sequence is \n, which means to begin a new line. With this, you can create multiline strings from a one-line string:
+
+(The final string has a terminating tab which, of course, you can’t see.)
+
+You might also need \' or \" to specify a literal single or double quote inside a string that’s quoted by the same character:
+
+As I mentioned early in this chapter, a raw string negates these escapes:
+
+A raw string does not undo any real (not \n) newlines:
+
+You can combine literal strings or string variables in Python by using the + operator:
+
+Python does not add spaces for you when concatenating strings, 
+so in some earlier examples, we needed to explicitly include spaces. 
+Python does add a space between each argument to a print() statement and a newline at the end:
+
+Duplicate with *
+
+You use the * operator to duplicate a string. 
+
+Notice that the * has higher precedence than +, so the string is duplicated before the line feed is tacked on.
+
+To get a single character from a string, specify its offset inside square brackets after the string’s name. 
+The first (leftmost) offset is 0, the next is 1, and so on. 
+The last (rightmost) offset can be specified with –1 so you don’t have to count; going to the left are –2, –3, and so on:
+
+Because strings are immutable, you can’t insert a character directly into one or change the character at a specific index. 
+Let’s try to change Henny to Penny and see what happens:
+
+You can extract a substring (a part of a string) from a string by using a slice. 
+You define a slice by using square brackets, a start offset, an end offset, and an optional step count between them. 
+You can omit some of these. The slice will include characters from offset start to one before end:
+
+[:] extracts the entire sequence from start to end.
+
+[ start :] specifies from the start offset to the end.
+
+[: end ] specifies from the beginning to the end offset minus 1.
+
+[ start : end ] indicates from the start offset to the end offset minus 1.
+
+[ start : end : step ] extracts from the start offset to the end offset minus 1, skipping characters by step.
+
+As before, offsets go 0, 1, and so on from the start to the right, and –1,–2, and so forth from the end to the left. 
+If you don’t specify start, the slice uses 0 (the beginning). If you don’t specify end, it uses the end of the string.
+
+(Again, the end needs to be one more than the actual offset.)
+
+Get Length with len()
+
+So far, we’ve used special punctuation characters such as + to manipulate strings. 
+But Python has only so many of these. 
+Now let’s begin to use some of Python’s built-in functions: named pieces of code that perform certain operations. 
+
+The len() function counts characters in a string:
+
+You can use the built-in split() function to break a string into a list of smaller strings based on a separator. 
+Again, we look at lists in Chapter 8. 
+A list is a sequence of values, separated by commas and surrounded by square brackets:
+
+In the preceding example, the string is called tasks, and the string function is called split(), 
+with the single separator argument ,. 
+If you don’t specify a separator, split() uses any sequence of whitespace characters—newlines, spaces, and tabs:
+
+Not too surprisingly, the join() function is the opposite of split(): it collapses a list of strings into a single string. 
+The join() function looks a bit backward because you specify the string that glues everything together first and then the list of strings to glue: string .join( list ). 
+So, to join the list lines with separating newlines, you would write '\n'.join(lines). 
+As you’ll see in Chapter 8, one way to make a list is with square brackets ([ and ]) surrounding a comma-separated sequence of items. 
+
+You use replace() for simple substring substitution. 
+Give it the old substring, the new one, and the number of instances of the old substring to replace. 
+The function returns the changed string but does not modify the original. 
+If you omit this final count argument, join() replaces all instances. 
+In this example, only one string (duck) is matched and replaced in the returned string:
+
+It’s common to strip leading or trailing “padding” characters from a string, especially spaces. 
+The strip() functions shown here assume that you want to get rid of whitespace characters (' ', '\t', '\n') 
+if you don’t give them an argument. 
+The strip() function strips both ends, lstrip() only from the left, and rstrip() only from the right. 
+Let’s say the string variable world contains the string earth floating in spaces:
+
+Python has two methods, find() and index(), for finding the offset of a substring, 
+and has two versions of each (starting from the beginning or the end). 
+They work the same if the substring is found. If it isn’t, find() returns -1, and index() raises an exception.
+
+Besides the functions in the preceding section, Python has three ways of formatting strings:
+
+  Old style (supported in Python 2 and 3)
+
+  New style (Python 2.6 and up)
+
+  F-strings (Python 3.6 and up)
+
+You can add other values in the format string between the % and the type specifier to designate minimum and maximum widths, alignment, and character filling. 
+This is a little language in its own right, and more limited than the one in the next two sections. 
+Let’s take a quick look at these values:
+
+  An initial % character.
+
+  An optional alignment character: nothing or + means right-align, and - means left-align.
+
+  An optional minwidth field width to use.
+
+  An optional . character to separate minwidth and maxchars.
+
+  An optional maxchars (if conversion type is s) indicating the number of characters to print from the data value. 
+  If the conversion type is f, this specifies precision (the number of digits to print after the decimal point).
+
+  The conversion type character from the earlier table.
+
+“New style” formatting has the form format_string.format(data).
+
+The format string is not exactly the same as the old style described in the preceding section. 
+The simplest usage is demonstrated here:
+
+These examples all print their arguments with default formats. 
+New-style formatting has a slightly different format string definition from the old-style one (examples follow):
+
+  An initial colon (:).
+
+  An optional fill character (the default is ' ') to pad the value string if it’s shorter than minwidth.
+
+  An optional alignment character. This time, left alignment is the default. The < character also means left, > means right, and ^ means center.
+
+  An optional sign for numbers. Nothing means prepend a minus sign (-) only for negative numbers. Using ' ' means prepend a minus sign for negative numbers, and a space (' ') for positive ones.
+
+  An optional minwidth.
+
+  An optional period (.) to separate minwidth and maxchars.
+
+  An optional maxchars.
+
+  The conversion type.
+
+Newest Style: f-strings
+
+F-strings appeared in Python 3.6 and are now the recommended way of formatting strings.
+
+To make an f-string, do the following:
+
+  Type the letter f or F directly before the initial single- or triple-quote characters.
+
+  Include variable names or expressions within curly braces ({}) to get their values interpolated into the string.
+
+This approach is like the previous section’s new-style formatting, but without the format() function, and without empty brackets ({}) or positional ones ({1}) in the format string. 
+F-strings use curly braces ({}) differently:
+
+Strings are a strong component of the Python language. 
+In usual daily programming jobs, you’ll probably spend a lot of time messing with strings. 
+They’re an example of a sequence and include methods to access characters by their position or pattern.
+
+Because strings are immutable, you can’t change the contents of one after it’s been defined. 
+But you can use slices to copy out the characters that you want, and combine them with others to make a new string. 
+Say you want to grab the first two and last two characters of an existing string, and add a ! in the middle (people have done stranger things):
