@@ -1,0 +1,207 @@
+Chapter 9. Dictionaries and Sets
+
+  If a word in the dictionary were misspelled, how would we know?
+
+    Steven Wright
+
+Dictionaries are particularly useful key-value data structures, and you’ll see them used everywhere in Python. 
+Sets are just bags of unique keys and are often very handy.
+
+A dictionary is similar to a list, but the order of items doesn’t matter, and they aren’t selected by an offset such as 0 or 1. 
+Instead, you specify a unique key to associate with each value. 
+This key is often a string, but it can be any of Python’s immutable types: Boolean, integer, float, tuple, string, and others—even ones that you’ve defined. 
+Dictionaries are mutable, so you can add, delete, and change their key-value elements. 
+If you’ve worked with languages that support only arrays or lists, you’ll love dictionaries.
+
+In other languages, dictionaries might be called associative arrays, hashes, or hashmaps. 
+In Python, a dictionary is also called a dict to save syllables and make teenage boys snicker.
+Create with {}
+
+To create a dictionary, you place curly braces ({}) around comma-separated key : value pairs. 
+The simplest dictionary is empty, containing no keys or values at all:
+
+In Python, it’s OK to leave a comma after the last item of a list, tuple, or dictionary. 
+Also, you don’t need to indent, as I did in the previous example, when you’re typing keys and values within the curly braces. 
+The indentation just helps readability.
+Create with dict()
+
+Some people don’t like typing so many curly braces and quotes. 
+You can also create a dictionary by passing named arguments and values to the dict() function.
+
+Here’s the traditional way:
+
+And this way uses dict():
+
+One limitation of the second way is that the argument names need to be legal variable names (no spaces, no reserved words):
+
+Convert with dict()
+
+You can also use the dict() function to convert two-value sequences into a dictionary. 
+You might run into such key-value sequences at times, such as “Strontium, 90, Carbon, 14.”1 The first item in each sequence is used as the key and the second as the value.
+
+“Iterate Multiple Sequences with zip()” introduced you to the zip() function, 
+which makes it easy to create these two-item sequences.
+Add or Change an Item by [ key ]
+
+Adding an item to a dictionary is easy. 
+Just refer to the item by its key and assign a value. 
+If the key is already present in the dictionary, the existing value is replaced by the new one. 
+If the key is new, it’s added to the dictionary with its value. 
+Unlike with lists, you don’t need to worry about Python throwing an exception during assignment by specifying an index that’s out of range.
+Remember that dictionary keys must be unique. 
+
+One last restriction on dictionary keys: they need to be hashable. 
+What? Essentially, this means that the key’s contents cannot change. 
+So you can use a tuple as a key, but not a list:
+Get an Item by [ key ] or with get()
+
+Getting a single element is the most common use of a dictionary. 
+You specify the dictionary and key to get the corresponding value. 
+
+The second is to use the special dictionary get() function. 
+You provide the dictionary, key, and an optional value. 
+If the key exists, you get its value:
+
+Iterate with for and in
+
+Iterating over a dictionary returns the keys, 
+in the order they were originally defined or added. 
+In this example, the keys are the types of cards in the board game Clue (Cluedo outside of North America):
+Using the dictionary’s keys() method does the same thing:
+
+In Python 3, keys() returns dict_keys(), which is an iterable view of the keys that works with for ... in. 
+This approach is handy with large dictionaries because it doesn’t use the time and memory to create and store a list that you might not use. 
+But often you do want to save all the keys in a list. 
+In Python 3, you need to call list() to convert a dict_keys object to a list.
+
+To iterate over the values rather than the keys, use the dictionary’s values() function:
+
+To return both the key and value as a tuple, you can use the items() function:
+
+You can assign the pair of values returned in each step to a tuple. 
+For each tuple returned by items(), assign the first value (the key) to card, and the second (the value) to contents:
+
+Get Length with len()
+Count your key-value pairs:
+
+You can merge dictionaries in more than one way, although this is arguably contrary to a dictum from the Zen of Python: 
+There should be one—and preferably only one—obvious way to do it.
+Use update()
+
+You can use the update() method to copy the keys and values of one dictionary into another.
+
+Use {**a, **b}
+
+Starting with version 3.5, Python has a new way to merge dictionaries, 
+using the ** unicorn glitter (or dictionary unpacking), 
+which has a very different use in Chapter 10:
+These are shallow copies. See “Copy Everything with deepcopy()” if you want full copies of the keys and values, 
+with no connection to their origin dictionaries.
+Use |
+
+Python 3.9 added the ability to use the operator |. 
+Adapting one of the earlier examples, we can use | as follows::
+
+In many ways, this is the best approach. 
+Using update() always modifies the target string in place, and the bang-bang (**) method isn’t very intuitive.
+Delete an Item by Key with del
+
+Get an Item by Key and Delete It with pop( key )
+
+This approach combines get() and del. 
+You give pop() a key; if it exists in the dictionary, 
+pop() returns the matching value and deletes the key-value pair. 
+If the key doesn’t exist, Python raises an exception:
+
+But if you give pop() a second default argument (as with get()), all is well and the dictionary is not changed:
+
+Delete All Items with clear()
+
+To delete all keys and values from a dictionary, use clear() or just reassign an empty dictionary ({}) to the name:
+
+Test for a Key with in
+
+If you want to know whether a key exists in a dictionary, use in. 
+
+As with lists, any change you make to a dictionary will be reflected in all the names that refer to that dictionary:
+
+This is another example of the point I made in Chapter 2. 
+You can have more than one name (variable) pointing to the same value, 
+so changing a value by one name changes it for the others.
+Copy with copy()
+
+To copy keys and values from a dictionary to another dictionary and avoid modifying the first dictionary, you can use copy():
+
+This is a shallow copy, which works if the dictionary values are immutable (as they are in this case). 
+If they aren’t, you need deepcopy().
+Copy Everything with deepcopy()
+
+You get the usual Python change-by-either-name behavior. 
+The copy() method copies the values as is, meaning signal_copy gets the same list value for red that signals has.
+
+The solution is deepcopy(), which makes true copies all the way down:
+
+Much like lists and tuples in Chapter 8, dictionaries can be compared with the simple comparison operators == and !=:
+
+Python compares the keys and values one by one. 
+The order in which they were originally created doesn’t matter. 
+In this example, a and b are almost equal, except key 1 has the list value [1, 2] in a and the list value [1, 1] in b:
+
+Not to be outdone by those bourgeois lists, dictionaries also have comprehensions. The simplest form looks familiar:
+
+{key_expression : value_expression for expression in iterable}
+
+The dictionary’s keys are in a different order than the previous example because iterating set(word) returns letters in a different order than iterating the string word.
+
+Similar to list comprehensions, dictionary comprehensions can also have if tests and multiple for clauses:
+
+{key_expression : value_expression for expression in iterable if condition}
+
+A set is like a dictionary with its values thrown away, leaving only the keys. 
+As with a dictionary, each key must be unique. 
+You use a set when you want to know only that something exists and nothing else about it. 
+A set is a bag of keys. Use a dictionary if you want to attach some information to the key as a value.
+Create with set() or {}
+You can also create sets by surrounding an iterable data type with curly braces ({}). But the set can’t be empty:
+
+To create a non-empty set, use {} with values, or use the set() function with an iterable argument (a tuple, list, string, or dict):
+Sets contain unique values, so any duplicates are dropped:
+Notice that set() doesn’t accept multiple values, as {} does:
+If you do give set() a single-item tuple, you need parentheses and the following comma:
+Sets are unordered, so iterating over one is like dumping a bag of values.
+Get Length with len()
+Add an Item with add()
+Delete an Item with remove()
+You can delete a value from a set by value:
+Combine with |
+Combine sets with |:
+Iterate with for and in
+As with dictionaries, you can iterate over all items in a set:
+Test for a Value with in
+Even though both are enclosed by curly braces ({ and }), a set is just a bunch of values, and a dictionary contains key-value pairs.
+
+What if you want to check for combinations of set values? Suppose that you want to find any drink that has orange juice or vermouth? Let’s use the set intersection operator, which is an ampersand (&):
+As you saw earlier, you get the intersection (members common to both sets) with the special punctuation symbol &. The set intersection() function does the same:
+
+In this example, get the union (members of either set) by using | or the set union() function:
+The difference (members of the first set but not the second) is obtained by using the hyphen character (-) or the difference() function:
+
+By far, the most common set operations are union, intersection, and difference. I’ve included the others for completeness in the examples that follow, but you might never use them.
+
+The exclusive or (items in one set or the other, but not both) uses ^ or symmetric_​dif⁠ference():
+
+You can check whether one set is a subset of another (all members of the first set are also in the second set) by using <= or issubset():
+
+A superset is the opposite of a subset (all members of the second set are also members of the first). This uses >= or issuperset():
+
+Create Set Comprehensions
+No one wants to be left out, so even sets have comprehensions. The simplest version looks like the list and dictionary comprehensions that you’ve just seen:
+
+  { expression for expression in iterable }
+
+And it can have the optional condition tests:
+
+  { expression for expression in iterable if condition }
+
+Create an Immutable Set with frozenset()
+If you want to create a set that can’t be changed, call the frozenset() function with any iterable argument:

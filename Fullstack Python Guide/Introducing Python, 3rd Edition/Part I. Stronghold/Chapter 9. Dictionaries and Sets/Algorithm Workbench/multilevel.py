@@ -1,0 +1,17 @@
+# Make a multilevel dictionary called life. Use these strings for the topmost keys: 'animals', 'plants', and 'other'. Make the 'animals' key refer to another dictionary with the keys 'cats', 'octopi', and 'emus'. Make the 'cats' key refer to a list of strings with the values 'Henri', 'Grumpy', and 'Lucy'. Make all the other keys refer to empty dictionaries.
+life = {'animals': {'cats' : {'Henri', 'Grumpy', 'Lucy'}, 'octopi' : {}, 'emus' : {}}, 
+        'plants': {}, 
+        'other': ()}
+
+# Print the top-level keys of life.
+print(life.keys())
+
+# Print the keys for life['animals'].
+print(life['animals'].keys())
+
+# Print the values for life['animals']['cats'].
+print(life['animals']['cats'])
+
+# Use a dictionary comprehension to create the dictionary squares. Use range(10) to return the keys, and use the square of each key as its value.
+squares = {k:v**2 for k,v in enumerate(range(10))}
+print(squares)
