@@ -1,0 +1,289 @@
+Chapter 8. Tuples and Lists
+
+The human animal differs from the lesser primates in his passion for lists.
+
+    H. Allen Smith
+
+Most computer languages can represent a sequence of items indexed by their integer position: first, second, 
+and so on down to the last. You’ve already seen Python strings (Chapter 4; sequences of text characters) 
+and bytes and bytearrays (Chapter 5; sequences of 8-bit binary values).
+
+Python has more sequence structures: tuples and lists. 
+These contain zero or more elements. 
+Unlike strings, the elements can be of different types. 
+In fact, each element can be any Python object. 
+This lets you create structures as deep and complex as you like.
+
+The original Latin word tuple, meaning plus, was pronounced tub-pull.
+Create with Commas and ()
+
+If you have more than one element, follow all but the last one with a comma:
+
+Actually, having a comma after the last element doesn’t hurt (some languages are more picky about this):
+
+Python includes parentheses when echoing a tuple. 
+You often don’t need them when you define a tuple, but using parentheses is a little safer, 
+and it helps to make the tuple more visible:
+
+You do need the parentheses when commas might also have another use. 
+In this example, you can create and assign a single-element tuple with just a trailing comma, 
+but you can’t pass it as an argument to a function:
+
+Tuples let you assign multiple variables at once:
+
+This is sometimes called tuple unpacking. If the number of variables doesn’t match the length of the tuple, then oops:
+
+You can use tuples to exchange values in one statement without using a temporary variable:
+
+Create with tuple()
+
+The tuple() conversion function makes tuples from other iterable objects:
+
+As with any sequence, you get a single item from a tuple by providing its offset:
+
+But you can’t modify an item by its offset. “It’s immutable!” shout the tuple’s lawyers:
+
+As with strings, + combines two or more tuples:
+
+Duplicate with *
+
+Use * to make copies of a tuple, and combine them:
+
+Comparing tuples works much like list comparisons:
+
+Iterate with for and in
+
+Tuple iteration is like iteration of other types:
+
+You can’t! Like strings, tuples are immutable, so you can’t change an existing one. As you saw just before, you can concatenate (combine) tuples to make a new one, as you can with strings:
+
+This means that you can appear to modify a tuple like this:
+
+But it isn’t the same t1! Python made a new tuple from the original tuples pointed to by t1 and t2, 
+and assigned the name t1 to this new tuple. 
+In Python, variables are just names, not pointers to values. 
+You can see with id() when a variable name is pointing to a new value:
+
+Named Tuples
+
+A named tuple is a variety of tuple that lets you access its elements by names as well as positions. 
+
+Lists are good for keeping track of items by their order, especially when the order and contents might change. 
+Unlike strings, lists are mutable. 
+You can change a list in place, add new elements, and delete or replace existing elements. 
+The same value can occur more than once in a list.
+Create with []
+
+A list is made from zero or more elements, separated by commas and surrounded by square brackets:
+
+Create or Convert with list()
+
+You can also make an empty list with the list() function:
+
+Python’s list() function also converts other iterable data types (such as tuples, strings, sets, and dictionaries) to lists. 
+
+Create from a String with split()
+
+As I mentioned in “Split with split()”, use split() to chop a string into a list by a separator:
+
+Get Items with a Slice
+
+You can extract a subsequence of a list by using a slice:
+
+A slice of a list is also a list.
+
+None of these slices change the marxes list itself, because we don’t assign them to marxes. 
+To reverse a list in place, use list.reverse():
+
+The reverse() function changes the list but doesn’t return its value.
+
+As you saw with strings, a slice can specify an invalid index but will not cause an exception. 
+It will “snap” to the closest valid index or return nothing:
+
+Add an Item to the End with append()
+
+The traditional way of adding items to a list is to append() them one by one to the end. 
+In the previous examples, we forgot Zeppo, but that’s all right because the list is mutable, so we can add him now:
+
+Add an Item by Offset with insert()
+
+The append() function adds items only to the end of the list. 
+When you want to add an item before any offset in the list, use insert(). 
+Offset 0 inserts at the beginning. 
+An offset beyond the end of the list inserts at the end, like append(), 
+so you don’t need to worry about Python throwing an exception:
+
+Duplicate with *
+
+In Chapter 4, you saw that you can duplicate a string’s characters with *. The same works for a list:
+
+Combine with extend() or +
+
+You can merge one list into another by using extend(). 
+Suppose that a well-meaning person gives us a new list of Marxes called others, 
+and we want to merge them into the main marxes list:
+
+Alternatively, we can use + or +=:
+
+If we had used append(), others would have been added as a single list item rather than merging its items:
+
+You can’t change a character in a string in this way, because strings are immutable. 
+Lists are mutable. 
+You can change the number of items a list contains as well as the items themselves.
+Change Items with a Slice
+
+Delete an Item by Offset with del
+
+del is a Python statement, not a list method—you don’t say marxes[-1].del(). 
+It’s sort of the reverse of assignment (=): 
+it detaches a name from a Python object and can free up the object’s memory if that name was the last reference to it.
+Delete an Item by Value with remove()
+
+If you had duplicate list items with the same value, remove() deletes only the first one it finds.
+Get an Item by Offset and Delete It with pop()
+
+It’s computing jargon time! Don’t worry, these won’t be on the final exam. 
+If you use append() to add new items to the end and pop() to remove them from the same end, 
+you’ve implemented a data structure known as a last in, first out (LIFO) queue. 
+This is more commonly known as a stack. Calling the pop(0) function would create a first in, first out (FIFO) queue. 
+These are useful when you want to process data with the oldest first (FIFO) or the newest first (LIFO).
+Delete All Items with clear()
+
+Test for a Value with in
+
+The Pythonic way to check for the existence of a value in a list is to use in:
+
+The same value may be in more than one position in the list. As long as it’s in there at least once, in will return True:
+
+Count Occurrences of a Value with count()
+
+To count the number of times a particular value occurs in a list, use count():
+
+Convert a List to a String with join()
+
+You might be thinking that this seems a little backward. 
+The function join() applies to a string, not a list. 
+You can’t say marxes.join(', '), even though it seems more intuitive. 
+The argument to join() is a string or any iterable sequence of strings (including a list), 
+and its output is a string. If join() were just a list method, 
+you couldn’t use it with other iterable objects such as tuples or strings. 
+If you did want it to work with any iterable type, 
+you’d need special code for each type to handle the actual joining. 
+It might help to remember: join() is the opposite of split(), as shown here:
+
+Reorder Items with sort() or sorted()
+
+You’ll often need to sort the items in a list by their values rather than their offsets. Python provides two functions:
+
+The list method sort() sorts the list itself, in place. It returns None.
+
+The general function sorted() returns a sorted copy of the list.
+
+If the items in the list are numeric, they’re sorted by default in ascending numeric order. 
+If they’re strings, they’re sorted in alphabetical order:
+
+Now, sorted_marxes is a new list, and creating it did not change the original list:
+
+But calling the list function sort() on the marxes list does change marxes:
+
+If the elements of your list are all of the same type (such as strings in marxes), 
+sort() will work correctly. 
+You can sometimes even mix types—for example, 
+integers and floats—because they are automatically converted to one another by Python in expressions:
+
+The default sort order is ascending, but you can add the argument reverse=True to set the order to descending:
+
+Get Length with len()
+
+The len() function returns the number of items in a list:
+
+Assign with =
+
+When you assign one list to more than one variable, 
+changing the list in one place also changes it in the other, as illustrated here:
+Remember the box (object) and string with note (variable name) analogy in Chapter 2? 
+The variable b just refers to the same list object as a (both name strings lead to the same object box). 
+Whether we change the list contents by using the name a or b, it’s reflected in both:
+
+All mutable types in Python share this behavior.
+Copy with copy(), list(), or a Slice
+
+You can copy the values of a list to an independent, fresh list by using any of these methods:
+
+The list copy() method
+
+The list() conversion function
+
+The list slice [:]
+
+Copy Everything with deepcopy()
+
+The copy() function works well if the list values are all immutable. 
+As you’ve seen before, mutable values (like lists, sets, or dicts) are references. 
+A change in the original or the copy would be reflected in both.
+
+The deepcopy() function can handle deeply nested lists, dictionaries, and other objects.
+
+You can directly compare lists with the comparison operators like ==, <, and so on. 
+The operators walk through both lists, comparing elements at the same offsets. 
+If list a is shorter than list b, and all its elements are equal, a is less than b:
+
+Iterate with for and in
+
+Python has more nice iteration tricks: iterating over multiple sequences in parallel by using the zip() function:
+
+The zip() function stops when the shortest sequence is done. 
+One of the lists (desserts) is longer than the others, so no one gets any pudding unless we extend the other lists. 
+Read “Iterate Multiple Sequences with zip_longest()” for a new function that gives you more control if the sequences have different lengths.
+
+Chapter 9 shows you how the dict() function can create dictionaries from two-item sequences like tuples, lists, or strings. 
+You can use zip() to walk through multiple sequences and make tuples from items at the same offsets. 
+Let’s make two tuples of corresponding English and French words:
+
+Iterate Multiple Sequences with zip_longest()
+
+As you just saw, plain zip() runs out of gas when the shortest sequence ends. 
+But a variant keeps going until the longest sequence ends. 
+The zip_longest() function will supply None unless you provide a fillvalue for the unmatched items at the end of the shorter sequence:
+
+Create a List with a Comprehension
+
+You saw how to create a list with square brackets or the list() function. 
+Here, we look at how to create a list with a list comprehension, which incorporates the for/in iteration that you just saw.
+
+All these approaches are valid Python code and will produce the same result. 
+However, a more Pythonic (and often faster) way to build a list is by using a list comprehension. 
+The simplest form of list comprehension looks like this:
+
+[expression for item in iterable]
+
+The list comprehension moves the loop inside the square brackets. 
+This comprehension example really wasn’t simpler than the previous example, 
+but there’s more that you can do. A list comprehension can include a conditional expression, looking something like this:
+
+[expression for item in iterable if condition]
+
+Lists can contain elements of different types, including other lists, as illustrated here:
+
+You can often use tuples in place of lists, but they have fewer functions (there is no append(), insert(), and so on) 
+because tuples can’t be modified after creation. Why not just use lists instead of tuples everywhere?
+
+Tuples use less space.
+
+You can’t clobber tuple items by mistake.
+
+You can use tuples as dictionary keys (see Chapter 9).
+
+Named tuples (see “Named Tuples”) can be a simple alternative to objects.
+
+Mutable types (lists, dictionaries, and sets) have comprehensions. 
+Immutable types like strings and tuples need to be created with the other methods listed in their sections.
+
+You might have thought that changing the square brackets of a list comprehension to parentheses would create a tuple comprehension. 
+And that change would appear to work because no exception occurs if you type this:
+
+The thing within the parentheses is something else entirely: a generator comprehension, and it returns a generator object:
+
+Tuples and lists are sequences, and you access their elements by their relative positions. 
+Lists can also be changed in place (mutable), but tuples can’t (immutable). 
+Sequences are a type of iterable that you can step through with for and in.
