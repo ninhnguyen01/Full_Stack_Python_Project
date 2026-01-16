@@ -8,7 +8,7 @@
 <p>(3) Web Development (Framework, Engines, Design, Task Queue, SSG, Testing, Networking, APIs, Security)</p>
 <p>(4) Web App Deployment (Hosting, VPS, PaaS, OS, Servers, CI, CM, Containers, Architectures)</p>
 <p>(5) DevOps (Monitoring, Performance)</p>
-<p>(6) AI (LLM, RAG, MCP, Agents)</p>
+<p>(6) AI (LLM, RAG, MCP, Agents, Enterprise)</p>
 
 <h2>Buy me a Boba</h2>
 <img src="asset/qr-code.png" width=200 height=200>
