@@ -1,0 +1,283 @@
+Chapter 12. Modules and Packages
+
+Information about the package is as important as the package itself.
+
+    Frederick W. Smith
+
+During your bottom-up climb, you’ve progressed from built-in data types to constructing ever-larger data and code structures. In this chapter, you finally learn to write realistic whole programs in Python. You’ll write your own modules and learn how to use others from Python’s standard library and other sources.
+
+This book is organized in a hierarchy: words, sentences, paragraphs, and chapters. Otherwise, it would become unreadable pretty quickly.1 Code has a roughly similar bottom-up organization: data types are like words; expressions and statements are like sentences; functions are like paragraphs; and modules are like chapters. To continue the analogy, when I say that something is explained in Chapter 8 in this book, in programming that’s like referring to code in another module.
+Modules and the import Statement
+
+We’ll create and use Python code in more than one file. A module is just a file of any Python code. You don’t need to do anything special; any Python code can be used as a module by others.
+
+We refer to code of other modules by using the Python import statement. This makes the code and variables in the imported module available to your program.
+Import a Module
+
+Python lets you import code from separate modules in different ways:
+
+    The simplest use of the import statement is import module, where module is the name of another Python file, without the .py extension.
+
+    To access only the function do_something() in a module called wonders, use from wonders import do_something.
+
+    To access everything in wonders, use from wonders import *. This is usually discouraged, because you’ll get, well, everything, as variables now strewn through your calling program, possibly including stuff that you don’t know or want.
+
+Let’s say you and a few others want something fast for lunch but don’t want a long discussion, and you always end up picking what the loudest person wants anyhow. Let the computer decide! Let’s write a module with a single function that returns a random fast-food choice, and a main program that calls it and prints the choice. The Python standard library contains a module called random.py, and within it is a function called choice():
+
+If you have these two files in the same directory and instruct Python to run lunch.py as the main program, Python will access the fast module and run its pick() function. We wrote this version of pick() to return a random result from a list of strings, so that’s what the main program will get back and print:
+
+We’re using imports in two places:
+
+    The main program lunch.py imports our new module fast.
+
+    The module file fast.py imports the choice function from Python’s standard library module named random.
+
+We also use imports in two ways in our main program and our module:
+
+    In the first case, we import the entire fast module but need to use fast as a prefix to pick(). After this import statement, everything in fast.py is available to the main program, as long as we prepend fast. to its name. By qualifying the contents of a module with the module’s name, we avoid any nasty naming conflicts. There could be a pick() function in another module, and we would not call it by mistake.
+
+    In the second case, we’re within a module and know that nothing else named choice is here, so we import the choice() function from the random module directly.
+
+We could have written fast.py, as shown in Example 12-3, importing random within the pick() function instead of at the top of the file.
+
+As with many aspects of programming, use the style that seems clearest to you. The module-qualified name (random.choice) is safer but requires a little more typing.
+
+Consider importing from outside the function if the imported code might be used in more than one place, and from inside if you know its use will be limited. Some people prefer to put all their imports at the top of the file, just to make all the dependencies of their code explicit. Either way works.
+Import a Module with Another Name
+
+In our main lunch.py program, we call import fast. But what if you:
+
+    Have another module named fast somewhere?
+
+    Want to use a name that is more mnemonic?
+
+    Caught your fingers in a door and want to minimize typing?
+
+In these cases, you can import using an alias, as shown in Example 12-4. Let’s use the module alias f.
+
+Import Only What You Want from a Module
+
+You can import a whole module or just parts of it. You just saw the latter: we wanted only the choice() function from the random module.
+
+As with the module itself, you can use an alias for each variable that you import.
+
+Let’s redo our example a few more times. First, import pick() from the fast module with its original name (Example 12-5).
+
+Packages
+
+We went from single lines of code, to multiline functions, to standalone programs, to multiple modules in the same directory. If you don’t have many modules, the same directory works fine.
+
+To allow Python applications to scale even more, you can organize modules into file and module hierarchies called packages. A package is just a subdirectory that contains .py files. And you can go more than one level deep, with directories inside those.
+
+We just wrote a module that chooses a fast-food place. Let’s add a similar module to dispense life advice. We’ll make one new main program called questions.py in our current directory. Now make a subdirectory named choices and put two modules in it: fast.py and advice.py. Each module has a function that returns a string.
+
+The main program (questions.py) has an extra import and line (Example 12-7).
+
+That from choices import fast, advice makes Python look for a package (directory) named choices, starting under your current directory. Inside choices Python looks for the files fast.py and advice.py.
+
+The first module (choices/fast.py) is the same code as before, just moved into the choices directory (Example 12-8).
+
+The second module (choices/advice.py) is new, but it works a lot like its fast-food relative (Example 12-9).
+Example 12-9. choices/advice.py
+
+Run the main questions.py program (from your current directory, not in sources) to see what happens:
+
+The Module Search Path
+
+I just said that Python looks under your current directory for the subdirectory choices and its modules. Python looks in other places as well, and you can control this.
+
+Earlier, we imported the choice() function from the standard library’s random module. That isn’t in your current directory, so Python needs to look elsewhere also.
+
+To see all the places that your Python interpreter looks, import the standard sys module and use its path list. This is a list of directory names and ZIP archive files that Python searches in order to find modules to import.
+
+You can access and modify this list. Here’s the value of sys.path for Python 3.13 on my Mac:
+
+That initial blank output line is the empty string '', which stands for the current directory. If '' is first in sys.path, Python looks in the current directory first when you try to import something: import fast looks for fast.py. This is Python’s usual setup. Also, when we made that subdirectory called sources and put Python files in it, they could be imported with import sources or from sources import fast.
+
+The first match will be used. This means that if you define a module named random and it’s in the search path before the standard library, you won’t be able to access the standard library’s random now.
+
+You can modify the search path within your code. Let’s say you want Python to look in the /my/modules directory before any other:
+
+Relative and Absolute Imports
+
+In our examples so far, we imported our own modules from the following:
+
+    The current directory
+
+    The subdirectory choices
+
+    The Python standard library
+
+This works well until you have a local module with the same name as a standard one. Which do you want?
+
+Python supports absolute or relative imports. The examples that you’ve seen so far are absolute imports. If you typed import rougarou for each directory in the search path, Python would look for a file named rougarou.py (a module) or a directory named rougarou (a package).
+
+    If rougarou.py is in the same directory as your calling problem, you can import it relative to your location with from . import rougarou.
+
+    If the file is in the directory above you, use from .. import rougarou.
+
+    If the file is under a sibling directory called creatures, use from ..creatures import rougarou.
+
+The . and .. notations were borrowed from Unix’s shorthand for current directory and parent directory.
+
+For a good discussion of Python import problems that you may run into, see “Traps for the Unwary in Python’s Import System” by Alyssa Coghlan.
+Namespace Packages
+
+You’ve seen that you can package Python modules as follows:
+
+    A single module (.py file)
+
+    A package (directory containing modules, and possibly other packages)
+
+You can also split a package across directories with namespace packages. Say you want a package called critters that will contain a Python module for each dangerous creature (real or imagined, supposedly with background info and protective hints). This might get large over time, and you’d like to subdivide these by geographic location. One option is to add location subpackages under critters and move the existing .py module files under them, but this would break code in other modules that import them. Instead, we can go up and do the following:
+
+    Make new location directories above critters.
+
+    Make cousin critters directories under these new parents.
+
+    Move existing modules to their respective directories.
+
+This needs some illustration. Say we start with this file layout:
+
+critters
+ ⌞ rougarou.py
+ ⌞ wendigo.py
+
+Normal imports of these modules would look like this:
+
+from critters import wendigo, rougarou
+
+Now if we decide on United States locations north and south, the files and directories will look like this:
+
+north
+ ⌞ critters
+   ⌞ wendigo.py
+south
+ ⌞ critters
+   ⌞ rougarou.py
+
+If both north and south are in your module search path, you can import the modules as though they were still cohabiting a single-directory package:
+
+from critters import wendigo, rougarou
+
+Modules Versus Objects
+
+When should you put your code into a module, and when into an object?
+
+Modules and objects look similar in many ways. An object or module called thing with an internal data value called stuff would let you access the value as thing.stuff. The stuff value may have been defined when the module or class was created, or it may have been assigned later.
+
+All the classes, functions, and global variables in a module are available to the outside. Objects can use properties and dunder (__ …​) naming to hide or control access to their data attributes.
+
+This means you can do this:
+
+Did you just ruin calculations for everyone on this computer? Yes! No, I’m kidding.2 This did not affect the Python math module. You changed only the value of pi for the copy of the math module code imported by your calling program, and all evidence of your crimes will disappear when it finishes.
+
+Only one copy of any module is imported by your program, even if you import it more than once. To use smart-sounding jargon, a module is a singleton. You can use it to save global code of interest to any code that imports it. This is similar to a class, which also has only one copy, although you can have many objects created from it. A class is used to define multiple object instances, each varying in some little way from its classmates.
+Goodies in the Python Standard Library
+
+One of Python’s prominent claims is that it has “batteries included”—a large standard library of modules that perform many useful tasks. They are kept separate to avoid bloating the core language. When you’re about to write some Python code, it’s often worthwhile to first check whether a standard module already does what you want. It’s surprising how often you encounter little gems in the standard library. Python also provides authoritative documentation for the modules, along with a tutorial. Doug Hellmann’s website Python Module of the Week and book The Python Standard Library by Example (O’Reilly) are also useful guides.
+
+Upcoming chapters in this book feature many of the standard modules that are specific to the web, systems, databases, and so on. In this section, I talk about some standard modules that have generic uses.
+Handle Missing Keys with setdefault() and defaultdict()
+
+You’ve seen that trying to access a dictionary with a nonexistent key raises an exception. Using the dictionary get() function to return a default value avoids an exception. The setdefault() function is like get() but also assigns an item to the dictionary if the key is missing:
+
+If the key is not already in the dictionary, the new value is used:
+
+If we try to assign a different default value to an existing key, the original value is returned and nothing is changed:
+
+The defaultdict() function is similar but specifies the default value for any new key up front, when the dictionary is created. Its argument is a function. In this example, we pass the function int, which will be called as int() and return the integer 0:
+
+Now any missing value will be an integer (int) with the value 0:
+
+The argument to defaultdict() is a function that returns the value to be assigned to a missing key. In the following example, no_idea() is executed to return a value when needed:
+
+You can use the functions int(), list(), or dict() to return default empty values for those types: int() returns 0, list() returns an empty list ([]), and dict() returns an empty dictionary ({}). If you omit the argument, the initial value of a new key will be set to None.
+
+By the way, you can use lambda to define your default-making function right inside the call:
+
+Using int is one way to make your own counter:
+
+In the preceding example, if food_counter had been a normal dictionary instead of a defaultdict, Python would have raised an exception every time we tried to increment the dictionary element food_counter[food] because it would not have been initialized. We would have needed to do some extra work, as shown here:
+
+Count Items with Counter()
+
+Speaking of counters, the standard library has one that does the work of the previous example and more:
+
+The most_common() function returns all elements in descending order, or just the top count elements if given a count:
+
+You can combine counters. First, let’s see again what’s in breakfast_counter:
+
+This time, we make a new list called lunch, and a counter called lunch_counter:
+
+The first way we combine the two counters is by addition, using +:
+
+As you might expect, you subtract one counter from another by using -. What’s for breakfast but not for lunch?
+
+OK, now what can we have for lunch that we can’t have for breakfast?
+
+Similar to sets in Chapter 9, you can get common items by using the intersection operator &:
+
+The intersection chooses the common element (eggs) with the lower count. This makes sense: breakfast offers only one egg, so that’s the common count.
+
+Finally, you can get all items by using the union operator |:
+
+Starting with Python 3.7, dictionaries retain keys in the order in which they are added. OrderedDict is useful for earlier versions, which have an unpredictable order. The examples in this section are relevant only if you’re using a version of Python earlier than 3.7.
+
+OrderedDict remembers the order of key addition and returns the keys in the same order from an iterator. Try creating an OrderedDict from a sequence of (key, value) tuples:
+
+Stack + Queue == deque
+
+Here are definitions of these elements:
+
+    A stack is a LIFO data structure, like a stack of trays at a cafeteria.
+
+    A queue is a FIFO data structure, like a vending machine, where the item stocked first is the first to tumble down when you buy it. Unless it gets stuck.
+
+    A deque (pronounced deck) is a double-ended queue, which has features of both a stack and a queue. It’s useful when you want to add and delete items from either end of a sequence.
+
+Let’s work from both ends of a word to the middle to see whether it’s a palindrome. The function popleft() removes the leftmost item from the deque and returns it; pop() removes the rightmost item and returns it. Together, they work from the ends toward the middle. As long as the end characters match, the function keeps popping until it reaches the middle:
+
+I use this as a simple illustration of deques. If you really want a quick palindrome checker, comparing a string with its reverse would be a lot simpler. Python doesn’t have a reverse() function for strings, but it does have a way to reverse a string with a slice, as illustrated here:
+
+Iterate over Code Structures with itertools
+
+The itertools module contains special-purpose iterator functions. Each returns one item at a time when called within a for …​ in loop, and remembers its state between calls. Looking at itertools is definitely worth your time.
+
+The chain() function runs through its arguments as though they were a single iterable:
+
+The cycle() function is an infinite iterator, cycling through its arguments:
+
+And so on.
+
+The accumulate() function calculates accumulated values. By default, it calculates the sum:
+
+You can provide a function as the second argument to accumulate(), and it will be used instead of addition. The function should take two arguments and return a single result. This example calculates an accumulated product:
+
+The itertools module has many more functions, notably some for combinations and permutations that can be time savers when the need arises.
+Get Random
+
+We played with random.choice() at the beginning of this chapter. That returns a value from the sequence (list, tuple, dictionary, string) argument that it’s given:
+
+Use the sample() function to get more than one value at a time:
+
+Finally, get a random real number (a float) from 0.0 to 1.0:
+
+More Batteries: Get Other Python Code
+
+Sometimes the standard library doesn’t have what you need or doesn’t do it in quite the right way. There’s an entire world of open source, third-party Python software. Good resources include the following:
+
+    PyPI (also known as the Cheese Shop, after an old Monty Python skit)
+
+    GitHub
+
+    Read the Docs
+
+You can find many smaller code examples at ActiveState.
+
+Almost all the Python code in this book uses the standard Python installation on your computer, which includes all the built-ins and the standard library. External packages are featured in some places, with details on how to install and use them.
+Review/Preview
+
+Modules are the next high-level code structure above functions. They isolate code and data in a namespace that qualifies names and allows the same name to be used in different places without confusion.
+
+The next chapter begins Part II: the tools to hone your Python skills.Practice
