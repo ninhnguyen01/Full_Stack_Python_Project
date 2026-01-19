@@ -15,8 +15,6 @@
 <hr>
 
 <img src="asset/lib2025.WEBP" width=700 height=700>
-<img src="asset/webdev.PNG" width=700 height=700>
-<img src="asset/ML.PNG" width=700 height=700>
 <img src="asset/octoverse-2025-code-ai-projects.webp" width=1000 height=1000>
 <p>Image source: Internet</p>
 
