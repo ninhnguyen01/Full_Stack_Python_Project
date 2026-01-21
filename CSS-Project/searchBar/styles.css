@@ -1,0 +1,53 @@
+body {
+    background-color: cadetblue;
+}
+
+h1 {
+    text-align: center;
+    font-size: 5em;
+    color: black;
+    background-color: white;
+    border-radius: 4px;
+}
+
+hr {
+    color: aliceblue;
+}
+
+.search-container {
+    background-color: deepskyblue;
+    text-align: center;
+    margin-top: 50px;
+    padding: 1em;
+    width: 90%;
+    margin: auto;
+    min-width: 320px;
+    border-radius: 6px;
+    display: inline-flexbox;
+}
+
+.search-container>label {
+    font-size: 2em;
+}
+
+.searchfield {
+    font-size: 1.5em;
+    border: 2px solid gray;
+    border-radius: 4px;
+    width: 30%;
+    line-height: 2;
+    transition: all 2s;
+}
+
+.searchfield:focus {
+    width: 80%;
+    border-color: black;
+}
+
+.searchfield::placeholder {
+    font-weight: 200;
+}
+
+.searchfield:focus::placeholder {
+    color: transparent;
+}

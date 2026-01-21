@@ -1,0 +1,62 @@
+* {
+    background-color: rgb(42, 129, 179);
+}
+
+h1 {
+    text-align: center;
+    color: white;
+    font-size: 5em;
+}
+
+hr {
+    color: white;
+}
+
+.image-container {
+    text-align: center;
+}
+
+.flag {
+    max-width: 200px;
+    max-height: 200px;
+    height: 100vh;
+    border-radius: 2em;
+    margin: 30px 30px;
+    border: 3px solid gold;
+}
+
+.flag:hover {
+    transform: perspective(500px) translate3d(10px, 0, 20px) rotateY(45deg);
+
+}
+
+#korea-flag:hover {
+    opacity: 0.8;
+    border: 6px solid #00BF9C;
+}
+
+#china-flag:hover {
+    opacity: 0.8;
+    border: 6px solid#653EE6;
+}
+
+#germany-flag:hover {
+    opacity: 0.8;
+    border: 6px solid#008BFF;
+}
+
+#italy-flag:hover {
+    opacity: 0.8;
+    border: 6px solid #FF6500;
+}
+
+#french-flag:hover {
+    opacity: 0.8;
+    border: 6px solid #FFFFFF;
+}
+
+footer {
+    color: white;
+    text-align: center;
+    font-size: 1.2em;
+}

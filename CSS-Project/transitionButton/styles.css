@@ -1,0 +1,25 @@
+.btn-container {
+    margin-top: 100px;
+    text-align: center;
+}
+
+.btn {
+    font-size: 3em;
+    font-weight: 700px;
+    color: hsl(0, 79%, 41%);
+    background-color: black;
+    border: 5px solid gray;
+    border-radius: 10px;
+    padding: 10px;
+
+    transition-property: transform;
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
+    transition-delay: 0s;
+
+}
+
+.btn:hover {
+    color: hsl(129, 59%, 43%);
+    transform: translateY(20px);
+}

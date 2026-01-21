@@ -1,0 +1,93 @@
+h1 {
+    text-align: center;
+    width: 100px;
+    height: 100px;
+    background: red;
+    font-size: 6rem;
+    padding: 6px;
+    margin: 0px;
+
+    animation: myColorAnimation;
+    /* change keyframe name here for animation */
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+}
+
+h1:hover {
+    animation: myTranslate;
+    /* change keyframe name here for animation */
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes myColorAnimation {
+    0% {
+        background-color: red;
+    }
+
+    20% {
+        background-color: orange;
+    }
+
+    40% {
+        background-color: yellow;
+    }
+
+    60% {
+        background-color: green;
+    }
+
+    80% {
+        background-color: blue;
+    }
+
+    100% {
+        background-color: purple;
+    }
+}
+
+@keyframes myRotateAnimation {
+    100% {
+        transform: rotatez(360deg);
+    }
+}
+
+@keyframes myTranslate {
+    50% {
+        transform: translate(2em, 0);
+    }
+}
+
+@keyframes myScale {
+    50% {
+        transform: scale(2, 2);
+    }
+}
+
+@keyframes myOpacity {
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes myFont {
+    0% {
+        font-size: 6rem;
+    }
+
+    50% {
+        font-size: 12rem;
+    }
+
+    100% {
+        font-size: 24rem;
+    }
+}
