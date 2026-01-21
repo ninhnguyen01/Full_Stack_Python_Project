@@ -1,0 +1,51 @@
+Chapter 14. Type Hints and Documentation
+One can never produce anything as terrible and impressive as one can awesomely hint about.
+    H. P. Lovecraft
+Python was designed so that variables were really just references to objects: names, or sticky notes, attached to the data that contained all the details. So for years, there was little need to say, for instance, what data type a variable referred to. But sometimes we imperfect humans would misspell names, or forget what we were trying to do in long blocks of code. So, eventually, optional type hints were added to the language. You use these to indicate what you mean. Type hints are not enforced by the Python interpreter but can serve as documentation, and tools like Mypy understand them and use them for error checking.
+Type Hints
+Static languages require you to define the types of your variables, and they can catch some errors at compile time. As you know, Python doesn’t do this, and you may find bugs only when the code is run. An object has a strict type and location in memory, but a variable is just a name that can point to any object at any time.
+However, in real code (in Python and other languages), a name tends to refer to a specific object. It would help, at least in documentation, if we could annotate code elements (variables, function returns, and so on) with the object types we expect them to be referencing. Then developers would not need to look through as much code to see how a particular variable is supposed to act.
+Python 3.5 added type hints (or type annotations) to address this. Their use is completely optional, and does not force types on variables. Type hints help developers who are used to static languages, where variable types must be declared (or can be inferred somehow). These are only hints, and they don’t change the way Python works. Their main use is for documentation, but people are finding more uses. For example, the FastAPI web framework uses hints to generate web documentation with live forms for testing.
+You can apply type hints to variables, functions, and object attributes and methods.
+Variable Hints
+A type hint for a variable might specify only the type:
+    name : type
+or the type and a value:
+    name : type = value
+The type can be a standard Python type name like int or str:
+palindrome: str = "Was it a car or a cat I saw?"
+For collection types like list, tuple, and dict, you can specify which types are in the collection:
+    name: dict[keytype, valtype] = {key1: val1, key2: val2}
+If the variable could really be of any type (this is uncommon), import Any from typing and use it:
+    mysterious_thing: Any
+If the variable could be one of multiple types, you can say this in Python 3.10 and up:
+    number: int | float
+In earlier versions of Python, you’ll need Union from the typing module:
+from typing import Union
+number: Union(int, float)
+If a variable might have a type and value, but also might be missing, use None (Python 3.10+) or Optional:
+Function Hints
+Hints apply to function parameters and return values. Parameters are treated like the variables in the previous section:
+Mypy
+Although type hints are ignored by the Python interpreter, static type checking tools like Mypy understand them, and complain if a type hint is being violated. Use pip install mypy to get the tool.
+Let’s make a correct test file, then add some type errors and see how alert Mypy is. Call this test.py (Example 14-1).
+Running test.py through plain old Python will cause some exceptions (I’ve shortened some lines here):
+But Mypy understands both type hints and Python, and warns us:
+Mypy checks all the code without running it fully like the Python interpreter, and it catches lines that would have raised exceptions at runtime. It does not catch the call to str_to_int(), which expects a string of digit characters, and we pass it an empty string. We tell Mypy only that txt is a string, not that it has to contain at least one digit character.
+Documentation
+    The guy who knows about computers is the last person you want to have creating documentation for people who don’t understand computers.
+    Adam Osborne
+The code does one thing, and what we say it should do is sometimes another. When the code doesn’t speak for itself, there are ways to help. Type hints help in some ways, but explanatory text can say much more.
+Comments
+I mentioned code comments in “Comment with #”. These are always recommended near code that might be confusing or obscure to the reader.
+Before type hints, people often used structured comments to document Python variables and functions. These were often homegrown by each group of developers, but some involved tools like Sphinx or Doxygen.
+Docstrings
+I mentioned docstrings (an initial string within a function body) in “Docstrings”. The docstring of a function named func() is available as func.__doc__.
+The Python help() function returns the docstring of an object:
+Help on function echo in module main:
+Markup Text Files
+Many markup text formats have emerged to express the structure and formatted appearance of documents. HTML is prominent, but you’ll see other formats that try to also be more directly readable; examples are Markdown and AsciiDoc.1 It’s common to see markup documentation files alongside Python code files in source repositories; you’ll often see a file with a name like README.md instead of index.html.
+Review/Preview
+Documentation can take many forms, including code comments, external text files, and Python type hints.
+A type hint indicates what your variable is supposed to mean: what internal object data type does it refer to? The Python interpreter doesn’t care (as long as it’s in a legal format), but tools like Mypy use these hints to catch errors. Also, some modern packages (see “FastAPI”) require the use of hints.
+Coming up: testing. It’s not always fun, but it’s necessary and can save you a lot of grief.
