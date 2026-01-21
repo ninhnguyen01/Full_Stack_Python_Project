@@ -1,0 +1,156 @@
+Chapter 13. Development Environment
+    Always wanted to travel back in time to try fighting a younger version of yourself? Software development is the career for you!
+    Elliot Loh
+Part I of this book mostly described the syntax of the Python programming language. The only computer tools you have really needed so far have been these:
+    A text editor, to write the Python code
+    A terminal, to run those Python programs
+This chapter is devoted to the art and science of Python development, with “best practice” recommendations including other tools, concepts, and ways of organizing your work. Absorb them, and you too can be a card-carrying Pythonista:
+    How to find, install, and update Python code
+    IDEs—tools beyond the basic text editor and Terminal
+    Source control using Git
+Find Python Code
+When you need to develop code, the fastest solution is to steal it—from a source that allows it.
+The Python standard library is wide, deep, and mostly clear. Everything in it is free to use. Dive in and look for those pearls.
+Like the halls of fame for various sports, it takes time for a module to get into the standard library. New packages are constantly appearing; throughout this book, I’ve highlighted some that either do something new or do something old better. Python is advertised as batteries included, but you might need a new kind of battery.
+So where, outside the standard library, should you look for good Python code?
+    The first place to look is the Python Package Index (PyPI). Formerly named the Cheese Shop after a Monty Python skit, this site is constantly updated with Python packages—over 600,000 as I write this. When you use pip (see the next section), it searches PyPI. The main PyPI page shows the most recently added packages. You can also conduct a direct search by typing something into the search box in the middle of the PyPI home page. For example, genealogy yields 69 matches, and movies yields 1,814.
+    Another popular repository is GitHub. See all Python packages there (ordered by GitHub stars, which indicate popularity) or those that are currently trending.
+    “Popular Python Recipes” has more than four thousand short Python programs, on every subject.
+Install Packages
+There are many ways to install Python packages:
+    Use pip if you can. It’s the most common method by far. You can install most of the Python packages you’re likely to encounter with pip.
+    Use Pipenv, which combines pip and virtualenv.
+    Or try Poetry, which tries to improve on Pipenv.
+    If you work a lot with scientific Python packages, Conda is worth a look.
+    Hey, one more: uv is an even newer tool that aims to outdo all the others.
+Let’s take a look at all of these.
+Use Pip
+Python packaging has had limitations. An earlier installation tool called easy_install was replaced by pip, written by Ian Bicking.
+Neither had been in the standard Python installation. So, if you’re supposed to install packages by using pip, where do you get pip? Starting with Python 3.4, pip will finally be included with the rest of Python to avoid such existential crises. If you’re using an earlier version of Python 3 and don’t have pip, you can get it via the pip documentation site.
+The simplest use of pip is to install the latest version of a single package by using the following command: pip install flask.
+You will see details on what it’s doing, just so you don’t think it’s goofing off: downloading, running setup.py, installing files on your disk, and other details.
+You can also ask pip to install a specific version: pip install flask==0.9.0.
+Or a minimum version (this is useful when a feature that you can’t live without turns up in a particular version):
+$ pip install "flask>=0.9.0"
+In the preceding example, those double quotes prevent the >= from being interpreted by the shell to redirect output to a file called =0.9.0.
+If you want to install more than one Python package, you can use a requirements file. Although it has many options, the simplest use is a list of packages, one per line, optionally with a specific or relative version:
+Here are two more examples:
+    Install the latest version: pip install --upgrade package
+    Delete a package: pip uninstall package
+Install with a Native Package Manager
+Apple’s macOS includes the third-party packagers Homebrew (brew) and MacPorts (ports). They work a little like pip but aren’t restricted to Python packages.
+Linux has a different manager for each distribution. The most popular are apt-get, yum, dpkg, and zypper.
+Windows has the Windows Installer and package files with a .msi suffix. If you installed Python for Windows, it was probably in the MSI format.
+Install from Source
+Occasionally, a Python package is new, or the author hasn’t managed to make it available with pip. To build the package, you generally do the following:
+    Download the code.
+    Extract the files by using zip, tar, or another appropriate tool if they’re archived or compressed.
+    Run python setup.py install in the directory containing a setup.py file.
+Note
+As always, be careful what you download and install. It’s a little harder to hide malware in pure Python programs, which are readable text instead of binary files, but it has happened.
+Virtual Environments
+In Python development, it’s common to use different versions of the Python interpreter for different projects, and different versions of many modules. How do you control which one you’re using at any particular time?
+Operating systems have the concept of a path for applications. When you type a command, the system looks in a set of directories (folders) until it finds a file that matches that command name. Usually, your current directory comes first, then some standard system directories, but you can change the path. In Unix-like systems, the environment variable $PATH is a colon-separated string of directory names.
+Note
+Environment variables are a set of strings saved by your shell program and provided to every program that it executes. In Linux and macOS, the command env shows all your current environment variables. In Windows, use set.
+You don’t want to install software into those system directories because of the following:
+    You don’t have permission to write to them.
+    Even if you could, overwriting your system’s standard programs (like python) could cause problems.
+Python is more dynamic than many other languages, which makes setting and resetting the path awkward. The standard solution is to manage a virtual environment—a directory that contains the Python interpreter, other programs like pip, and some packages.
+Creating a virtual environment involves these steps:
+    Create a new directory.
+    Install Python and some standard packages into that directory.
+    Activate the new environment: get your shell to use this new directory.
+Virtualenv and Venv
+The standard ways of installing a virtual environment are the third-party package virtualenv or the standard Python module venv. Let’s first make a virtual environment called mordor (a virtual environment of another sort, if there ever was one):
+(The ... stands for the directory I was in when I ran the first command, and that directory will be different for you.)
+The first command created the subdirectory mordor and installed python and some modules.The second command put .../mordor/bin in your $PATH variable to make your shell program look there first for the main python program and modules. The third command checks if this worked.
+Now, when you type python file.py, your shell will look under the new mordor virtual environment for the Python file file.py. Also, any new modules that you install with pip will be placed there too.
+All of this applies only to the shell in the terminal window that you’re using. Other windows run their own shells and are not affected by what you do in this one. They’re safe, and your system directories stay unmodified.
+A similar third-party program, which like pip was created by Ian Bicking, is called virtualenv. First, use pip install virtualenv. The process to create a virtual environment is almost the same as before:
+Pipenv
+In practice, Python developers use pip and virtual environments a lot. Naturally, some people have tried to combine them to save a few keystrokes and brain cells.
+A package called Pipenv combines our friends pip and virtualenv. It also addresses dependency issues that can arise when using pip in different environments (such as your local development machine, versus staging, versus production). Install Pipenv with pip install pipenv.
+Poetry
+Similar to Pipenv, Poetry manages Python packages and their dependencies. It requires Python version 3.9 or higher. Install Poetry with pip install poetry. It depends on a pyproject.toml file. See Poetry’s documentation for the details.
+Conda
+Conda is a system package manager. It can handle other things besides Python and is geared toward scientific software development.
+uv
+The most modern of the popular Python package managers, uv is written in Rust and is gaining popularity quickly. It’s much faster than its competitors and is compared with them in the articles “Poetry versus uv”, “Revisiting uv”, and “Python UV: The Ultimate Guide to the Fastest Python Package Manager.
+Note
+This is not the same as libuv, a “cross-platform library for asynchronous I/O.”
+If you’re willing to try something new, uv might replace all the tools that I just described in the previous sections.
+Integrated Development Environments
+I started programming in the ancient green text console days, and got used to minimal development environments. So far, I’ve assumed that all you’ve needed to try the programs in this book are a text window and editor in your computer’s graphic operating system. But you can do a lot more with many available IDEs:
+    Code editing
+    Autocomplete
+    Documentation
+    Formatting
+    Style checking
+    Filesystem interface
+    Source management
+    Testing
+    Debugging
+Let’s look at some of them—text-based ones first, then those with graphic interfaces. You can read more detailed comparisons from the sites Real Python, simplilearn, and Full Stack Python.
+These are some text-based development tools:
+Notepad++
+    A Windows stalwart.
+vi
+    A standard editor in Unix-like systems for decades.
+Vim
+    Has largely supplanted the original vi.
+Neovim
+    Written to make Vim’s code more sustainable and adaptable. Although it’s a text-based system at its core, Neovim has been adapted to GUI-based IDEs like Visual Studio Code.
+Let’s move up to some souped-up code editors:
+Sublime Text
+    A step up from the pure vi-family editors.
+IDLE
+    Python’s Integrated Development and Learning Environment (and a sly nod to Eric Idle of Monty Python) is the only Python IDE that’s included with the standard distribution.
+Zed
+    A new multilanguage IDE, written in Rust for speed, that connects with AI large language models (LLMs).
+If you watch Python videos on YouTube, the presenters are almost always using a GUI environment, zipping around on the screen to select files and run chunks of code. The most popular graphic IDEs include the following:
+PyCharm
+    A recent graphic IDE with many features. 
+Visual Studio (VS) Code
+    Free and extremely popular. Download the core product and at least the Python extension.
+Cursor
+    A recent AI-based fork (derived version) of VS Code.
+IPython
+IPython started as an enhanced terminal (text) Python IDE but evolved a graphical interface that looks like a notebook. It integrated many packages that are discussed in this book, including Matplotlib and NumPy, and became a popular tool in scientific computing.
+You install the basic text version with (you guessed it) pip install ipython. When you start it, you’ll see something like this:
+Name lookup is a popular feature of IDEs such as IPython. If you press the Tab key right after some characters, IPython shows all variables, keywords, and functions that begin with those characters (as does the standard Python interpreter). 
+There’s much more to IPython. Take a look at its tutorial to get a feel for its features.
+Jupyter Notebook
+Jupyter is an evolution of IPython. The name combines the languages Julia, Python, and R—all of which are popular in data science and scientific computing. Jupyter Notebook is a modern way to develop and publish your code with documentation for any of these languages.
+If you’d like to play with Jupyter Notebook first before installing anything on your computer, you can first try it out in your web browser. To install Jupyter Notebook locally, type pip install jupyter. Run it with jupyter notebook.
+JupyterLab
+JupyterLab is the next generation of Jupyter Notebook and will eventually replace it. As with Notebook, you can first try out JupyterLab in your browser. You install it locally with pip install jupyterlab and then run it with jupyter lab.
+Source Control
+When you’re working on a small group of programs, you can usually keep track of your changes—until you make a harebrained mistake and clobber a few days of work. Source-control systems help protect your code from mistakes. If you work with a group of developers, source control becomes a necessity.
+Many commercial and open source packages are available in this area. The most popular in the open source world where Python lives are Mercurial and Git. Both are examples of distributed version control systems, which produce multiple copies of code repositories. Earlier systems, such as Subversion, run on a single server.
+Mercurial
+Mercurial is written in Python. It’s fairly easy to learn, with a handful of subcommands to download code from a Mercurial repository, add files, check in changes, and merge changes from different sources. Bitbucket and other sites offer free or commercial hosting.
+Git
+Git was originally written by Linus Torvalds for Linux kernel development but now dominates open source in general. Git is similar to Mercurial, although some find it slightly trickier to master. GitHub is the largest Git host, with more than a million repositories.
+This book was authored with an internal O’Reilly product called Atlas, and its original text and images were hosted on a private Git repository.
+The standalone program examples in this book are available in a public Git repository at GitHub. If you have the git program on your computer, you can download these programs by using this command: git clone https://github.com/madscheme/introducing-python.
+You can also download the code from the GitHub page:
+    Click “Clone in Desktop” to open your computer’s version of Git, if installed.
+    Click Download ZIP to get a zipped archive of the programs.
+If you don’t have Git but would like to try it, read the installation guide. I talk about the command-line version here, but you might be interested in sites such as GitHub that have extra services and might be easier to use in some cases; Git has many features but is not always intuitive.
+Let’s take Git for a test drive. We won’t go far, but the ride will show a few commands and their output.
+Make a new directory and change to it:
+Create a local Git repository in your current directory newdir:
+In newdir, create a Python file called test.py, as shown in Example 13-1.
+OK, all current changes have been committed. This means that we can make changes and not worry about losing the original version. Make an adjustment now to test.py—change Oops to Ops! and save the file (Example 13-2).
+Let’s check to see what git thinks now:
++print(Ops!)
+If you try to commit this change now, git complains:
+That staged for commit phrase means you need to add the file, which roughly translated means Hey Git, look over here:
+You could have also typed git add . to add all changed files in the current directory; that’s handy when you have edited multiple files and want to ensure that you check in all their changes. Now we can commit the change:
+If you’d like to see all the terrible things that you’ve done to test.py, most recent first, use git log (I’ve edited the Author lines that follow for privacy reasons):
+Python’s ecosystem is wide and deep, so setting up a development environment is a bit more work than just compiling and running a single source file. Useful components include the following:
+    A virtual environment to manage where your computer looks for Python packages
+    A package and dependency manager to install those Python packages in the right place, and ensure that versions are matched to work together
+    An IDE for text editors, source control, documentation access, testing, and other necessities
+Coming up: type hints are ignored by the Python interpreter, so why would you care about them? They help document your code, can be used to check for errors, and are required by tools like the web framework FastAPI (see “FastAPI”).

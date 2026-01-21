@@ -1,0 +1,18 @@
+Part II. Tools
+
+Part I wandered the vaults of Castle Python, laying out the basics of the Python programming language. 
+In Part II, we’ll explore how to become a real, true, knightly Python developer—a Pythonista. 
+What tools will you use every day, and which ones only in dire need? 
+We’ll avoid those that are positively medieval (like those in the preceding image), 
+and emphasize those that are relatively modern, lightweight, and presenting minimal danger to your extremities. 
+These include the following:
+
+    Setting up your development environment (Chapter 13)
+
+    Type hints and documentation (Chapter 14)
+
+    Testing (Chapter 15)
+
+    Debugging (Chapter 16)
+
+
