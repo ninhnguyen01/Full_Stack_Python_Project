@@ -1,0 +1,15 @@
+Library (Package) Guide:
+https://pypi.org/
+Description: Find, install and publish Python packages with the Python Package Index
+https://github.com/
+Description: Millions of developers and businesses call GitHub home
+
+Install Packages:
+https://pip.pypa.io/en/stable/
+Description: pip is the package installer for Python.
+https://pipenv.pypa.io/en/latest/
+Description: Python virtualenv management tool that combines pip, virtualenv, and Pipfile into a single unified interface. 
+https://python-poetry.org/
+Description: Python packaging and dependency management 
+https://docs.astral.sh/uv/
+Description: An extremely fast Python package and project manager, written in Rust.

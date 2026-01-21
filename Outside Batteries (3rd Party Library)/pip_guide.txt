@@ -1,0 +1,37 @@
+The simplest use of pip is to install the latest version of a single package by using the following command: 
+
+example:
+pip install flask.
+
+template:
+pip install [package name]
+or
+pip3 install [package name]
+
+You can also ask pip to install a specific version: 
+
+example: 
+pip install flask==0.9.0.
+
+template:
+pip install [package name]==[version]
+or
+pip3 install [package name]==[version]
+
+Or a minimum version (this is useful when a feature that you can’t live without turns up in a particular version):
+
+example: 
+pip install "flask>=0.9.0"
+
+template:
+pip install [package name]>=[version]
+or
+pip3 install [package name]>=[version]
+
+Here are two more examples:
+    Install the latest version: pip install --upgrade [package name without brackets]
+    Delete a package: pip uninstall [package name without brackets]
+
+Apple’s macOS includes the third-party packagers Homebrew (brew) and MacPorts (ports). 
+Linux has a different manager for each distribution. The most popular are apt-get, yum, dpkg, and zypper.
+Windows has the Windows Installer and package files with a .msi suffix. If you installed Python for Windows, it was probably in the MSI format.
