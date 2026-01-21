@@ -15,6 +15,15 @@
 <hr>
 
 <img src="asset/lib2025.WEBP" width=700 height=700>
+<h2>Python Tools Replacement (Competition):</h2>
+<p><b>pip -> uv</b></p>
+<p><b>pandas -> polar</b></p>
+<p><b>sqlite -> duckdb</b></p>
+<p><b>requests -> httpx</b></p>
+<p><b>Flask -> Fast Api</b></p>
+<p><b>Sql alchemy -> sql model</b></p>
+<p><b>logging -> loguru</b></p>
+<p><b>jupyter notebooks -> marimo</b></p>
 <img src="asset/octoverse-2025-code-ai-projects.webp" width=1000 height=1000>
 <p>Image source: Internet</p>
 
