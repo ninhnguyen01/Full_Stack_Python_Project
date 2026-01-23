@@ -1,0 +1,98 @@
+Chapter 16. Debugging
+Everyone knows that debugging is twice as hard as writing a program in the first place. So if you’re as clever as you can be when you write it, how will you ever debug it?
+    -Brian Kernighan
+Debugging is like being the detective in a crime movie where you are also the murderer.
+    -Filipe Fortes
+If a kid asks where rain comes from, I think a cute thing to tell him is “God is crying.” And if he asks why God is crying, another cute thing to tell him is “Probably because of something you did.”
+    -Jack Handey
+Test first (Chapter 15). The better your tests are, the less you’ll have to fix later. Yet bugs happen and need to be fixed when they’re found later.
+When code breaks, it’s usually because of something you just did. So you typically debug “from the bottom up,” starting with your most recent changes.
+But sometimes the cause is elsewhere, in something that you trusted and thought worked. You would think that if there were problems in something that many people use, someone would have noticed by now. That is not always what happens. The trickiest bugs that I’ve encountered, that each took more than a week to fix, were caused by external code that I assumed was good. So after blaming the person in the mirror, question your assumptions. This is a “top-down” approach, and it takes longer.
+Especially insidious bugs can appear when you fix code that was hiding another latent bug.
+In Python, unlike languages like C and C++, a whole category of memory safety bugs do not occur, because you’re not manually messing with memory. But you may still experience other language nightmares, like thread safety (see Chapter 23).
+The following are debugging techniques, some quick and others more involved.
+Assert
+Use assert to declare that something must be true and to otherwise raise an exception on the spot. Assertions are often useful early in your coding progress, as you’re feeling your way through and are lacking checks and tests that will come later. Often you use one to check for “impossible” data that would cause an exception, like a division by zero, or a None where a valid value is expected.
+You assert that something is true. If it isn’t, an AssertionError is raised, with some details of what failed:
+You can include a string after the test expression, and it will also be printed if the assertion fails:
+Assertion checking can be disabled by passing the -O option to the Python interpreter.
+Print
+The simplest way to debug in Python is to print out strings. Some useful things to print include vars(), which extracts the values of your local variables, including function arguments:
+Other variables that are often worth printing are returned by locals() and globals().
+If your code also includes normal prints to standard output, you can write your debugging messages to standard error output with print(stuff, file=sys.stderr).
+F-strings
+“Newest Style: f-strings” mentioned that Python 3.6 introduced the wonderful f-string. Any expression that you enclose with curly braces ({}) will be evaluated and interpolated into the string:
+F-strings also have a particularly nice debug print feature. If you put an = sign somewhere before the final } curly brace that ends the f-string expression (you can have spaces there), Python will print the whole expression before the =, then the value that it expresses:
+Pprint()
+All our examples have used print() (or just the variable name, in the interactive interpreter) to print results. Sometimes, they are hard to read. We need a pretty printer such as pprint(), which is in the standard library:
+Plain old print() just dumps whatever you include out there:
+However, pprint() tries to align elements for better readability:
+Install the useful third-party IceCream package with pip install icecream. It has aspects of other tools in this chapter:
+F-strings
+    Print the code expression text as well as the value.
+Logging
+    Print the current module and line.
+Decorators
+    Print the current function name, arguments, and returns.
+Pretty-print
+    Use pprint() to dump readable values.
+I’ll import ic() from icecream. Calling ic() with no arguments prints the filename, function, and line:
+The ic() function evaluates and prints any arguments you pass it, as well as any return value:
+The ic() function also returns its arguments, so you can stick it in the middle of almost any expression.
+Decorators
+As you read in “Decorators”, a decorator can call code before or after a function without modifying the code within the function itself. This means that you can use a decorator to do something before or after any Python function, not just ones that you wrote. Let’s define the decorator dump to print the input arguments and output values of any function as it’s called (designers know that a dump often needs decorating), as shown in Example 16-1.
+Now the decorated function: double() expects numeric arguments, either named or unnamed, and returns them in a list with their values doubled (Example 16-2).
+Logging
+At some point you might need to graduate from using print() statements to logging messages. A log is usually a system file that accumulates messages, often inserting useful information such as a timestamp or the name of the user who’s running the program. Often logs are rotated (renamed) daily and compressed; by doing so, they don’t fill up your disk and cause problems themselves. When something goes wrong with your program, you can look at the appropriate logfile to see what happened. The contents of exceptions are especially useful in logs because they show you the actual line at which your program croaked, and why.
+The standard Python library module is logging. I’ve found most descriptions of it somewhat confusing. After a while it makes more sense, but it does seem overly complicated at first. The logging module includes these concepts:
+    The message that you want to save to the log
+    Ranked priority levels and matching functions: debug(), info(), warn(), error(), and critical()
+    One or more logger objects as the main connection with the module
+    Handlers that direct the message to your terminal, a file, a database, or somewhere else
+    Formatters that create the output
+    Filters that make decisions based on the input
+For the simplest logging example, just import the module and use some of its functions:
+Did you notice that debug() and info() didn’t do anything, and the other two printed LEVEL:root: before each message? So far, it’s like a print() statement with multiple personalities, some of them hostile.
+But it is useful. You can scan for a particular value of LEVEL in a logfile to find certain messages, compare timestamps to see what happened before your server crashed, and so on.
+A lot of digging through the documentation answers the first mystery (we get to the second one in a page or two): the default priority level is WARNING, and that got locked in as soon as we called the first function (logging.debug()). We can set the default level by using basicConfig(). DEBUG is the lowest level, so this enables it and all the higher levels to flow through:
+We did all that with the default logging functions without actually creating a logger object. Each logger has a name. Let’s make one called bunyan:
+If the logger name contains any dot characters, they separate levels of a hierarchy of loggers, each with potentially different properties. This means that a logger named quark is higher than one named quark.charmed. The special root logger is at the top and is called ''.
+So far, we’ve just printed messages, which is not a great improvement over print(). We use handlers to direct the messages to different places. The most common is a logfile, and here’s how you do it:
+Aha! The lines aren’t on the screen anymore; instead, they’re in the file named blue_ox.log:
+Calling basicConfig() with a filename argument created a FileHandler for you and made it available to your logger. The logging module includes at least 15 handlers to send messages to places such as email and web servers as well as the screen and files.
+Finally, you can control the format of your logged messages. In our first example, our default gave us something similar to this:
+If you provide a format string to basicConfig(), you can change to the format of your preference:
+We let the logger send output to the screen again but change the format.
+The logging module recognizes a number of variable names in the fmt format string. We use asctime (date and time as an ISO 8601 string), levelname, lineno (line number), and the message itself. There are other built-ins, and you can provide your own variables as well.
+There’s much more to logging than this little overview can provide. You can log to more than one place at the same time, with different priorities and formats. The package has a lot of flexibility but sometimes at the cost of simplicity.
+Pdb
+All the techniques mentioned so far help, but sometimes there’s no substitute for a real debugger. Most IDEs include a debugger, with varying features and user interfaces. Here, I describe uses of the standard Python debugger, pdb.
+Note
+If you run your program with the -i flag, Python will drop you into its interactive interpreter if the program fails.
+Here’s a program with a bug that depends on data—the kind of bug that can be particularly hard to find. This is a real bug from the early days of computing, and it baffled programmers for quite a while.
+We’re going to read a file of countries and their capital cities, separated by a comma, and write them out as capital, country. They might be capitalized incorrectly, so we should fix that also when we print. Oh, and there might be extra spaces here and there, and you’ll want to get rid of those too. Finally, although it would make sense for the program to just read to the end of the file, for some reason our manager told us to stop when we encounter the word quit (in any mixture of uppercase and lowercase characters). Example 16-3 shows a sample data file.
+Let’s design our algorithm (method for solving the problem). This is pseudocode: it looks like a program, but is just a way to explain the logic in normal language before converting it to an actual program. One reason programmers like Python is because it looks a lot like pseudocode, so there’s less work involved when it’s time to convert it to a working program:
+for each line in the text file:
+    read the line
+    strip leading and trailing spaces
+    if `quit` occurs in the lower-case copy of the line:
+        stop
+    else:
+        split the country and capital by the comma character
+        trim any leading and trailing spaces
+        convert the country and capital to titlecase
+        print the capital, a comma, and the country
+We need to strip initial and trailing spaces from the names because that was a requirement. Likewise for the lowercase comparison with quit and converting the city and country names to title case. That being the case, let’s whip out capitals.py, which is sure to work perfectly (Example 16-4).
+To use the debugger, import the pdb module from the command line by typing -m pdb, like so:
+This starts the program and places you at the first line. If you type c (continue), the program will run until it ends, either normally or with an error:
+The program completes normally, just as it did when we ran it earlier outside of the debugger. Let’s try again, using commands to narrow down where the problem lies. It seems to be a logic error rather than a syntax problem or exception (which would have printed error messages).
+Type s (step) to single-step through Python lines. This steps through all Python code lines: yours, the standard library’s, and any other modules you might be using. When you use s, you also go into functions and single-step within them. Type n (next) to single-step but not go inside functions; when you get to a function, a single n causes the entire function to execute and take you to the next line of your program. Thus, use s when you’re not sure where the problem is; use n when you’re sure that a particular function isn’t the cause, especially if it’s a long function. Often you’ll single-step through your own code and step over library code, which is presumably well tested.
+Remember: more tests, less debugging.
+Breakpoint()
+Python 3.7 has a new built-in function called breakpoint(). If you add it to your code, a debugger will automatically start up and pause at each location. Without this, you would need to fire up a debugger like pdb and set breakpoints manually, as you saw earlier.
+The default debugger is the one you’ve just seen (pdb), but this can be changed by setting the environment variable PYTHONBREAKPOINT. For example, you could specify use of the web-based remote debugger Web-PDB:
+export PYTHONBREAKPOINT=web_pdb.set_trace
+The official documentation is a bit dry, but there are good overviews in “Python 3.7’s Built-in Breakpoint—A Quick Tour” by Anthony Shaw and “Python breakpoint()” by Pankaj Kumar.
+Review/Preview
+You (or someone you trusted) broke it, you fix it. Debugging can be frustrating, but it can also be rewarding to diagnose and fix a problem.
+The next chapter introduces Part III: real-life projects you can build with the tools you learned in Part II.
