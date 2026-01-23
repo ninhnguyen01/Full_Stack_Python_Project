@@ -1,0 +1,85 @@
+Chapter 15. Testing
+    Program testing can be used to show the presence of bugs, but never to show their absence!
+    -Edsger Dijkstra
+You probably already know this: even trivial code changes can break your program. Python lacks the type-checking of static languages, which makes some things easier but also lets undesirable results through the door. Testing is essential.
+The simplest way to test Python programs is to add print() statements. The Python interactive interpreter’s Read-Evaluate-Print Loop (REPL) lets you edit and test changes quickly. However, you don’t want print() statements in production code, so you need to remember to remove them all.
+Pylint
+The next step, before creating test programs, is to run a Python code checker. Traditionally, the most popular have been Pylint. You can install by using pip:
+pip install pylint
+These check for code errors (such as referring to a variable before assigning it a value) and style faux pas (the code equivalent of wearing plaids and stripes). Example 15-1 is a fairly meaningless program with a bug and style issue.
+Much further down, under Global evaluation, is our score (10.0 is perfect):
+Your code has been rated at -3.33/10
+Ouch. Let’s fix the bug first. That Pylint output line starting with an E indicates an Error, which occurred because we didn’t assign a value to c before we printed it. Take a look at Example 15-2 to see how we can fix that.
+Example 15-2. style2.py
+Good, no more E lines. And our score jumps from –3.33 to 4.29:
+Your code has been rated at 4.29/10
+Pylint wants a docstring (a short text at the top of a module or function, describing the code), and it thinks short variable names such as a, b, and c are tacky. Let’s make Pylint happier and improve style2.py to style3.py (Example 15-3).
+Your code has been rated at 10.00/10
+Ruff
+There’s a new kid in town. Actually, it’s a family: tools written in Rust that combine features of existing Python tools and are much faster. Ruff is one of these: a linter and code formatter. Get it with arcane hand gestures and incantations, or just pip install ruff.
+Unittest
+We’ve verified that we’re no longer insulting the style senses of the code gods, so let’s move on to actual tests of the logic in your program.
+It’s a good practice to write independent test programs first, to ensure that they all pass before you commit your code to any source-control system. Writing tests can seem tedious at first, but they really do help you find problems faster—especially regressions (breaking something that used to work). Painful experience teaches all developers that even the teeniest change, which they swear could not possibly affect anything else, actually does. If you look at well-written Python packages, they always include a test suite.
+The standard library contains not one, but two, test packages. Let’s start with unittest. We’ll write a module that capitalizes words. Our first version uses the standard string function capitalize() with some unexpected results, as we’ll see. Save this as cap.py (Example 15-4).
+The basis of testing is to decide the outcome you want from a certain input (here, you want the capitalized version of whatever text you input), submit the input to the function you’re testing, and then check whether it returned the expected results. The expected result is called an assertion, so in unittest you check your results by using methods with names that begin with assert, like the assertEqual() method shown in Example 15-5.
+Save this test script as test_cap.py.
+The setUp() method is called before each test method, and the tearDown() method is called after each. Their purpose is to allocate and free external resources needed by the tests, such as a database connection or some test data. In this case, our tests are self-contained, and we wouldn’t even need to define setUp() and tearDown(), but it doesn’t hurt to have empty versions there. At the heart of our test are the two functions named test_one_word() and test_multiple_words(). Each runs the just_do_it() function we defined with different inputs and checks whether we got back what we expected. OK, let’s run test_cap.py. This will call our two test methods:
+The first test (test_one_word) succeeded, but the second (test_multiple_words) failed. The up arrows (^) show where the strings differed.
+What’s special about multiple words? Reading the documentation for the string ​cap⁠italize() function yields an important clue: it capitalizes only the first letter of the first word. Maybe we should have read that first.
+Consequently, we need another function. Gazing down that page a bit, we find title(). So, let’s change cap.py to use title() instead of capitalize() (Example 15-6).
+Rerun the tests, and let’s see what happens:
+Our function capitalizes the m in I'm. A quick run back to the documentation for title() shows that it doesn’t handle apostrophes well. We really should have read the entire text first.
+At the bottom of the standard library’s string documentation is another candidate: a helper function called capwords(). Let’s use it in cap.py (Example 15-8).
+At last, we’re finally done! Uh, no. We have one more test to add to test_cap.py (Example 15-9).
+FAILED (failures=1)
+It looks like that first double quote confuses even capwords(), our favorite capitalizer thus far. It tries to capitalize the ", and lowercases the rest (You're). We should have also tested that our capitalizer left the rest of the string untouched.
+People who do testing for a living have a knack for spotting these edge cases, but developers often have blind spots when it comes to their own code.
+The unittest package provides a small but powerful set of assertions, letting you check values, confirm whether you have the class you want, determine whether an error was raised, and so on.
+Doctest
+The second test package in the standard library is doctest. With this package, you can write tests within the docstring itself, also serving as documentation. It looks like the interactive interpreter: the characters >>>, followed by the call, and then the results on the following line. You can run some tests in the interactive interpreter and just paste the results into your test file. Let’s modify our old cap.py as cap2.py (without that troublesome last test with quotes), as shown in Example 15-10.
+One of the most popular Python test tools, if not the most popular, is pytest. Install it with pip install pytest. Its features include the following:
+Test discovery
+    You can tell pytest which test files to run. If you don’t provide any filenames, any function and Python filename with the phrase test in its prefix or suffix, in or below the current directory, will be run automatically.
+Test failure details
+    Any failing assert statements in the tests print what was expected and what happened, instead of just printing exceptions.
+Fixtures
+    These are functions that provide parameters like test data, or initialize details like database connections. Each fixture has a scope that sets how often it’s run, such as for every test or just once per test file.
+Parameterization
+    These provide multiple pieces of data to a test function.
+Examples
+You write one or more Python scripts with test in the prefix or suffix, and pytest runs them all if you don’t specify which files to run. Each script should contain test functions with assert statements that should be true.
+Let’s redo the capitalization example from “Unittest”. We no longer need setUp() and tearDown() functions.
+We’ll keep our original cap.py code from Example 15-8 for Example 15-11.
+The test functions are a lot shorter and don’t involve any classes (Example 15-12).
+Those three dots at the top indicate that the first three tests succeeded, but the fourth test got a red F. As in our earlier tests, the use of capwords() in cap.py works for only three of our four tests.
+If you run pytest with -v, you’ll get a more verbose, line-by-line output.
+Fixtures
+Fixtures are pytest’s equivalent of the setUp() and tearDown() helper functions. They provide inputs to the test functions.
+Write the fixture function, preceded by the decorator pytest.fixture. Use that function name as an argument to your test functions. Pytest will call the function and return its return value as that argument. Example 15-13 shows how to define and call two fixtures.
+Let’s run this with pytest (the -s makes pytest print to the terminal, because it normally eats the output of any print() statements; the -v is a bit more verbose than the default output):
+The first test function that calls a fixture gets its value. If the scope is longer than function, that value is cached and reused for the rest of the scope.
+Parametrization
+With four test functions but only one test string each, our tests are only a little better than nothing. We can use pytest’s parametrization to feed a sequence of arguments to the test functions.
+The arguments to the decorator pytest.mark.parametrize are as follows:
+    A string with the comma-separated names of the arguments
+    A list containing a tuple of each group of arguments
+The test function has argument names that match that first string in the decorator. In Example 15-15, we have a test that’s simpler than a bread sandwich: add two numbers and see whether they match the provided sum.
+An alternative would be to include the list of tuples in test_addem() itself and then iterate it to pass each tuple to addem().
+Nox is a standalone program for testing Python projects with multiple Python environments. It’s an evolution of tox.
+To configure Nox, you edit a Python file named noxfile.py. Each function in it can be preceded by the decorator @nox.session. Then, whenever you run the Nox program, it looks for these functions in noxfile.py and runs them.
+Why would you look at Nox? It’s a way to manage broader testing of Python projects, including different Python interpreter versions and tool combinations.
+Continuous Integration
+When your group is cranking out a lot of code daily, it helps to automate tests as soon as changes arrive. You can automate source-control systems to run tests on all code as it’s checked in. This way, everyone knows whether someone broke the build and just disappeared for an early lunch—or a new job.
+These are big systems, and I’m not going into installation and usage details here. In case you need them someday, you’ll know where to find them:
+Buildbot
+    Written in Python, this source-control system automates building, testing, and releasing.
+Jenkins
+    This is written in Java and seems to be the preferred continuous integration (CI) tool of the moment.
+Travis CI
+    This automates projects hosted at GitHub and is free for open source projects.
+CircleCI
+    This one is commercial but free for open source and private projects.
+GitHub Actions
+    I haven’t used this in production, but it’s been recommended.
+Review/Preview
+This was a light overview of Python testing. More targeted tests are in specific areas such as Chapter 24.

@@ -1,0 +1,22 @@
+import cap
+
+def test_one_word():
+    text = 'duck'
+    result = cap.just_do_it(text)
+    assert result ==  'Duck'
+
+def test_multiple_words():
+    text = 'a veritable flock of ducks'
+    result = cap.just_do_it(text)
+    assert result == 'A Veritable Flock Of Ducks'
+
+def test_words_with_apostrophes():
+    text = "I'm fresh out of ideas"
+    result = cap.just_do_it(text)
+    assert result == "I'm Fresh Out Of Ideas"
+
+def test_words_with_quotes():
+    text = "'You\'re despicable!' said Daffy Duck"
+    result = cap.just_do_it(text)
+    assert result == "'You\'re Despicable!' Said Daffy Duck"
+    
