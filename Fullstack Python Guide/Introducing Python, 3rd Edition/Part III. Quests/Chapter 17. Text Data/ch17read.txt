@@ -1,0 +1,186 @@
+Chapter 17. Text Data
+I live for the text. It’s my job.
+    -Ian McKellen
+You saw the basics of Python strings in Chapter 4. Now it’s time to dig deeper into strings and text data.
+Text Strings: Unicode
+Python 3 strings are Unicode character sequences, not bytearrays. This is, by far, the single largest language change from Python 2.
+All the text examples in this book thus far have been plain old ASCII. ASCII was defined in the 1960s, before mullets roamed the earth. Computers then were the size of refrigerators, and only slightly smarter.
+As I mentioned way back in Chapter 2, the basic unit of computer storage is the byte, which can store 256 unique values in its eight bits. For various reasons, ASCII used only seven bits (128 unique values): 26 uppercase letters, 26 lowercase letters, 10 digits, some punctuation symbols, some spacing characters, and some nonprinting control codes.
+Unfortunately, the world has more letters than ASCII provides. You could have a hot dog at a diner, but never a Gewürztraminer at a café. Many attempts have been made to cram more letters and symbols into eight bits, and you’ll see them at times.
+Here are just a couple of those:
+    Latin-1, or ISO 8859-1
+    Windows code page 1252
+Each of these uses all eight bits, but even that’s not enough, especially when you need non-European languages. Unicode is an ongoing international standard to define the characters of all the world’s languages, plus symbols from mathematics and other fields. And emojis!
+    Unicode provides a unique number for every character, no matter what the platform, no matter what the program, no matter what the language.
+    -The Unicode Consortium
+The Unicode Code Charts page has links to all the currently defined character sets with images. The latest version (16.0) defines more than 155,000 characters, each with a unique name and identification number. Python handles all of these. Character places are divided into 17 planes, each containing 65,536 code points. The first plane, the Basic Multilingual Plane, has most of the characters of the world’s languages. See the Wikipedia pages about Unicode planes and characters for details.
+Python Unicode Strings
+If you know the Unicode ID or name for a character, you can use it in a Python string. Here are some examples:
+    A \u followed by four hex numbers specifies a character in one of Unicode’s 256 basic multilingual planes.The first two are the plane number (00 to FF), and the next two are the index of the character within the plane. Plane 00 is good old ASCII, and the character positions within that plane are the same as ASCII.
+    For characters in the higher planes, we need more bits. The Python escape sequence for these is \U followed by eight hex characters; the leftmost ones need to be 0.
+    For all characters, \N{name} lets you specify it by its standard name. The Unicode Character Name Index page lists these.
+The Python unicodedata module has functions that translate in both directions:
+lookup()
+    Takes a case-insensitive name and returns a Unicode character
+name()
+    Takes a Unicode character and returns an uppercase name
+In the following example, we’ll write a test function that takes a Python Unicode character, looks up its name, and looks up the character again from the name. This character should match the original. Note that the print() statement uses a cool debugging property of f-strings; see “F-strings”:
+Let’s try some characters, beginning with a plain ASCII letter:
+ASCII punctuation:
+A Unicode currency character:
+Another Unicode currency character:
+The only problem you could potentially run into is limitations in the font you’re using to display text. Few fonts have images for all Unicode characters, and might display a placeholder character for missing ones. For instance, here’s the Unicode symbol for SNOWMAN, like symbols in dingbat fonts:
+Suppose that we want to save the word café in a Python string. One way is to copy and paste it from a file or website and hope that it works:
+This works because I copied and pasted from a source that used UTF-8 encoding (which we’ll look at in a few pages) for its text.
+How can we specify that final é character? If you look at the character index for E, you see that the name E WITH ACUTE, LATIN SMALL LETTER has the hex value 00E9.
+Next, use that name from the Unicode site to look up the code:
+What happened?
+The names listed on the Unicode Character Name Index page were reformatted to make them sort nicely for display. To convert them to their real Unicode names (the ones that Python uses), remove the comma and move the part of the name that was after the comma to the beginning. Accordingly, change E WITH ACUTE, LATIN SMALL LETTER to LATIN SMALL LETTER E WITH ACUTE:
+The string name that you provide to lookup() (or inside the \N{...} in a string) is case-independent, so latin small letter e with acute would work too.
+To get the hex Unicode value from a name:
+If you know the hex Unicode value, use Python’s Unicode name() function to go the other way:
+Now we can specify the string café by code or by name:
+In the preceding snippet, we inserted the é directly in the string, but we can also build a string by appending:
+The string len() function counts Unicode code points, not bytes:
+If you know the Unicode numeric ID, you can use the standard chr() function to quickly convert between integer IDs and single-character Unicode strings:
+UTF-8
+You don’t need to worry about how Python stores each Unicode character when you do normal string processing. However, when you exchange data with the outside world, you need a couple of things:
+    A way to encode character strings to bytes
+    A way to decode bytes to character strings
+If there were fewer than 65,536 characters in Unicode, we could stuff each Unicode character ID into two bytes. Unfortunately, there are more. We could encode every ID into four bytes, but that would increase the memory and disk storage space needs for common text strings by four times.
+Ken Thompson and Rob Pike, whose names will be familiar to Unix developers, designed the UTF-8 dynamic encoding scheme one night on a placemat in a New Jersey diner. It uses one to four bytes per Unicode character:
+    One byte for ASCII
+    Two bytes for most Latin-derived (but not Cyrillic) languages
+    Three bytes for the rest of the basic multilingual plane
+    Four bytes for the rest, including some Asian languages and symbols
+UTF-8 is the standard text encoding in Python, Linux, and HTML. It’s fast, complete, and works well. If you use UTF-8 encoding throughout your code, life will be much easier than trying to hop in and out of various encodings.
+Note
+If you create a Python string by copying and pasting from another source such as a web page, be sure the source is encoded in the UTF-8 format. Sometimes text that was encoded as Latin-1 or Windows 1252 is copied into a Python string, which causes an exception later with an invalid byte sequence.
+Encode
+You encode a string to bytes. The string encode() function’s first argument is the encoding name. The choices include those presented in Table 17-1.
+Python Unicode literal format, \u__xxxx__ or \U__xxxxxxxx__
+You can encode anything as UTF-8. Let’s assign the Unicode string \u2603 to the name snowman:
+snowman is a Python Unicode string with a single character, regardless of the number of bytes that might be needed to store it internally:
+Next, let’s encode this Unicode character to a sequence of bytes:
+As I mentioned earlier, UTF-8 is a variable-length encoding. In this case, it uses three bytes to encode the single snowman Unicode character:
+Now, len() returns the number of bytes (3) because ds is a bytes variable.
+You can use encodings other than UTF-8, but you’ll get errors if the Unicode string can’t be handled by the encoding. For example, if you use the ascii encoding, it will fail unless your Unicode characters happen to be valid ASCII characters as well:
+The encode() function takes a second argument to help you avoid encoding exceptions. Its default value, which you can see in the previous example, is strict; it raises a UnicodeEncodeError if it sees a non-ASCII character. There are other encodings. Use ignore to throw away anything that won’t encode:
+Use replace to substitute ? for unknown characters:
+Use backslashreplace to produce a Python Unicode character string, like unicode-escape:
+You would use this if you needed a printable version of the Unicode escape sequence.
+Use xmlcharrefreplace to make HTML-safe strings:
+I’ll provide more details on HTML conversion in “HTML Entities”.
+Decode
+We decode byte strings to Unicode text strings. Whenever we get text from an external source (files, databases, websites, network APIs, and so on), it’s encoded as byte strings. The tricky part is knowing which encoding was used, so we can run it backward and get Unicode strings.
+The problem is that nothing in the byte string itself says which encoding was used. I mentioned the perils of copying and pasting from websites earlier. You’ve probably visited websites with odd characters where plain old ASCII characters should be.
+Let’s create a Unicode string called place with the value café:
+Encode it in UTF-8 format in a bytes variable called place_bytes:
+Notice that place_bytes has five bytes. The first three are the same as ASCII (a strength of UTF-8), and the final two encode the é. Now let’s decode that byte string back to a Unicode string:
+This works because we encoded to UTF-8 and decoded from UTF-8. What if we told it to decode from another encoding?
+The ASCII decoder throws an exception because the byte value 0xc3 is illegal in ASCII. There are some 8-bit character set encodings in which values between 128 (hex 80) and 255 (hex FF) are legal but not the same as UTF-8:
+The moral of this story: whenever possible, use UTF-8 encoding. It works, is supported everywhere, can express every Unicode character, and is quickly decoded and encoded.
+Note
+Even though you can specify any Unicode character, that doesn’t mean that your computer will display all of them. That depends on the font that you’re using, which may display nothing or a fill-in image for many characters. Apple created the Last Resort Font for the Unicode Consortium, and uses it in its own operating systems. The “Fallback Font” page on Wikipedia has a few more details. Another font with everything between \u0000 and \uffff, and a few more, is Unifont.
+HTML Entities
+Python 3.4 added another way to convert to and from Unicode but using HTML character entities. This may be easier to use than looking up Unicode names, especially if you’re working on the web:
+import html
+html.unescape("&egrave;")
+'è'
+This conversion also works with numbered entities, decimal or hex:
+You can even import the named entity translations as a dictionary and do the conversion yourself. Drop the initial & for the dictionary key (you can also drop the final ;, but it seems to work either way):
+To go the other direction (from a single Python Unicode character to an HTML entity name), first get the decimal value of the character with ord():
+For Unicode strings with more than one character, use this two-step conversion:
+The expression place.encode('ascii', 'xmlcharrefreplace') returns ASCII characters but as type bytes (because it encoded). The following byte_value.decode() is needed to convert byte_value to an HTML-compatible string.
+Normalization
+Some Unicode characters can be represented by more than one Unicode encoding. They’ll look the same but won’t compare the same because they have different internal byte sequences. For example, take the acute accented é in café. Let’s make a single-character é in multiple ways:
+We built a Unicode character from two characters, and it looks the same as the original é. But as they say on Sesame Street, one of these things is not like the other:
+eacute1 == eacute_combined1
+False
+If you had two Unicode text strings from different sources, one using eacute1 and another eacute_combined1, they would appear the same but would mysteriously not act the same.
+You can fix this with the normalize() function in the unicodedata module:
+If you would like to learn more about Unicode, these links are particularly helpful:
+    Unicode HOWTO
+    “Pragmatic Unicode” by Ned Batchelder
+    “The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets (No Excuses!)” by Joel Spolsky
+Text Strings: Regular Expressions
+Chapter 4 discussed simple string operations. Armed with that introductory information, you’ve probably used simple “wildcard” patterns on the command line, such as the Unix command ls *.py, which means list all filenames ending in .py.
+It’s time to explore more complex pattern matching by using regular expressions. These are provided in the standard module re, which we’ll import. You define a string pattern that you want to match, and the source string to match against. For simple matches, usage looks like this:
+Here, You is the pattern we’re looking for, and Young Frankenstein is the source (the string we want to search). The match() function checks whether the source begins with the pattern.
+For more complex matches, you can compile your pattern first to speed up the match later:
+Then you can perform your match against the compiled pattern:
+Note
+Because this is a common Python gotcha, I’ll say it again here: match() matches only a pattern starting at the beginning of the source. The search() function matches a pattern anywhere in the source.
+The match() function is not the only way to compare the pattern and source. Here are several other methods you can use, and I’ll discuss each in the following sections:
+    search() returns the first match, if any.
+    findall() returns a list of all nonoverlapping matches, if any.
+    split() splits the source at matches with pattern and returns a list of the string pieces.
+    sub() takes another replacement argument, and changes all parts of the source that are matched by pattern to replacement.
+Note
+Most of the regular expression examples here use ASCII, but Python’s string functions, including regular expressions, work with any Python string and any Unicode characters.
+Find Exact Beginning Match with match()
+Does the string Young Frankenstein begin with the word You? Here’s some code with comments:
+How about Frank?
+This time, match() returned nothing, so the if did not run the print statement.
+As I mentioned in “New: I Am the Walrus”, as of Python 3.8, you can shorten this example with the walrus operator:
+Here’s a brief explanation of how our new .*Frank pattern works:
+    . means any single character.
+    * means zero or more of the preceding thing. Together, .* means any number of characters (even zero).
+    Frank is the phrase that we wanted to match, somewhere.
+match() returns the string that matches .*Frank, which is Young Frank.
+Find First Match with search()
+You can use search() to find the pattern Frank anywhere in the source string Young Frankenstein, without the need for the .* wildcards:
+Find All Matches with findall()
+The preceding examples looked for one match only. But what if you want to know how many instances of the single-letter string n are in the string?
+How about n followed by any character?
+Notice that it did not match that final n. We need to say that the character after n is optional, with ?:
+Split at Matches with split()
+The next example shows you how to split a string into a list by a pattern rather than a simple string (as the normal string split() method would do):
+Replace at Matches with sub()
+This is like the string replace() method, but for patterns rather than literal strings:
+Patterns
+Regular expressions are a little language of their own, comprised of many awkward-looking character patterns. Let’s look at the most useful ones.
+Using Special Characters
+Many descriptions of regular expressions start with all the details of how to define them. I think that’s a mistake. Regular expressions are a not-so-little language in their own right, with too many details to fit in your head at once. They use so much punctuation that they look like cartoon characters swearing.
+With these expressions (match(), search(), findall(), and sub()) under your belt, let’s get into the details of building them. The patterns you make apply to any of these functions.
+You’ve seen the basics:
+    Literal matches with any nonspecial characters
+    Any single character except \n with .
+    Any number of the preceding character (including zero) with *
+    Optional (zero or one) of the preceding character with ?
+The Python string module has predefined string constants that we can use for testing. Let’s use printable, which contains 100 printable ASCII characters, including letters in both cases, digits, space characters, and punctuation:
+In order, those are: plain old space, tab, newline, carriage return, vertical tab, and form feed.
+Regular expressions are not confined to ASCII. A \d will match whatever Unicode calls a digit, not just ASCII characters 0 through 9. Let’s add two non-ASCII lowercase letters from FileFormat.info:
+In this test, we’ll throw in the following:
+    Three ASCII letters
+    Three punctuation symbols that should not match a \w
+    A Unicode LATIN SMALL LETTER E WITH CIRCUMFLEX (\u00ea)
+    A Unicode LATIN SMALL LETTER E WITH BREVE (\u0115)
+As expected, this pattern finds only the letters:
+Using Specifiers
+Now let’s make “punctuation pizza,” using the main pattern specifiers for regular expressions, which are presented in Table 17-3. In the table, expr and the other italicized words mean any valid regular expression.
+next if not preceded by prev
+Your eyes might cross permanently when trying to read these examples. First, let’s define our source string:
+Now we apply different regular expression pattern strings to try to match something in the source string.
+Note
+In the following examples, I use plain quoted strings for the patterns. A little later in this section, I show how a raw pattern string (r before the initial quote) helps avoid some conflicts between Python’s normal string escapes and regular expression ones. So, to be safest, the first argument in all the following examples should actually be a raw string.
+First, find wish anywhere:
+Next, find wish or fish anywhere:
+Find wish at the beginning:
+Find I wish at the beginning:
+Find fish at the end:
+Finally, find fish tonight. at the end:
+The characters ^ and $ are called anchors: ^ anchors the search to the beginning of the search string, and $ anchors it to the end. The .$ characters match any character at the end of the line, including a period, so that works. To be more precise, we should escape the dot to match it literally:
+Begin by finding w or f followed by ish:
+Find one or more runs of w, s, or h:
+Find ght followed by a non-alphanumeric:
+Find I followed by wish:
+And last, wish preceded by I:
+I mentioned earlier that in a few cases, the regular expression pattern rules conflict with the Python string rules. The following pattern should match any word that begins with fish:
+Why doesn’t it? As is discussed in Chapter 4, Python employs a few special escape characters for strings. For example, \b means backspace in strings, but in the mini-language of regular expressions it means the beginning of a word. Avoid the accidental use of escape characters by using Python’s raw strings when you define your regular expression string. Always put an r character before your regular expression pattern string, and Python escape characters will be disabled, as demonstrated here:
+Specifying match() Output
+When using match() or search(), all matches are returned from the result object m as m.group(). If you enclose a pattern in parentheses, the match will be saved to its own group, and a tuple of them will be available as m.groups(), as shown here:
+Using the pattern ?P< name > expr will match expr, saving the match in group name:
+Review/Preview
+This chapter covered some of the more advanced Python text topics: Unicode characters and regular expression pattern matching.
+How can we top this? Binary data, the language that computers mutter to themselves when they think no one is looking.
