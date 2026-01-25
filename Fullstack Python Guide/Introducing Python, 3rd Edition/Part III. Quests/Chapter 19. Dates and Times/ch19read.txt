@@ -1,0 +1,81 @@
+Chapter 19. Dates and Times
+“One!” strikes the clock in the belfry tower,
+Which but sixty minutes ago
+Sounded twelve for the midnight hour.
+    -Frederick B. Needham, “The Round of the Clock”
+I’ve been on a calendar, but I have never been on time.
+    -Marilyn Monroe
+Programmers devote a surprising amount of effort to dates and times. Let’s talk about some of the problems they encounter and then explore some best practices and tricks to make the situation a little less messy.
+Dates can be represented in many ways—too many ways, actually. Even in English with the Roman calendar, you’ll see many variants of a simple date:
+    July 21, 1987
+    21 Jul 1987
+    21/7/1987
+    7/21/1987
+Among other problems, date representations can be ambiguous. In the previous examples, it’s easy to determine that 7 stands for the month and 21 is the day of the month, because months don’t go to 21. But how about 1/6/2012? Is that referring to January 6 or June 1? The United States uses month/day/year, but Europe assumes day/month/year. Canada commonly uses month/day/year in English, but day/month/year in French. Sacré bleu!
+The month name varies by language within the Roman calendar. Even the year and month can have a different definition in other cultures.
+Times have their own sources of grief, especially because of time zones and daylight saving time. If you look at a time-zone map, the zones follow political and historic boundaries rather than crisp lines every 15 degrees (360 degrees/24) of longitude. And countries start and end daylight saving times on different days of the year. Southern hemisphere countries advance their clocks as their northern friends are winding theirs back, and vice versa.
+Python’s standard library has many date and time modules, including: datetime, time, calendar, and others. There’s some overlap, and it’s a bit confusing.
+Leap Year
+Leap years are a special wrinkle in time. You probably know that every four years is a leap year (and the summer Olympics and the American presidential election). Did you also know that every 100 years is not a leap year, but that every 400 years is? Here’s code to test various years for leapiness:
+For the curious:
+    A year has 365.242196 days (after one spin around the sun, the earth is about a quarter-turn on its axis from where it started).
+    Add one day every four years. Now an average year has 365.242196 – 0.25 = 364.992196 days
+    Subtract a day every 100 years. Now an average year has 364.992196 + 0.01 = 365.002196 days
+    Add a day every 400 years. Now an average year has 365.002196 – 0.0025 = 364.999696 days
+Close enough for now! We will not speak of leap seconds.
+The datetime Module
+The standard datetime module handles (which should not be a surprise) dates and times. It defines four main object classes, each with many methods:
+    date for years, months, and days
+    time for hours, minutes, seconds, and fractions
+    datetime for dates and times together
+    timedelta for date and/or time intervals
+You can make a date object by specifying a year, month, and day. Those values are then available as attributes:
+You can print a date with its isoformat() method:
+The iso refers to ISO 8601, an international standard for representing dates and times. It goes from most general (year) to most specific (day). Because of this, it also sorts correctly: by year, then month, then day. I usually choose this format for date representation in programs, and for filenames that save data by date. The next section describes the more complex strptime() and strftime() methods for parsing and formatting dates.
+This example uses the today() method to generate today’s date:
+This one makes use of a timedelta object to add a time interval to a date:
+The range of date is from date.min (year=1, month=1, day=1) to date.max (year=9999, month=12, day=31). As a result, you can’t use it for historic or astronomical calculations.
+The datetime module’s time object is used to represent a time of day:
+The arguments go from the largest time unit (hours) to the smallest (microseconds). If you don’t provide all the arguments, time assumes all the rest are zero. By the way, just because you can store and retrieve microseconds doesn’t mean you can retrieve time from your computer to the exact microsecond. The accuracy of subsecond measurements depends on many factors in the hardware and operating system.
+The datetime object includes both the date and time of day. You can create one directly, such as the one that follows, which is for January 2, 2025, at 3:04 a.m., plus 5 seconds and 6 microseconds:
+The datetime object also has an isoformat() method:
+That middle T separates the date and time parts.
+The datetime object has a now() method to return the current date and time:
+You can combine() a date object and a time object into a datetime:
+You can yank the date and time from a datetime by using the date() and time() methods:
+The time Module
+It is confusing that Python has a datetime module with a time object, and a separate time module. Furthermore, the time module has a function called—wait for it—time().
+One way to represent an absolute time is to count the number of seconds since a certain starting point. Unix time uses the number of seconds since midnight on January 1, 1970.1 This value is often called the epoch, and it is often the simplest way to exchange dates and times among systems.
+The time module’s time() function returns the current time as an epoch value:
+Way more than one billion seconds have ticked by since New Year’s, 1970. Where did the time go?
+You can convert an epoch value to a string by using ctime():
+In the next section, you’ll see how to produce more attractive formats for dates and times.
+Epoch values are a useful least-common denominator for date and time exchange with different systems, such as JavaScript. Sometimes, though, you need actual days, hours, and so forth, which time provides as struct_time objects. The localtime() function provides the time in your system’s time zone, and gmtime() provides it in UTC:
+My 06:43 (Central time zone, Daylight Saving) was 12:43 in UTC (formerly called Greenwich time or Zulu time). If you omit the argument to localtime() or gmtime(), they assume the current time.
+If you don’t want to type all those tm_... names, struct_time also acts like a named tuple (see “Named Tuples”), so you can use the indices from the previous table:
+The mktime() function goes in the other direction, converting a struct_time object to epoch seconds:
+This doesn’t exactly match our earlier epoch value of now() because the struct_time object preserves time only to the second.
+Note
+Wherever possible, use UTC instead of time zones. UTC is an absolute time, independent of time zones. If you have a server, set its time to UTC; do not use local time.
+In addition, never use daylight saving time if you can avoid it. If you use daylight saving time, an hour disappears at one time of year (“spring ahead”) and occurs twice at another time (“fall back”). For some reason, many organizations use local time with daylight saving in their computer systems but are mystified twice every year by that spooky hour.
+Read and Write Dates and Times
+The isoformat() function is not the only way to write dates and times. You already saw the ctime() function in the time module, which you can use to convert epochs to strings:
+You can also convert dates and times to strings by using strftime(). This is provided as a method in the datetime, date, and time objects, and as a function in the time module. The strftime() function uses format strings to specify the output, which you can see in Table 19-2.
+Numbers are zero-padded on the left.
+Here’s the strftime() function provided by the time module. It converts a struct_time object to a string. We’ll first define the format string fmt and use it again later:
+If we try this with a date object, only the date parts will work, and the time defaults to midnight:
+For a time object, only the time parts are converted:
+You won’t want to use the day parts from a time object, because they’re meaningless.
+To go the other way and convert a string to a date or time, use strptime() with the same format string. No regular expression pattern matching occurs; the nonformat parts of the string (without %) need to match exactly. Let’s specify a format that matches year-month-day, such as 2025-02-14. What happens if the date string you want to parse has spaces instead of dashes?
+If we feed strptime() some dashes, is it happy now?
+Or we can fix the fmt string to match the date string:
+Even if the string seems to match its format, an exception is raised if a value is out of range (filenames truncated for space):
+Names are specific to your locale—internationalization settings for your operating system. If you need to print different month and day names, change your locale by using setlocale(); its first argument is locale.LC_TIME for dates and times, and the second is a string combining the language and country abbreviation.
+Let’s invite some international friends to a Halloween party. We’ll print the day of the week, month, and day in US English, French, German, Spanish, and Icelandic (Icelanders have real elves):
+Where do you find these magic values for lang_country? The following code is a bit wonky, but you can try this to get all of them (there are a few hundred):
+From names, let’s get just locale names that seem to work with setlocale(), such as the ones we used in the preceding example—a two-character language code followed by an underscore and a two-character country code:
+What do the first five look like?
+So, if you want all the German language locales, try this:
+If you run set_locale() and get the error
+locale.Error: unsupported locale setting
+that locale is not supported by your operating system. You’ll need to figure out what your operating system needs to add the locale. This error can happen even if Python tells you (using locale.locale_alias.keys()) that it is a good locale. I had this error when testing on macOS with the locale cy_gb (Welsh, Great Britain), even though it had accepted is_is (Icelandic) in the preceding example.
