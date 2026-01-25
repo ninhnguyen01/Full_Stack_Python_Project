@@ -1,0 +1,47 @@
+Chapter 18. Binary Data
+Any sufficiently crisp question can be answered by a single binary digit—0 or 1, yes or no.
+    -Carl Sagan
+Text data can be challenging, but binary data can be, well, interesting. You need to know about concepts such as endianness (the way your computer’s processor breaks data into bytes) and sign bits for integers. You might need to delve into binary file formats or network packets to extract or even change data. This section shows you the basics of binary data wrangling in Python. You’ll see how to read and write binary files in Chapter 20.
+Convert Binary Data with struct
+As you’ve seen, Python has many tools for manipulating text. Tools for binary data are much less prevalent. The standard library contains the struct module, which handles data similar to structs in C and C++. Using struct, you can convert binary data to and from Python data structures.
+Let’s see how this works with data from a PNG file, a common image format that you’ll see along with GIF and JPEG files. We’ll write a small program that extracts the width and height of an image from some PNG data.
+We’ll use the O’Reilly logo, the little bug-eyed tarsier shown in Figure 18-1.
+The PNG file for this image is available on Wikipedia. I don’t show how to read files until Chapter 20, so I downloaded this file, wrote a little program to print its values as bytes, and typed the values of the first 30 bytes into a Python bytes variable called data for the example that follows. (The PNG format specification says that the width and height are stored within the first 24 bytes, so we don’t need more than that for now.)
+Valid PNG, width 154 height 141
+Here’s what this code does:
+    data contains the first 30 bytes from the PNG file. To fit it on the page, I joined two byte strings with + and the continuation character (\).
+    valid_png_header contains the eight-byte sequence that marks the start of a valid PNG file.
+    width is extracted from bytes 16–19, and height from bytes 20–23.
+The >LL is the format string that instructs unpack() how to interpret its input byte sequences and assemble them into Python data types. Here’s the breakdown:
+    The > means that integers are stored in big-endian format.
+    Each L specifies a four-byte unsigned long integer.
+You can examine each four-byte value directly:
+Big-endian integers have the most significant bytes to the left. Because the width and height are each less than 255, they fit into the last byte of each sequence. You can verify that these hex values match the expected decimal values:
+When you want to go in the other direction and convert Python data to bytes, use the struct pack() function:
+The type specifiers follow the endian character. Any specifier may be preceded by a number that indicates the count; 5B is the same as BBBBB.
+You can use a count prefix instead of >LL:
+struct.unpack('>2L', data[16:24])
+(154, 141)
+We used the slice data[16:24] to grab the interesting bytes directly. We could also use the x specifier to skip the uninteresting parts:
+struct.unpack('>16x2L6x', data)
+(154, 141)
+This means the following:
+    Use big-endian integer format (>).
+    Skip 16 bytes (16x).
+    Read eight bytes—two unsigned long integers (2L).
+    Skip the final six bytes (6x).
+Extraction with Binary Data Tools
+Some third-party open source packages offer the following, more declarative ways of defining and extracting binary data:
+    bitstring
+    Construct
+    Hachoir
+    Kaitai Struct
+For the next example, you need to install Construct with pip install construct.
+Here’s how to extract the PNG dimensions from our data byte string by using Construct:
+Convert Bytes/Strings with binascii()
+The standard binascii module has functions to convert between binary data and various string representations: hex (base 16), base 64, uuencoded, and others. For example, in the next snippet, let’s print that eight-byte PNG header as a sequence of hex values, instead of the mixture of ASCII and \x xx escapes that Python uses to display bytes variables:
+Hey, this thing works backward too:
+These operators work something like the set operators in Chapter 9. The & operator returns bits that are the same in both arguments, and | returns bits that are set in either of them. The ^ operator returns bits that are in one or the other, but not both. The ~ operator reverses all the bits in its single argument; this also reverses the sign because an integer’s highest bit indicates its sign (1 = negative) in two’s complement arithmetic, used in all modern computers. The << and >> operators just move bits to the left or right. A left shift of one bit is the same as multiplying by two, and a right shift is the same as dividing by two.
+Review/Preview
+This was all about trying to make sense of binary data.
+The next chapter searches for order in the messy world of dates and times.
