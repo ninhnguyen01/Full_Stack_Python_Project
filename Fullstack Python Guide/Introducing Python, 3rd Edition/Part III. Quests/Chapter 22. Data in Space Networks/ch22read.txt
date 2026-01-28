@@ -1,0 +1,325 @@
+Chapter 22. Data in Space: Networks
+Time is nature’s way of keeping everything from happening at once.
+Space is what prevents everything from happening to me.
+    - Quotes About Time
+In Chapter 21, you read about concurrency: how to do more than one thing at a time. Now we’ll try to do things in more than one place: distributed computing or networking. There are many good reasons to challenge time and space:
+Performance
+    Your goal is to keep fast components busy, not wait for slow ones.
+Robustness
+    There’s safety in numbers, so you want to duplicate tasks to work around hardware and software failures.
+Simplicity
+    It’s best practice to break complex tasks into many little ones that are easier to create, understand, and fix.
+Scalability
+    Increase your servers to handle load; decrease them to save money.
+In this chapter, we work our way up from networking primitives to higher-level concepts. Let’s start with TCP/IP and sockets.
+TCP/IP
+The internet is based on rules about how to make connections, exchange data, terminate connections, handle timeouts, and so on. These are called protocols, and they are arranged in layers. The purpose of layers is to allow innovation and alternative ways of doing things; you can do anything you want on one layer as long as you follow the conventions in dealing with the layers above and below you.
+The very lowest layer governs aspects such as electrical signals; each higher layer builds on those below. In the middle, more or less, is the Internet Protocol (IP) layer, which specifies the way network locations are addressed and packets (chunks) of data flow. In the layer above that, two protocols describe how to move bytes between locations:
+User Datagram Protocol (UDP)
+    This is used for short exchanges. A datagram is a tiny message sent in a single burst, like a note on a postcard.
+Transmission Control Protocol (TCP)
+    This protocol is used for longer-lived connections. It sends streams of bytes and ensures that they arrive in order without duplication.
+UDP messages are not acknowledged, so you’re never sure whether they arrive at their destination. Say you want to tell a joke over UDP:
+Here's a UDP joke. Get it?
+TCP sets up a secret handshake between sender and receiver to ensure a good connection. A TCP joke would start like this:
+Your local machine always has the IP address 127.0.0.1 and the name localhost. You might see this called the loopback interface. If it’s connected to the internet, your machine will also have a public IP. If you’re just using a home computer, it’s behind equipment such as a cable modem or router. You can run internet protocols even between processes on the same machine.
+Most of the internet with which we interact—the web, database servers, and so on—is based on TCP running atop IP; for brevity, TCP/IP. Let’s first look at some basic internet services. After that, we explore general networking patterns.
+Sockets
+If you like to know how things work, all the way down, this section is for you.
+The lowest level of network programming uses a socket, borrowed from the C language and the Unix operating system. Socket-level coding is tedious. You’ll have more fun using something like ZeroMQ, but it’s useful to see what lies beneath. For instance, messages about sockets often turn up when networking errors take place.
+Let’s write a simple client-server exchange, once with UDP and once with TCP. In the UDP example, the client sends a string in a UDP datagram to a server, and the server returns a packet of data containing a string. The server needs to listen at a particular address and port—which are like a post office and a post office box. The client needs to know these two values to deliver its message and receive any reply.
+In the following client and server code, address is a tuple of (address, port). The address is a string, which can be a name or an IP address. When your programs are just talking to one another on the same machine, you can use the name localhost or the equivalent address string 127.0.0.1.
+First, let’s send a little data from one process to another and return a little data back to the originator. The first program is the server, and the second is the client. In each program, we print the time and open a socket. The server will listen for connections to its socket, and the client will write to its socket, which transmits a message to the server.
+The server has to set up networking through two methods imported from the socket package. The first method, socket.socket, creates a socket, and the second, bind, binds to it (listens to any data arriving at that IP address and port). AF_INET means we’ll create an IP socket. (There’s another type for Unix domain sockets, but those work only on the local machine.) SOCK_DGRAM means we’ll send and receive datagrams—in other words, we’ll use UDP.
+At this point, the server sits and waits for a datagram to come in (recvfrom). When one arrives, the server wakes up and gets both the data and information about the client. The client variable contains the address and port combination needed to reach the client. The server ends by sending a reply and closing its connection.
+Let’s take a look at udp_client.py (Example 22-2).
+The client has most of the same methods as the server (with the exception of bind()). The client sends and then receives, whereas the server receives first.
+Start the server first, in its own window. The server will print its greeting and then wait with an eerie calm until a client sends it some data:
+Next, start the client in another window. The client will print its greeting, send data (the bytes value Hey) to the server, print the reply, and then exit:
+Finally, the server will print the message it received and exit:
+Why is there a b before the Are you talking to me? and the Hey!? Because they’re bytes, not strings. These low-level functions send and receive binary data.
+The client needs to know the server’s address and port number but doesn’t need to specify a port number for itself. That is automatically assigned by the system—in this case, the port number is 56267.
+Note
+UDP sends data in single chunks. It does not guarantee delivery. If you send multiple messages via UDP, they can arrive out of order or not at all. UDP is fast, light, connectionless, and unreliable (I’ve known some people like that). UDP is useful when you need to push packets quickly, and can tolerate a lost packet now and then, such as with voice over IP (VoIP).
+Which brings us to TCP. TCP is used for longer-lived connections, such as the web. This protocol delivers data in the order in which you send it. If any problems occur, TCP tries to send the data again. This makes TCP a bit slower than UDP, but usually a better choice when you need all the packets in the right order.
+Note
+The first two versions of the web protocol HTTP were based on TCP, but HTTP/3 is based on a protocol called QUIC, which itself uses UDP. So choosing between UDP and TCP can involve many factors.
+Let’s shoot a few packets from client to server and back with TCP.
+tcp_client.py acts like the previous UDP client, sending only one string to the server, but there are small differences in the socket calls, illustrated in Example 22-3.
+print('Starting the server at', datetime.now())
+print('Waiting for a client to call.')
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.bind(address)
+server.listen(5)
+client, addr = server.accept()
+data = client.recv(max_size)
+print('At', datetime.now(), client, 'said', data)
+client.sendall(b'Are you talking to me?')
+client.close()
+server.close()
+The server.listen(5) function is configured to queue up to five client connections before refusing new ones. The server.accept() function gets the first available message as it arrives.
+The client.recv(1000) function sets a maximum acceptable message length of one thousand bytes.
+As you did earlier, start the server and then the client, and watch the fun. First, the server:
+Now, start the client. It will send its message to the server, receive a response, and then exit:
+The server collects the message, prints it, responds, and then quits:
+Notice that the TCP server calls client.sendall() to respond, and the earlier UDP server calls client.sendto(). TCP maintains the client-server connection across multiple socket calls and remembers the client’s IP address.
+This doesn’t look so bad, but if you try to write anything more complex, you’ll see how sockets really operate at a low level:
+    UDP sends messages, but their size is limited and they’re not guaranteed to reach their destination.
+    TCP sends streams of bytes, not messages. You don’t know the number of bytes the system will send or receive with each call.
+    To exchange entire messages with TCP, you need some extra information to reassemble the full message from its segments: a fixed message size (bytes), or the size of the full message, or a delimiting character.
+    Because messages are bytes, not Unicode text strings, you need to use the Python bytes type.
+After all this, if you find yourself interested in socket programming, check out the Python socket programming HOWTO by Gordon McMillan for more details.
+Scapy
+Sometimes you need to dip into the networking stream and watch the bytes swimming by. You may want to debug a web API or track down a security issue. The Scapy library and program provide a domain-specific language to create and inspect packets in Python, which is much easier than writing and debugging the equivalent C programs.
+A standard installation uses pip install scapy. The docs are extremely thorough. If you use tools like tcpdump or Wireshark to investigate TCP issues, you should look at Scapy. Finally, don’t confuse Scapy with Scrapy, which is covered in “Crawl and Scrape”.
+Netcat
+Another tool to test networks and ports is Netcat, often abbreviated to nc. Here’s an example of an HTTP connection to Google’s website, and requesting some basic information about its home page; I’m replacing most of the returned headers with an ellipsis (…​):
+In “Telnet”, another example uses Telnet to do the same.
+Networking Patterns
+You can build networking applications from some basic patterns:
+    The most common pattern is request-reply, also known as request-response or client-server. This pattern is synchronous: the client waits until the server responds. You’ve seen many examples of request-reply in this book. Your web browser is also a client, making an HTTP request to a web server, which returns a reply.
+    Another common pattern is push, or fanout: you send data to any available worker in a pool of processes. An example is a web server behind a load balancer.
+    The opposite of push is pull, or fanin: you accept data from one or more sources. An example is a logger that takes text messages from multiple processes and writes them to a single logfile.
+    One pattern is similar to radio or television broadcasting: publish-subscribe, or pub-sub. With this pattern, a publisher sends out data. In a simple pub-sub system, all subscribers receive a copy. More often, subscribers can indicate that they’re interested in only certain types of data (often called a topic), and the publisher will send just those. So, unlike the push pattern, more than one subscriber might receive a given piece of data. If a topic has no subscriber, the data is ignored.
+Let’s show some request-reply examples, and later some pub-sub ones.
+The Request-Reply Pattern
+Request-reply is the most familiar pattern. You request DNS, web, or email data from the appropriate servers, and they reply or tell you whether there’s a problem.
+I just showed you how to make basic requests with UDP or TCP, but building a networking application at the socket level is hard. Let’s see if ZeroMQ can help.
+Request-Reply: ZeroMQ
+ZeroMQ is a library, not a server. Sometimes described as sockets on steroids, ZeroMQ sockets do the things that you sort of expect plain sockets to do:
+    Exchange entire messages
+    Retry connections
+    Buffer data to preserve it when the timing between senders and receivers doesn’t line up
+The online guide is well written and witty, and it presents the best description of networking patterns that I’ve seen. The printed version (ZeroMQ: Messaging for Many Applications, by the late Pieter Hintjens, from that animal house, O’Reilly) has that good code smell and a big fish on the cover, rather than the other way around. All the examples in the printed guide are in the C language, but the online version lets you choose from multiple languages for each code example. The Python examples are also viewable. In this chapter, I show you some basic request-reply ZeroMQ examples.
+ZeroMQ is like a LEGO set, and we all know that you can build an amazing variety of structures from a few Lego shapes. In this case, you construct networks from a few socket types and patterns. The basic “LEGO pieces” presented in the following list are the ZeroMQ socket types, which by some twist of fate look like the network patterns we’ve already discussed:
+    REQ (synchronous request)
+    REP (synchronous reply)
+    DEALER (asynchronous request)
+    ROUTER (asynchronous reply)
+    PUB (publish)
+    SUB (subscribe)
+    PUSH (fanout)
+    PULL (fanin)
+To try these yourself, you’ll need to install the Python ZeroMQ library by typing this command:
+pip install pyzmq
+The simplest pattern is a single request-reply pair. This is synchronous: one socket makes a request, and then the other replies. First, the code for the reply (server), zmq_server.py, is shown in Example 22-5.
+We create a Context object: this is a ZeroMQ object that maintains state. Then we make a ZeroMQ socket of type REP (for reply). We call bind() to make the socket listen on a particular IP address and port. Notice that they’re specified in a string such as tcp://localhost:6789 rather than a tuple, as in the plain-socket examples.
+This example keeps receiving requests from a sender and sending a response. The messages can be very long; ZeroMQ takes care of the details.
+Example 22-6 shows the code for the corresponding request (client), zmq_client.py. Its type is REQ (for request), and it calls connect() rather than bind().
+Now it’s time to start the client and server. One interesting difference from the plain-socket examples is that you can start them in either order. Go ahead and start the server in one window in the background:
+You’ll see these alternating output lines from the client and server:
+Our client ends after sending its fifth message, but we don’t tell the server to quit, so it sits by the phone, waiting for another message. If you run the client again, it will print the same five lines, and the server will print its five also. If you don’t kill the zmq_server.py process and try to run another one, Python will complain that the address is already is use:
+The messages need to be sent as byte strings, so we encode our example’s text strings in UTF-8 format. You can send any kind of message you like, as long as you convert it to bytes. We use simple text strings as the source of our messages, so encode() and decode() are enough to convert to and from byte strings. If your messages have other data types, you can use a library such as MessagePack.
+Even this basic REQ-REP pattern allows for fancy communication patterns, because any number of REQ clients can connect() to a single REP server. The server handles requests one at a time, synchronously, but doesn’t drop other requests that are arriving in the meantime. ZeroMQ buffers messages, up to a specified limit, until they can get through; that’s where it earns the Q in its name. The Q stands for queue, the M stands for message, and the zero means there doesn’t need to be any broker.
+Although ZeroMQ doesn’t impose any central brokers (intermediaries), you can build them where needed. For example, use DEALER and ROUTER sockets to connect multiple sources and/or destinations asynchronously.
+Multiple REQ sockets connect to a single ROUTER, which passes each request to a DEALER, which then contacts any REP sockets that have connected to it (Figure 22-1). This is similar to a bunch of browsers contacting a proxy server in front of a web server farm. This pattern lets you add multiple clients and servers as needed.
+The REQ sockets connect only to the ROUTER socket; the DEALER connects to the multiple REP sockets behind it. ZeroMQ takes care of the nasty details, ensuring that the requests are load balanced and that the replies go back to the right place.
+Another networking pattern called the ventilator uses PUSH sockets to farm out asynchronous tasks, and PULL sockets to gather the results.
+The last notable feature of ZeroMQ is that it scales up and down, just by changing the connection type of the socket when it’s created:
+    tcp between processes, on one or more machines
+    ipc between processes on one machine
+    inproc between threads in a single process
+That last one, inproc, is a way to pass data between threads without locks, and an alternative to the threading example in “Threads”.
+After using ZeroMQ, you may not want to write raw socket code again.
+Request-Reply: Other Messaging Tools
+ZeroMQ is certainly not the only message-passing library that Python supports. Message passing is one of the most popular ideas in networking, and Python keeps up with other languages:
+    The Apache project, whose web server we’ll see in “Apache”, also maintains the ActiveMQ project, including several Python interfaces using the Simple Text Oriented Messaging Protocol (STOMP) protocol.
+    RabbitMQ is also popular, and it has useful online Python tutorials.
+    NATS is a fast messaging system, written in Go.
+The Publish-Subscribe Pattern
+Publish-subscribe (pub-sub) is not a queue but a broadcast. One or more processes publish messages. Each subscriber process indicates the type of messages it would like to receive. A copy of each message is sent to each subscriber that matches its type. Thus, a given message might be processed once, more than once, or not at all. Like a lonely ham radio operator, each publisher is just broadcasting and doesn’t know who, if anyone, is listening.
+Pub-Sub: Redis
+In Chapter 23, Redis is mainly a data structure server, but it also contains a pub-sub system. The publisher emits messages with a topic and a value, and subscribers say which topics they want to receive.
+Each topic is a breed of cat, and the accompanying message is a type of hat.
+This subscriber wants all messages for cat types maine coon and persian, and no others. The listen() method returns a dictionary. If the dictionary’s type is message, it was sent by the publisher and matches our criteria. The channel key is the topic (cat), and the data key contains the message (hat).
+If you start the publisher first and no one is listening, it’s like a mime falling in the forest (does he make a sound?), so start the subscriber first:
+We didn’t tell the subscriber to quit, so it’s still waiting for messages. If you restart the publisher, the subscriber will grab a few more messages and print them.
+You can have as many subscribers (and publishers) as you want. If a message has no subscriber, the message disappears from the Redis server. However, if there are subscribers, the messages stay in the server until all subscribers have retrieved them.
+Pub-Sub: ZeroMQ
+ZeroMQ has no central server, so each publisher writes to all subscribers. The publisher, zmq_pub.py, is provided in Example 22-9.
+Notice that this code uses UTF-8 encoding for the topic and value strings.
+The file for the subscriber is zmq_sub.py (Example 22-10).
+In this code, we subscribe to two byte values: the two strings in topics, encoded as UTF-8.
+Note
+It seems a little backward, but if you want all topics, you need to subscribe to the empty byte string b''; if you don’t, you’ll get nothing.
+Notice that we call send_multipart() in the publisher and recv_multipart() in the subscriber. This makes it possible for us to send multipart messages and use the first part as the topic. We could also send the topic and message as a single string or byte string, but keeping cats and hats separate seems cleaner.
+Pub-Sub: Other Tools
+You might like to explore some of these other Python pub-sub links:
+    RabbitMQ is a well-known messaging broker, and Pika is a Python API for it. See the Pika documentation and a pub-sub tutorial.
+    Go to the PyPI search window and type pubsub to find Python packages like PyPubSub.
+    PubSubHubbub enables subscribers to register callbacks with publishers.
+    NATS is a fast, open source messaging system that supports pub-sub, request-reply, and queuing.
+Internet Services
+Python has an extensive networking toolset. In the following sections, we look at ways to automate some of the most popular internet services. The official, comprehensive documentation is available online.
+Domain Name System (DNS)
+Computers have numeric IP addresses such as 85.2.101.94, but we remember names better than numbers. The Domain Name System (DNS) is a critical internet service that converts IP addresses to and from names via a distributed database. Whenever you’re using a web browser and suddenly see a message like “looking up host,” you’ve probably lost your internet connection, and your first clue is a DNS failure.
+Some DNS functions are found in the low-level socket module. The gethostbyname() function returns the IP address for a domain name, and the extended edition gethostbyname_ex() returns the name, a list of alternative names, and a list of addresses:
+The getaddrinfo() method looks up the IP address, but it also returns enough information to create a socket to connect to it:
+The preceding call returns two tuples: the first for UDP, and the second for TCP (the 6 in the 2, 1, 6 is the value for TCP).
+You can ask for TCP or UDP information only:
+Some TCP and UDP port numbers are reserved for certain services by IANA, and are associated with service names. For example, HTTP is named http and is assigned TCP port 80.
+These functions convert between service names and port numbers:
+Python Email Modules
+The standard library contains these email modules:
+    smtplib for sending email messages via Simple Mail Transfer Protocol (SMTP)
+    email for creating and parsing email messages
+    poplib for reading email via Post Office Protocol 3 (POP3)
+    imaplib for reading email via Internet Message Access Protocol (IMAP)
+If you want to write your own Python SMTP server, try the new asynchronous version aiosmtpd.
+Other Protocols
+Using the standard ftplib module, you can push bytes around by using the File Transfer Protocol (FTP). Although it’s an old protocol, FTP still performs well.
+You’ve seen many of these modules in various places in this book, but also try the documentation for standard library support of internet protocols.
+Web Services and APIs
+Information providers always have a website, but those are targeted for human eyes, not automation. If data is published only on a website, anyone who wants to access and structure the data needs to write scrapers (as shown in “Crawl and Scrape”), and rewrite them each time a page format changes. This is usually tedious. In contrast, if a website offers an API to its data, the data becomes directly available to client programs. APIs change less often than web page layouts, so client rewrites are less common. A fast, clean data pipeline also makes it easier to build unforeseen but useful combinations.
+In many ways, the easiest API is a web interface, but one that provides data in a structured format such as JSON or XML rather than plain text or HTML. The API might be minimal or a full-fledged RESTful API (defined in “Web APIs and REST”), but it provides another outlet for those restless bytes.
+In Chapter 1, you saw a web API query the Internet Archive for an old copy of a website.
+APIs are especially useful for mining well-known social media sites such as Twitter/X, Facebook/Meta, and LinkedIn. All these sites provide APIs that are free to use, but they require you to register and get a key (a long, generated text string, also known as a token) to use when connecting. The key lets a site determine who’s accessing its data. It can also serve as a way to limit request traffic to servers.
+Here are some interesting service APIs:
+    New York Times
+    Twitter
+    Facebook
+    Weather Underground
+    Marvel Comics
+Data Serialization
+As you’ll see in Chapter 23, formats like XML, JSON, and YAML are ways to store structured text data. Networked applications need to exchange data with other programs. The conversion between data in memory and byte sequences “on the wire” is called serialization, or marshaling. JSON is a popular serialization format, especially with web RESTful systems, but it can’t express all Python data types directly. Also, as a text format it tends to be more verbose than some binary serialization methods. Let’s look at some approaches that you’re likely to run into.
+Serialize with pickle
+Python provides the pickle module to save and restore any object in a special binary format.
+Remember how JSON lost its mind when encountering a datetime object? Not a problem for pickle:
+The pickle module works with your own classes and objects too. Let’s define a little class called Tiny that returns the string tiny when treated as a string:
+pickled is the pickled binary string made from the object obj1. We converted that back to the object obj2 to make a copy of obj1. Use dump() to pickle to a file, and load() to unpickle from one.
+The multiprocessing module uses pickle to interchange data among processes.
+If pickle can’t serialize your data format, a newer third-party package called dill might.
+Note
+Because pickle can create Python objects, the same security warnings that were discussed in earlier sections apply. A public service announcement: don’t unpickle something that you don’t trust.
+Use Other Serialization Formats
+These binary data interchange formats are usually more compact and faster than XML or JSON:
+    MessagePack—aka MsgPack
+    msgspec
+    Protocol Buffers
+    Apache Avro
+    Apache Thrift
+    lima
+    Serialize
+A benchmark of various Python serialization packages
+Because they are binary, none can be easily edited by a human with a text editor.
+Some third-party packages interconvert objects and basic Python data types (allowing further conversion to/from formats like JSON), and provide validation of the following:
+    Data types
+    Value ranges
+    Required versus optional data
+These include the following:
+    marshmallow
+    Pydantic—uses type hints, so requires at least Python 3.6
+    TypeSystem
+These are often used with web servers to ensure that the bytes that came over the wire via HTTP end up in the right data structures for further processing.
+Remote Procedure Calls
+Remote procedure calls (RPCs) look like normal functions but execute on remote machines across a network. Instead of calling a RESTful API with arguments encoded in the URL or request body, you call an RPC function on your own machine. Your local machine does the following:
+    Serializes your function arguments into bytes
+    Sends the encoded bytes to the remote machine
+The remote machine takes these steps:
+    Receives the encoded request bytes
+    Deserializes the bytes back to data structures
+    Finds and calls the service function with the decoded data
+    Encodes the function results
+    Sends the encoded bytes back to the caller
+And finally, the local machine that started it all does this:
+    Decodes the bytes to return values
+RPC is a popular technique, and people have implemented it in many ways. On the server side, you start a server program, connect it with a byte transport and encoding/decoding method, define service functions, and light up your RPC is open for business sign. The client connects to the server and calls one of its functions via RPC.
+XML-RPC
+The standard library includes one RPC implementation that uses XML as the exchange format: XML-RPC. You define and register functions on the server, and the client calls them as though they were imported. First, let’s explore the file xmlrpc_server.py as shown in Example 22-11.
+The function we’re providing on the server is called double(). It expects a number as an argument and returns the value of that number times two. The server starts up on an address and port. We need to register the function to make it available to clients via RPC. Finally, we start serving and carry on.
+Now—you guessed it—xmlrpc_client.py, proudly presented in Example 22-12.
+The client connects to the server by using ServerProxy(). Then the client calls the function proxy.double(). Where did that come from? It was created dynamically by the server. The RPC machinery magically hooks this function name into a call to the remote server.
+JSON-RPC (versions 1.0 and 2.0) is similar to XML-RPC, but with JSON. There are many Python JSON-RPC libraries, but the simplest one I’ve found comes in two parts: client and server.
+Installation of both is familiar: pip install jsonrpcserver and pip install jsonrpclient.
+These libraries provide many alternative ways to write a client and server. In Examples 22-13 and 22-14, I use this library’s built-in server, which uses port 5000 and is the simplest.
+First, here’s the server.
+As with most of the client-server examples in this chapter, start the server first (in its own terminal window, or with a following & to put it in the background) and then run the client:
+MessagePack RPC
+The encoding library MessagePack has its own Python RPC implementation. Install it with pip install msgpack-rpc-python.
+This will also install Tornado, a Python event-based web server that this library uses as a transport. As usual, the server (msgpack_server.py) comes first (Example 22-15).
+The Services class exposes its methods as RPC services. Go ahead and start the client, msgpack_client.py (Example 22-16).
+To run the server and client, follow the usual drill: start the server and client in separate terminal windows and observe the results:
+Written by the developers of Docker (when it was called dotCloud), zerorpc uses ZeroMQ and MessagePack to connect clients and servers. It magically exposes functions as RPC endpoints.
+Type pip install zerorpc to install it. The sample code in Examples 22-17 and 22-18 shows a request-reply client and server.
+Notice that the client calls client.double(), even though there’s no definition of it in there:
+Google created gRPC as a portable and fast way to define and connect services. It encodes data as Protocol Buffers.
+Install the Python parts with pip install grpcio and pip install grpcio-tools.
+The Python client docs are detailed, so I’m giving only a brief overview here.
+To use gRPC, you write a .proto file to define a service and its rpc methods.
+An rpc method is like a function definition (describing its arguments and return types) and may specify one of these networking patterns:
+    Request-response (sync or async)
+    Request-streaming response
+    Streaming request-response (sync or async)
+    Streaming request-streaming response
+Single responses can be blocking or asynchronous. Streaming responses are iterated.
+Next, you would run the grpc_tools.protoc program to create Python code for the client and server. gRPC handles the serialization and network communication; you add your application-specific code to the client and server stubs.
+gRPC is a top-level alternative to web REST APIs. It seems to be a better fit than REST for interservice communication, and REST may be preferred for public APIs.
+Remote Management
+A category of tools can manage multiple remote processes:
+    Salt is written in Python. It started as a way to implement remote execution but grew to a full-fledged systems management platform. Based on ZeroMQ rather than SSH, it can scale to thousands of servers.
+    Puppet and Chef are popular and closely tied to Ruby.
+    The Ansible package, which like Salt is written in Python, is also comparable. It’s free to download and use, but support and some add-on packages require a commercial license. Ansible uses SSH by default and does not require any special software to be installed on the machines that it will manage.
+Big Fat Data
+As Google and other internet companies grew, they found that traditional computing solutions didn’t scale. Software that worked for single machines, or even a few dozen, could not keep up with thousands.
+Disk storage for databases and files involved too much seeking, which requires mechanical movement of disk heads. (Think of a vinyl record, and the time it takes to manually move the needle from one track to another. And think of the screeching sound the needle makes when you drop it too hard, not to mention the sounds made by the record’s owner.) But you could stream consecutive segments of the disk more quickly.
+Developers found that it was faster to distribute and analyze data on many networked machines than on individual ones. They could use algorithms that sounded simplistic but actually worked better overall with massively distributed data. One of these is MapReduce, which spreads a calculation across many machines and then gathers the results. This process is similar to working with queues.
+Hadoop
+After Google published its MapReduce results in a paper, Yahoo followed with an open source Java-based package called Apache Hadoop (named after the toy stuffed elephant of the lead programmer’s son). For several years, if big data was mentioned, the response for many organizations was Hadoop.
+“Big data” often just means “data too big to fit on my machine”: disk, memory, CPU time, or all of the above.
+Hadoop copies data among machines, running them through map (scatter) and reduce (gather) programs, and saving the results on disk at each step.
+This batch process can be slow. A quicker method called Hadoop streaming works like Unix pipes, streaming the data through programs without requiring disk writes at each step. You can write Hadoop streaming programs in any language, including Python.
+Many Python modules have been written for Hadoop, and some are discussed in the article “Hadoop with Python” by David Adrián Cañones. Spotify, known for streaming music, released its Python component for Hadoop streaming, Luigi, as open source.
+Spark
+A rival named Apache Spark was designed to run 10 to 100 times faster than Hadoop. It can read and process any Hadoop data source and format. Spark includes APIs for Python and other languages, and uses AI and machine learning. You can find the installation documents online.
+Disco
+Another alternative to Hadoop is Disco, which uses Python for MapReduce processing and Erlang for communication. It looks like the code hasn’t been to touched for ten years, but if you’re curious, see the documentation.
+Dask
+Dask is similar to Spark, although it’s written in Python and is largely used with scientific Python packages like NumPy, pandas, and scikit-learn. Dask can spread tasks across thousand-machine clusters.
+To get Dask and all its extra helpers, use pip install dask[complete].
+See Chapter 23 for related examples of parallel programming, in which a large structured calculation is distributed among many machines.
+Clouds
+I really don’t know clouds at all.
+    - Joni Mitchell
+Not so long ago, you would buy your own servers, bolt them into racks in data centers, and install layers of software on them: operating systems, device drivers, filesystems, databases, web servers, email servers, name servers, load balancers, monitors, and more. Any initial novelty wore off as you tried to keep multiple systems alive and responsive. And you worried constantly about security.
+Many hosting services offered to take care of your servers for a fee, but you still leased the physical devices and had to pay for your peak load configuration at all times.
+With more individual machines, failures are no longer infrequent: they’re very common. You need to scale services horizontally and store data redundantly. You can’t assume that the network operates like a single machine. The eight fallacies of distributed computing, according to Peter Deutsch, are as follows:
+    The network is reliable.
+    Latency is zero.
+    Bandwidth is infinite.
+    The network is secure.
+    Topology doesn’t change.
+    There is one administrator.
+    Transport cost is zero.
+    The network is homogeneous.
+You can try to build these complex distributed systems, but it’s a lot of work, and a different toolset is needed. To borrow an analogy, when you have a handful of servers, you treat them like pets: you give them names, know their personalities, and nurse them back to health when needed. But at scale, you treat servers more like livestock: they look alike, have numbers, and are replaced if they have any problems.
+Instead of building, you can rent servers in the cloud. By adopting this model, maintenance is someone else’s problem, and you can concentrate on your service, or blog, or whatever you want to show the world. Using web dashboards and APIs, you can spin up servers with whatever configuration you need, quickly and easily—they’re elastic. You can monitor their status, and be alerted if a metric exceeds a given threshold. Clouds are currently a pretty hot topic, and corporate spending on cloud components has spiked.
+The big cloud vendors are listed here:
+    Amazon
+    Google
+    Microsoft Azure
+Amazon Web Services
+As Amazon was growing from hundreds to thousands to millions of servers, developers ran into all the nasty problems of distributed systems. One day in 2002 or thereabouts, CEO Jeff Bezos declared to Amazon employees that, henceforth, all data and functionality needed to be exposed only via network service interfaces—not files, or databases, or local function calls. They had to design these interfaces as though they were being offered to the public. The memo ended with a motivational nugget: “Anyone who doesn’t do this will be fired.”
+Not surprisingly, developers got to work, and over time built a huge service-oriented architecture. They borrowed or innovated many solutions, evolving into Amazon Web Services (AWS), which now dominates the market. The official Python AWS library is Boto3, which you can read about in the following resources:
+    Documentation
+    SDK pages
+Install Boto3 with pip install boto3.
+You can use Boto3 as an alternative to the AWS web-based management pages.
+Google Cloud
+Google uses Python a lot internally, and it employs some prominent Python developers (even Guido van Rossum himself, for some time). From the Google Cloud main and Python pages, you can find details on its many services.
+Microsoft Azure
+Microsoft caught up with Amazon and Google with its cloud offering, Azure. See “Python on Azure” at the Azure website to learn how to develop and deploy Python applications.
+OpenStack
+OpenStack is an open source framework of Python services and REST APIs. Many of its services are similar to those in the commercial clouds.
+Docker
+The humble standardized shipping container revolutionized international trade. Only a few years ago, Docker applied the container name and analogy to a virtualization method using little-known Linux features. Containers are much lighter than virtual machines, and a bit heavier than Python virtualenvs. They allow you to package an application separately from other applications on the same machine, sharing only the operating system kernel.
+To install Docker’s Python client library, use pip install docker.
+Kubernetes
+Containers caught on and spread through the computing world. Eventually, people needed ways to manage multiple containers and wanted to automate some of the manual steps that have been usually required in large distributed systems:
+    Failover
+    Load balancing
+    Scaling up and down
+It looks like Kubernetes is leading the pack in this new area of container orchestration.
+To install the Python client library, use pip install kubernetes.
+Review/Preview
+This was another heavy chapter. It discussed many ways to ship data around, from basic byte-pushing to service management.
+From data galloping freely over networks, we go to data stuck in a box: databases and other persistent storage methods.
