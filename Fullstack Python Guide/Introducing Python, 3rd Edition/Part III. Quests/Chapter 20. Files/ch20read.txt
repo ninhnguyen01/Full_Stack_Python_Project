@@ -1,0 +1,186 @@
+Chapter 20. Files
+We have persistent objects. They’re called files.
+    Ken Thompson
+When you first start programming, you hear some words over and over but aren’t sure whether they have a specific technical meaning or are just hand-waving. The terms file and directory are such words, and they do have actual technical meanings. A file is a sequence of bytes, stored in a filesystem, and accessed by a filename. A directory is a collection of files and possibly other directories. The term folder is a synonym for directory. It turned up when computers gained graphical user interfaces, and mimicked office concepts to make concepts seem more familiar.
+Many filesystems are hierarchical and often referred to as being like a tree. Real offices don’t tend to have trees, and the folder analogy works only if you visualize subfolders all the way down.
+File Input and Output
+The simplest kind of persistence is a plain old file, sometimes called a flat file. You read from a file into memory and write from memory to a file. Python makes these jobs easy. As with many languages, its file operations were largely modeled on the familiar and popular Unix equivalents.
+Create or Open with open()
+You need to call the open() function before you do the following:
+    Read an existing file
+    Write to a new file
+    Append to an existing file
+    Overwrite an existing file
+Here’s a brief explanation of the pieces of this call:
+fileobj = open( filename, mode )
+    fileobj is the file object returned by open().
+    filename is the string name of the file.
+    mode is a string indicating the file’s type and what you want to do with it.
+The first letter of mode indicates the operation:
+    r means read.
+    w means write. If the file doesn’t exist, it’s created. If the file does exist, it’s overwritten.
+    x means write, but only if the file does not already exist.
+    a means append (write after the end) if the file exists.
+The second letter of mode is the file’s type:
+    t (or nothing) means text.
+    b means binary.
+After opening the file, you call functions to read or write data; these will be shown in the examples that follow.
+Last, you need to close the file to ensure that any writes complete and that memory is freed. Later, you’ll see how to use with to automate this for you.
+This program opens a file called oops.txt and closes it without writing anything. This creates an empty file:
+fout = open('oops.txt', 'wt')
+fout.close()
+Write a Text File with print()
+Let’s re-create oops.txt, but now write a line to it and then close it:
+We created an empty oops.txt file in the previous section, so this just overwrites it.
+We use the file argument to print(). Without it, print() writes to standard output, which is your terminal (unless you’ve told your shell program to redirect output to a file with > or piped it to another program with |).
+Write a Text File with write()
+We just used print() to write a line to a file. We can also use write().
+For our multiline data source, let’s use this limerick about special relativity:
+The following code writes the entire poem to the file relativity in one call:
+The write function returns the number of bytes written. It does not add any spaces or newlines, as print() does. As before, you can also print a multiline string to a text file:
+So, should you use write() or print()? As you’ve seen, by default print() adds a space after each argument and a newline at the end. In the previous example, it appended a newline to the relativity file.
+To make print() work like write(), pass it the following two arguments:
+    sep (separator, which defaults to a space, ' ')
+    end (end string, which defaults to a newline, \n)
+We’ll use empty strings to replace these defaults:
+If you have a large source string, you can also write chunks (using slices) until the source is done:
+This writes 100 characters on the first try and the last 50 characters on the next. Slices allow you to “go over the end” without raising an exception.
+If the relativity file is precious to us, let’s see whether using mode x really protects us from overwriting it:
+fout = open('relativity', 'xt')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+FileExistsError: [Errno 17] File exists: 'relativity'
+You can use this x mode check with an exception handler:
+Read a Text File with read(), readline(), or readlines()
+You can call read() with no arguments to slurp up the entire file at once, as shown in the example that follows (be careful when doing this with large files; a gigabyte file will consume a gigabyte of memory):
+You can provide a maximum character count to limit the amount that read() returns at one time. Let’s read 100 characters at a time and append each chunk to a poem string to rebuild the original:
+After you’ve read all the way to the end, further calls to read() will return an empty string (''), which is treated as False in if not fragment. This breaks out of the while True loop.
+You can also read the file a line at a time by using readline(). In this next example, we append each line to the poem string to rebuild the original:
+For a text file, even a blank line has a length of one (the newline character) and is evaluated as True. When the file has been read, readline(), like read(), also returns an empty string, which is also evaluated as False.
+The easiest way to read a text file is by using an iterator. This returns one line at a time. It’s similar to the previous example but with less code:
+All the preceding examples eventually build the single string poem. The readlines() call reads a line at a time and returns a list of one-line strings:
+We told print() to suppress the automatic newlines because the first four lines already had them. The last line did not, causing the interactive prompt >>> to occur right after the last line.
+Write a Binary File with write()
+If you include a b in the mode string, the file is opened in binary mode. In this case, you read and write bytes instead of a string.
+We don’t have a binary poem lying around and don’t want to ask ChatGPT, so we’ll just generate the 256 byte values from 0 to 255:
+Open the file for writing in binary mode and write all the data at once:
+Again, write() returns the number of bytes written.
+As with text, you can write binary data in chunks:
+Read a Binary File with read()
+Reading a binary file is simple; all you need to do is just open with rb:
+Close Files Automatically by Using with
+If you forget to close a file that you’ve opened, it will be closed by Python after it’s no longer referenced. This means that if you open a file within a function and don’t close it explicitly, it will be closed automatically when the function ends. But you might have opened the file in a long-running function or the main section of the program. The file should be closed to force any remaining writes to be completed.
+Python has context managers to clean up issues such as open files. You use the form with expression as variable:
+That’s it. After the block of code under the context manager (in this case, one line) completes (normally or by a raised exception), the file is closed automatically.
+Change Position with seek()
+As you read and write, Python keeps track of where you are in the file. The tell() function returns your current offset from the beginning of the file, in bytes. The seek() function lets you jump to another byte offset in the file. This means that you don’t have to read every byte in a file to read the last one; you can seek() to the last one and read just one byte.
+For this example, use the 256-byte binary file bfile that you wrote earlier:
+Use seek() to jump to one byte before the end of the file:
+The seek() function also returns the current offset.
+You can call seek() with a second argument: seek(offset, origin):
+    If origin is 0 (the default), go offset bytes from the start.
+    If origin is 1, go offset bytes from the current position.
+    If origin is 2, go offset bytes relative to the end.
+These values are also defined in the standard os module:
+So, we could have read the last byte in different ways:
+Here, we read one byte before the end of the file:
+Read until the end of the file:
+You don’t need to call tell() for seek() to work. I just want to show that they both report the same offset.
+Here’s an example of seeking from the current position in the file:
+This next example ends up two bytes before the end of the file:
+Finally, read until the end of the file:
+These functions are most useful for binary files. You can use the functions with text files, but unless the file is ASCII (one byte per character), you would have a hard time calculating offsets. These would depend on the text encoding, and the most popular encoding (UTF-8) uses varying numbers of bytes per character.
+Memory Mapping
+An alternative to reading and writing a file is to memory-map it with the standard mmap module. This makes the contents of a file look like a bytearray in memory. See the documentation and some examples for more details.
+File Operations
+Python, like many other languages, patterns its file operations after Unix. Some functions, such as chown() and chmod(), have the same names, but there are a few new ones.
+I’ll first show how Python handles these tasks with functions from the os.path module and then with the newer pathlib module.
+Check Existence with exists()
+To verify whether the file or directory is really there or you just imagined it, you can provide exists(), with a relative or absolute pathname, as demonstrated here:
+Check Type with isfile()
+The functions in this section check whether a name refers to a file, directory, or symbolic link (see the examples that follow for a discussion of links).
+The first function we’ll look at, isfile(), asks a simple question: is it a plain old law-abiding file?
+Here’s how you determine a directory:
+A single dot (.) is shorthand for the current directory, and two dots (..) stands for the parent directory. These always exist, so a statement such as the following will always report True:
+The os module contains many functions dealing with pathnames (fully qualified filenames, starting with / and including all parents). One such function, isabs(), determines whether its argument is an absolute pathname. The argument doesn’t need to be the name of a real file:
+Copy with copy()
+The copy() function comes from another module, shutil. This example copies the file oops.txt to the file ohno.txt:
+The shutil.move() function copies a file and then removes the original.
+Change Name with rename()
+This function does exactly what it says. In the example here, it renames ohno.txt to ohwell.txt:
+Link with link() or symlink()
+In Unix, a file exists in one place, but it can have multiple names, called links. In low-level hard links, it’s not easy to find all the names for a given file. A symbolic link is an alternative method that stores the new name as its own file, making it possible for you to get both the original and new names at once. The link() call creates a hard link, and symlink() makes a symbolic link. The islink() function checks whether the file is a symbolic link.
+Here’s how to make a hard link to the existing file oops.txt from the new file yikes.txt:
+To create a symbolic link to the existing file oops.txt from the new file jeepers.txt, use the following:
+Which should you use? Hard links might be useful for rare system tasks like file deduplication. I’ve always used symbolic links.
+Change Permissions with chmod()
+On a Unix system, chmod() changes file permissions. There are read, write, and execute permissions for the user (that’s usually you, if you created the file), the main group that the user is in, and the rest of the world. The command takes an intensely compressed octal (base 8) value that combines user, group, and other permissions. For instance, to make oops.txt readable only by its owner, type the following:
+If you don’t want to deal with cryptic octal values and would rather deal with (slightly less) obscure cryptic symbols, you can import some constants from the stat module and use a statement such as the following:
+Change Ownership with chown()
+This function is also Unix/Linux/Mac–specific. You can change the owner and/or group ownership of a file by specifying the numeric user ID (uid) and group ID (gid):
+Delete a File with remove()
+In this snippet, we use the remove() function and say farewell to oops.txt:
+Directory Operations
+In most operating systems, files exist in a hierarchy of directories (often called folders). The container of all these files and directories is a filesystem (sometimes called a volume). The standard os module deals with operating specifics such as these and provides the following functions with which you can manipulate them.
+Create with mkdir()
+This example shows how to create a directory called poems to store that precious verse:
+Delete with rmdir()
+Upon second thought, you decide you don’t need that directory after all. Here’s how to delete it:
+List Contents with listdir()
+OK, take two: let’s make poems again, with some contents:
+Now get a list of its contents (none so far):
+Next, make a subdirectory:
+Create a file in this subdirectory (don’t type all these lines unless you really feel poetic; just make sure you begin and end with matching quotes, either single or tripled):
+Finally, let’s see what we have. That new file had better be there:
+Change Current Directory with chdir()
+With this function, you can go from one directory to another. Let’s leave the current directory and spend a little time in poems:
+List Matching Files with glob()
+The glob() function matches file or directory names by using Unix shell rules rather than the more complete regular expression syntax. Here are those rules:
+    * matches everything (re would expect .*).
+    ? matches a single character.
+    [abc] matches character a, b, or c.
+    [!abc] matches any character except a, b, or c.
+Try getting all files or directories that begin with m:
+How about any two-letter files or directories?
+I’m thinking of an eight-letter word that begins with m and ends with e:
+What about anything that begins with a k, l, or m, and ends with e?
+Pathnames
+Almost all our computers use hierarchical filesystems, with directories containing files and other directories, down to various levels. When you want to refer to a specific file or directory, you need its pathname: the sequence of directories needed to get there, either absolute from the top (the root), or relative to your current directory.
+You’ll often hear people confusing a forward slash (/, not the Guns N’ Roses guy) and backslash (\).3 Unix and Macs (and web URLs) use a slash as the path separator, and Windows uses a backslash.
+Python lets you use a slash as the path separator when you’re specifying names. On Windows, you can use a backslash, but you know that a backslash is a ubiquitous escape character in Python, so you have to double it everywhere or use Python’s raw strings:
+When you’re building a pathname, you can do the following:
+    Use the appropriate path separation character ('/' or '\').
+    Build a pathname (see “Build a Pathname with os.path.join()”).
+    Use pathlib (see “Use pathlib”).
+Get a Pathname with abspath()
+This function expands a relative name to an absolute one. If your current directory is /usr/gaberlunzie and the file oops.txt is there, you can type the following:
+Get a symlink Pathname with realpath()
+In one of the earlier sections, we made a symbolic link to oops.txt from the new file jeepers.txt. In circumstances such as this, you can get the name of oops.txt from jeepers.txt by using the realpath() function, as shown here:
+Build a Pathname with os.path.join()
+When you’re constructing a multipart pathname, you can call os.path.join() to combine them pairwise with the proper path separation character for your operating system:
+'eek\\urk\\snort.txt'
+But if the same code produces a different result depending on where it’s run, that could be a problem. The new pathlib module is a portable solution to this.
+Use pathlib
+Python added the pathlib module in version 3.4. It’s an alternative to the os.path modules that I just described. But why do we need another module?
+Rather that treating filesystem pathnames as strings, it introduces the Path object to treat them at a little higher level. Create a Path with the Path() class, and then knit your path together with bare slashes (not / characters):
+This slash trick takes advantage of Python’s magic methods (see “Magic Methods”). A Path can tell you a bit about itself:
+You can feed file_path to open() as you would any filename or pathname string.
+You can also see what would happen if you ran this program on another system or if you needed to generate foreign pathnames on your computer:
+See the docs for all the details.
+BytesIO and StringIO
+You’ve seen how to modify data in memory and how to get data in and out of files. What do you do if you have in-memory data but want to call a function that expects a file (or the reverse)? You’d want to modify the data and pass those bytes or characters around, without reading and writing temporary files.
+You can use io.BytesIO for binary data (bytes) and io.StringIO for text data (str). Using either of these wraps data as a file-like object, suitable to use with all the file functions you’ve seen in this chapter.
+One use case for this is data format conversion. Let’s apply this to the Pillow library, which reads and writes image data. The first argument to its Image object’s open() and save() methods is a filename or a file-like object. The code in Example 20-1 uses BytesIO to read and write in-memory data. It reads one or more image files from the command line, converts its image data to three formats, and prints the length and first 10 bytes of these outputs.
+Because it acts like a file, you can seek(), read(), and write() a BytesIO object just like a normal file; if you did a seek() followed by a read(), you would get only the bytes from that seek position to the end. That getvalue() function returns all the bytes in the BytesIO object.
+Here’s the output, using an input image file:
+out 5914 b'\\xff\xd8\\xff\\xe0\\x00\\x10JFIF'
+File Formats: Determination
+    You may tell yourself: this is not my beautiful file.
+    apologies to The Talking Heads
+Often you’ll come upon a file and wonder just what it is, and maybe more importantly, what it might do. You’ll read more about text data in Chapter 17 and binary data in Chapter 18. But just for now, are there easy ways to determine what the file does, without performing the forensic procedures that I described in the previous sections? Yes.
+    The file program, which has been in Unix and its successors like Linux and macOS for a long time, identifies files by various “magic” byte sequences in particular file locations.
+    This is based on the libmagic library, which the python-magic package interfaces for you.
+    You can find many online file guessers and converters with Google.
+    But, speaking of Google, it recently released an AI-based file type guesser called Magika. It’s used in production there to route files to specific security scanners. pip install magika gets you the command-line tool and Python package.
+One way to remember: a forward slash tilts forward, a backslash tilts back.
+QDOS was the operating system that Bill Gates bought for $50,000 to have “MS-DOS” when IBM came calling about their first PC. It mimicked CP/M, which used slashes for command-line arguments. When MS-DOS later added folders, it had to use backslashes.
