@@ -1,0 +1,281 @@
+Chapter 21. Data in Time: Concurrency
+All we have to decide is what to do with the time that is given us.
+    J. R. R. Tolkien
+This chapter and the next two are longer and a bit more challenging than earlier ones: data in time (sequential and concurrent access on a single computer), then data in space (networking), and finally data in a box (storage and retrieval with special files and databases).
+Programs and Processes
+When you run an individual program, your operating system creates a single process. It uses system resources (CPU, memory, disk space) and data structures in the operating system’s kernel (file and network connections, usage statistics, and so on). A process is isolated from other processes; it can’t see what other processes are doing or interfere with them.
+The operating system keeps track of all the running processes, giving each a little time to run and then switching to another, with the twin goals of spreading the work around fairly and being responsive to the user. You can see the state of your processes with graphical interfaces such as the Mac’s Activity Monitor (macOS), Task Manager on Windows-based computers, or the top command in Linux.
+You can also access process data from your own programs. The standard library’s os module provides a common way of accessing some system information. For instance, the following functions get the process ID and the current working directory of the running Python interpreter:
+Create a Process with subprocess
+All the programs that you’ve seen here so far have been individual processes. You can start and stop other existing programs from Python by using the standard library’s subprocess module. If you just want to run another program in a shell and grab whatever output it created (both standard output and standard error output), use the getoutput() function. Here, we get the output of the Unix date program:
+You won’t get anything back until the process ends. If you need to call something that might take a lot of time, see “Concurrency”. Because the argument to getoutput() is a string representing a complete shell command, you can include arguments, pipes, < and > I/O redirection, and so on:
+Piping that output string to the wc command counts one line, seven “words,” and 32 characters:
+A variant method called check_output() takes a list of the command and arguments. By default it returns standard output only as type bytes rather than a string, and does not use the shell:
+To show the exit status of the other program, getstatusoutput() returns a tuple with the status code and output:
+If you don’t want to capture the output but might want to know its exit status, use call():
+(In Unix-like systems, 0 is usually the exit status for success.)
+That date and time is printed to output but not captured within our program. So, we save the return code as ret.
+You can run programs with arguments in two ways. The first is to specify them in a single string. Our sample command is date -u, which prints the current date and time in UTC:
+You need that shell=True to recognize the command line date -u, splitting it into separate strings and possibly expanding any wildcard characters such as * (we didn’t use any in this example).
+The second method makes a list of the arguments, so it doesn’t need to call the shell:
+Create a Process with multiprocessing
+You can run a Python function as a separate process, or even create multiple independent processes with the multiprocessing module. The sample code in Example 21-1 is short and simple; save it as mp.py and then run it by typing python mp.py.
+The Process() function spawned a new process and ran the do_this() function in it. Because we did this in a loop that had four passes, we generated four new processes that executed do_this() and then exited.
+The multiprocessing module has more bells and whistles than a clown on a calliope. It’s really intended for those times when you need to farm out a task to multiple processes to save overall time—for example, downloading web pages for scraping or resizing images. The module includes ways to queue tasks, enable intercommunication among processes, and wait for all the processes to finish.
+Kill a Process with terminate()
+If you created one or more processes and want to terminate one for some reason (perhaps it’s stuck in a loop, or maybe you’re bored, or you want to be an evil overlord), use terminate(). In Example 21-2, our process would count to a million, sleeping at each step for a second, and printing an irritating message. However, our main program runs out of patience in five seconds and nukes it from orbit.
+Get System Info with os
+The standard os package provides a lot of details on your system, and lets you control some of it if you run your Python script as a privileged user (root or administrator). Besides file and directory functions that are covered in Chapter 20, os has informational functions like these (run on a Chromebook):
+A useful function is system(), which executes a command string as though you typed it at a terminal:
+It’s a grab bag. See the docs for interesting tidbits.
+Get Process Info with psutil
+The third-party package psutil also provides system and process information for Linux, Unix, macOS, and Windows systems.
+You can guess how to install it:
+pip install psutil
+Coverage includes the following:
+System
+    CPU, memory, disk, network, sensors
+Processes
+    ID, parent ID, CPU, memory, open files, threads
+We already saw (in the previous os discussion) that my Chromebook has eight CPUs. I also ran that test on an iMac, which had four CPUs. How much time (in seconds) had they been using?
+And how busy are they now?
+You might never need this kind of data, but it’s good to know where to look if you do.
+Command Automation
+You often run commands from the shell (either manually typed commands or shell scripts), but Python has more than one good third-party management tool.
+A related topic, task queues, is discussed in “Queues”.
+Invoke
+Version 1 of the fabric tool lets you define local and remote (networked) tasks with Python code. The developers split this original package into fabric2 (remote) and invoke (local).
+Install invoke by running the following:
+pip install invoke
+One use of invoke is to make functions available as command-line arguments. Let’s make a tasks.py file with the lines shown in Example 21-3.
+(That ctx argument is the first argument for each task function, but it’s used only internally by invoke. It doesn’t matter what you call it, but an argument needs to be there.)
+Tasks can have arguments, and you can invoke multiple tasks at one time from the command line (similar to && use in shell scripts).
+Other uses include the following:
+    Running local shell commands with the run() function
+    Responding to string output patterns of programs
+This was a brief glimpse. See the docs for all the details.
+Other Command Helpers
+These Python packages have some similarity to invoke, but one or another may be a better fit when you need it:
+    Click
+    Doit
+    sh
+    Delegator.py
+    Pypeln
+Concurrency
+The official Python site discusses concurrency in general and in the standard library. Those pages have many links to various packages and techniques.
+In computers, if you’re waiting for something, it’s usually for one of two reasons:
+I/O bound
+    This reason is by far the most common. Computer CPUs are ridiculously fast—hundreds of times faster than computer memory and many thousands of times faster than disks or networks.
+CPU bound
+    The CPU keeps busy. This happens with number-crunching tasks such as scientific or graphic calculations.
+Two more terms are related to concurrency:
+Synchronous
+    One task follows the other, like a line of goslings behind their parents.
+Asynchronous
+    Tasks are independent, like random geese splashing down in a pond.
+As you progress from simple systems and tasks to real-life problems, you’ll need at some point to deal with concurrency. Consider a website, for example. You can usually provide static and dynamic pages to web clients fairly quickly. A fraction of a second is considered interactive, but if the display or interaction takes longer, people become impatient. Tests by companies such as Google and Amazon showed that traffic drops off quickly if the page loads even a fraction of a second slower.
+But what if you can’t help it when something takes a long time, such as uploading a file, resizing an image, or querying a database? You can’t perform those tasks within your synchronous web server code anymore, because someone’s waiting.
+On a single machine, if you want to perform multiple tasks as fast as possible, you should make them independent. Slow tasks shouldn’t block all the others.
+This chapter showed earlier how multiprocessing can be used to overlap work on a single machine. If you needed to resize an image, your web server code could call a separate, dedicated image-resizing process to run asynchronously and concurrently. It could scale your application horizontally by invoking multiple resizing processes.
+The trick is getting them all to work with one another. Any shared control or state means that bottlenecks will occur. An even bigger trick is dealing with failures, because concurrent computing is harder than regular computing. Many more steps can go wrong, and your odds of end-to-end success are lower.
+All right. Which techniques can help you deal with these complexities? Let’s begin with a good way to manage multiple tasks: queues.
+Queues
+A queue is like a list: elements are added at one end and taken away from the other. The most common is referred to as FIFO (first in, first out).
+Suppose that you’re washing dishes. If you’re stuck with the entire job, you need to wash each dish, dry it, and put it away. You can do this in various ways. You might wash the first dish, dry it, and then put it away. You then repeat with the second dish, and so on. Or, you might batch operations and wash all the dishes, dry them all, and then put them away; this assumes you have space in your sink and drainer for all the dishes that accumulate at each step. These are all synchronous approaches—one worker, one thing at a time.
+As an alternative, you could get a helper or two. If you’re the washer, you can hand each cleaned dish to the dryer, who hands each dried dish to the put-away-er. As long as each of you works at the same pace, you should finish much faster than by yourself.
+However, what if you wash faster than the dryer dries? Wet dishes either fall on the floor, or you pile them up between you and the dryer, or you just whistle off-key until the dryer is ready. And if the last person is slower than the dryer, dry dishes can end up falling on the floor, or piling up, or the dryer does the whistling. You have multiple workers, but the overall task is still synchronous and can proceed only as fast as the slowest worker.
+Many hands make light work, goes the old saying (it always makes me think of the Amish, who work as a community to raise/build a barn). Adding workers can build a barn or do the dishes, faster. This involves queues.
+In general, queues transport messages, which can be any kind of information. In this case, we’re interested in queues for distributed task management, also known as work queues, job queues, or task queues. Each dish in the sink is given to an available washer, who washes and hands it off to the first available dryer, who dries and hands it to a put-away-er. This can be synchronous (workers wait for a dish to handle and another worker to whom to give it), or asynchronous (dishes are stacked between workers with different paces). As long as you have enough workers, and they keep up with the dishes, the whole process moves a lot faster.
+Processes
+You can implement queues in many ways. For a single machine, the standard library’s multiprocessing module (which you saw earlier) contains a Queue function. Let’s simulate just a single washer and multiple dryer processes (someone can put the dishes away later) and an intermediate dish_queue. Call this program dishes.py (Example 21-4).
+This queue looks a lot like a simple Python iterator, producing a series of dishes. It actually starts up separate processes along with the communication between the washer and dryer. I used a JoinableQueue and the final join() method to let the washer know that all the dishes have been dried. The multiprocessing module has other queue types, and you can read the documentation for more examples.
+Threads
+A thread runs within a process with access to everything in the process, similar to a multiple personality. The multiprocessing module has a cousin called threading that uses threads instead of processes (actually, multiprocessing was designed later as its process-based counterpart). Let’s redo our process example with threads, as shown in Example 21-5.
+Here’s what prints for me:
+We can reproduce our process-based dish example by using threads, as shown in Example 21-6.
+One difference between multiprocessing and threading is that threading does not have a terminate() function. There’s no easy way to terminate a running thread, because it can cause all sorts of problems in your code, and possibly in the space-time continuum itself.
+Threads can be dangerous. Like manual memory management in languages such as C and C++, they can cause bugs that are extremely hard to find, let alone fix. To use threads, all the code in the program (and in external libraries that it uses) must be thread safe. In the preceding example code, the threads didn’t share any global variables, so they could run independently without breaking anything.
+Imagine that you’re a paranormal investigator in a haunted house. Ghosts roam the halls, but none are aware of the others, and at any time, any of them can view, add, remove, or move any of the house’s contents.
+You’re walking apprehensively through the house, taking readings with your impressive instruments. Suddenly you notice that the candlestick you passed seconds ago is now missing.
+The contents of the house are like the variables in a program. The ghosts are threads in a process (the house). If the ghosts only cast spectral glances at the house’s contents, there would be no problem. It’s like a thread reading the value of a constant or variable without trying to change it.
+Yet, some unseen entity could grab your flashlight, blow cold air down your neck, put marbles on the stairs, or make the fireplace come ablaze. The really subtle ghosts would change things in other rooms that you might never notice.
+Despite your fancy instruments, you’d have a very hard time figuring out who did what, how, when, and where.
+If you used multiple processes instead of threads, it would be like having multiple houses but with only one (living) person in each. If you put your brandy in front of the fireplace, it would still be there an hour later—some lost to evaporation or wobbling mice, but in the same place.
+Threads can be useful and safe when global data is not involved. In particular, threads are useful for saving time while waiting for an I/O operation to complete. In these cases, they don’t have to fight over data, because each has completely separate variables.
+But threads do sometimes have good reasons to change global data. In fact, one common reason to launch multiple threads is to let them divide up the work on some data, so a certain degree of change to the data is expected.
+The usual way to share data safely is to apply a software lock before modifying a variable in a thread. This keeps the other threads out while the change is made. It’s like having a Ghostbuster guard the room you want to remain unhaunted. The trick, though, is that you need to remember to release the lock. Plus, locks can be nested: what if another Ghostbuster is also watching the same room or the house itself? The use of locks is traditional but hard to get right.
+The GIL
+Python has a controversial feature called the Global Interpreter Lock (GIL). This was, essentially, an early hack added to avoid threading problems in the Python interpreter. However, it can make a multithreaded program slower than its single-threaded counterpart or even a multiprocess version. Even worse, the GIL limits the interpreter to running on a single core CPU, and modern computers all have multiple cores.
+If you’re running C code in an extension, you’re safe: C code doesn’t modify Python code running in the interpreter. This is why C extensions like NumPy and pandas can run faster than native Python code. Chapter 27 discusses these, and other intriguing possibilities, like the new “Python++” language called Mojo.
+Many people have tried to kill the GIL, but all the attempts slowed single-threaded code, which is the most common case. A solution has finally been agreed upon but will be introduced gradually: “PEP 703–Making the Global Interpreter Lock Optional in CPython”. Python 3.13 introduces an experimental GIL-less Python version. Depending on how this works out with many developers banging on it, version 3.14 is expected to go further.
+So for now in Python, the recommendations are as follows:
+    Use threads for I/O-bound problems.
+    Use processes, networking, or events (discussed in the next section) for CPU-bound problems.
+Concurrent.futures
+As you’ve just seen, using threads or multiple processes involves multiple details. The concurrent.futures module was added to the Python 3.2 standard library to simplify these. It lets you schedule an asynchronous pool of workers, using threads (when I/O-bound) or processes (when CPU-bound). You get back a future to track their state and collect the results.
+Example 21-7 contains a test program that you can save as cf.py. The task function calc() sleeps for one second (our way of faking being busy with something), calculates the square root of its argument, and returns it. The program takes an optional command-line argument of the number of workers to use, which defaults to 3. The program starts this number of workers in a thread pool, then a process pool, and then prints the elapsed times. The values list contains five numbers, sent to calc() one at a time in a worker thread or process.
+That one-second sleep() forced each worker to take a second for each calculation:
+    With only one worker at a time, everything was serial, and the total time was more than five seconds.
+    Five workers matched the size of the values being tested, so we had an elapsed time of just more than a second.
+    With three workers, we needed two runs to handle all five values, so two seconds elapsed.
+In the program, I ignore the actual results (the square roots that we calculated) to emphasize the elapsed times. Also, using map() to define the pool causes us to wait for all workers to finish before returning results. To get each result as it is completed, let’s try another test (call it cf2.py) in which each worker returns the value and its square root as soon as it calculates it (Example 21-8).
+Our use_threads() and use_processes() functions are now generator functions that call yield to return on each iteration. From one run on my machine, you can see how the workers don’t always finish 1 through 5 in order:
+You can use concurrent.futures anytime you want to launch a bunch of concurrent tasks, such as the following:
+    Crawling URLs on the web
+    Processing files, such as resizing images
+    Calling service APIs
+As usual, the docs provide additional details but are much more technical.
+Green Threads and gevent
+As you’ve seen, developers traditionally avoid slow spots in programs by running them in separate threads or processes. The Apache web server is an example of this design.
+One alternative is event-based programming. An event-based program runs a central event loop, doles out any tasks, and repeats the loop. The NGINX web server follows this design and is generally faster than Apache.
+The gevent library is event based and accomplishes a neat trick: you write normal imperative code, and it magically converts pieces to coroutines. These are like generators that can communicate with one another and keep track of where they are. The gevent library modifies many of Python’s standard objects such as socket to use its mechanism instead of blocking. This does not work with Python add-in code that was written in C, as some database drivers are.
+You install gevent by using pip:
+pip install gevent
+A one-line for loop is in the preceding example. Each hostname is submitted in turn to a gethostbyname() call, but each can run asynchronously because it’s the gevent version of gethostbyname().
+The gevent.spawn() method creates a greenlet (also known as a green thread or a microthread) to execute each gevent.socket.gethostbyname(url).
+The difference from a normal thread is that a greenlet doesn’t block. If something occurred that would have blocked a normal thread, gevent switches control to one of the other greenlets.
+The gevent.joinall() method waits for all the spawned jobs to finish. Finally, we dump the IP addresses that we got for these hostnames.
+Instead of the gevent version of socket, you can use its evocatively named monkey-patching functions. These modify standard modules such as socket to use greenlets rather than calling the gevent version of the module. This is useful when you want gevent to be applied all the way down, even into code that you might not be able to access.
+At the top of your program, add the following call:
+This inserts the gevent socket everywhere the normal socket is called, anywhere in your program, even in the standard library. Again, this works only for Python code, not libraries written in C.
+Another function monkey-patches even more standard library modules:
+Use this at the top of your program to get as many gevent speedups as possible.
+Save Example 21-10 as gevent_monkey.py.
+Again, run the program:
+Using gevent has potential dangers. As with any event-based system, each chunk of code that you execute should be relatively quick. Although it’s nonblocking, code that does a lot of work is still slow.
+The very idea of monkey-patching makes some people nervous. Yet, many large sites such as Pinterest use gevent to speed up their sites significantly. Like the fine print on a bottle of pills, use gevent as directed.
+For more examples, see the thorough “gevent for the Working Python Developer” tutorial.
+Note
+You might also want to consider Tornado or Gunicorn, two other popular event-driven frameworks. They provide both the low-level event handling and a fast web server. They’re worth a look if you’d like to build a fast website without messing with a traditional web server such as Apache.
+Twisted
+Twisted is an asynchronous, event-driven networking framework. You connect functions to events such as data received or connection closed, and those functions are called when those events occur.
+This is a callback design, and if you’ve written anything in JavaScript, it might seem familiar. If it’s new to you, it can seem backward. For some developers, callback-based code becomes harder to manage as the application grows.
+You install Twisted by running the following:
+pip install twisted
+Twisted is a large package, with support for many internet protocols on top of TCP and UDP. To be short and simple, we show a little knock-knock server and client, adapted from Twisted examples. First, let’s look at the server, knock_server.py (Example 21-11).
+reactor.listenTCP(8000, KnockFactory())
+reactor.run()
+Now let’s take a glance at its trusty companion, knock_client.py (Example 21-12).
+Start the server first:
+python knock_server.py
+Then start the client:
+python knock_client.py
+The server and client exchange messages, and the server prints the conversation:
+Client: Knock knock
+Server: Who's there?
+Client: Disappearing client
+Server: Disappearing client who?
+Our trickster client then ends, keeping the server waiting for the punch line.
+If you’d like to enter the Twisted passages, try some of the other examples from its documentation.
+asyncio
+Python added the asyncio library in version 3.4. It’s a way of defining concurrent code by using the new async and await capabilities.
+Like most programming languages, Python has been synchronous. It runs through code linearly, a line at a time, from top to bottom. When you call a function, Python jumps into its code, and the caller waits until the function returns before resuming what it was doing.
+Your CPU can do only one thing at a time, so synchronous execution makes perfect sense. But it turns out that often a program is not actually running any code, but waiting for something, like data from a file or a network service. This is like us staring at a browser screen while waiting for a site to load. If we could avoid this “busy waiting,” we might shorten the total time of our programs. This is also called improving throughput.
+Your concurrency choices have included threads, processes, or a third-party solution like gevent or Twisted. But now a growing number of asynchronous answers have been built in to Python and third-party solutions. These coexist with the usual synchronous Python code, but, to borrow a Ghostbusters warning, you can’t cross the streams. I’ll show you how to avoid any ectoplasmic side effects.
+Coroutines and Event Loops
+In Python 3.4, Python added the standard asynchronous module asyncio. Python 3.5 then added the keywords async and await. These implement some new concepts:
+Coroutines
+    Functions that pause at various points
+An event loop
+    Code that schedules and runs coroutines
+These let us write asynchronous code that looks something like the normal synchronous code that we’re used to. Otherwise, we’d need to use one of the approaches mentioned in Chapter 22.
+Normal multitasking is what your operating system does to your processes. It decides what’s fair, who’s being a CPU hog, when to open the I/O spigots, and so on. The event loop, however, provides cooperative multitasking, in which coroutines indicate when they’re able to start and stop. They run in a single thread, so you don’t have the potential issues that I mentioned in “Threads”.
+You define a coroutine by putting async before its initial def. You call a coroutine by doing one of the following:
+    Putting await before it, which quietly adds the coroutine to an existing event loop. You can do this only within another coroutine.
+    Using asyncio.run(), which explicitly starts an event loop.
+    Using asyncio.create_task() or asyncio.ensure_future().
+This example uses the first two calling methods:
+A dramatic two-second wait occurred in there that you can’t see on a printed page. Let’s prove that we didn’t cheat (see Chapter 27 for timeit details):
+That asyncio.sleep(2) call was itself a coroutine, just an example here to fake something time-consuming like an API call.
+The line asyncio.run(wicked()) is a way of running a coroutine from synchronous Python code (here, the top level of the program).
+The difference from a standard synchronous counterpart (using time.sleep()) is that the caller of wicked() is not blocked for two seconds while it runs.
+The third way to run a coroutine is to create a task and await it. This example shows the task approach along with the previous two methods:
+If you run this, you’ll see that no delay occurs between the two lines printing this time. That’s because they are separate tasks; task_1 pauses two seconds after printing Surrender, but that doesn’t affect task_2.
+An await is similar to a yield in a generator, but rather than returning a value, it marks a spot where the event loop can pause it if needed.
+There’s lots more where this came from in the docs. Synchronous and asynchronous code can coexist in the same program. Just remember to put async before the def, and await before the call of your asynchronous function.
+Here’s some more information:
+    A list of many asyncio links, compiled by Dylan Hogg
+    Code for an asyncio web crawler, by A. Jesse Jiryu Davis and Guido van Rossum
+Asyncio Alternatives
+Although asyncio is a standard Python package, you can use async and await without it. Coroutines and the event loop are independent. The design of asyncio is sometimes criticized, and third-party alternatives have appeared:
+    Curio
+    Trio
+Example 21-13 is a real example using Trio and asks (an async web framework, modeled on the requests API). This is a concurrent web-crawling example using Trio and asks, adapted from a Stack Overflow answer. To run this, first pip install both Trio and asks.
+You’ll notice that Trio did not use asyncio.run(), but instead its own trio.open_nursery(). If you’re curious, you can read “Some thoughts on asynchronous API design in a post-async/await world” by Nathaniel J. Smith and the Stack Overflow discussion “What is the core difference between asyncio and trio?” about the design decisions behind Trio.
+A new package called AnyIO provides a single interface to asyncio, Curio, and Trio.
+In the future, you can expect more async approaches, both in standard Python and from third-party developers.
+Async Versus…​
+As you’ve seen in many places in this book, many techniques can be used for concurrency. How does the async stuff compare with them?
+Processes
+    This is a good solution if you want to use all the CPU cores on your machine or multiple machines. But processes are heavy, take a while to start, and require serialization for interprocess communication.
+Threads
+    Although threads were designed as a lightweight alternative to processes, each thread uses a good chunk of memory. They are also thwarted by the GIL.
+Coroutines
+    Coroutines are much lighter than threads; you can create hundreds of thousands of coroutines on a machine that might support only a few thousand threads.
+Green threads
+    Green threads like gevent work well and look like synchronous code, but they require monkey-patching standard Python functions, such as socket libraries.
+Callbacks
+    Libraries like Twisted rely on callbacks: functions that are called when certain events occur. This is familiar to GUI and JavaScript programmers. The “inside-out” design of such systems can get messy.
+Queues
+    These tend to be a large-scale solution, when your data or processes really need more than one machine.
+Mystery guest
+    A dark horse like the new Mojo language may cut the Gordian concurrency knot. (See Chapter 27; Mojo looks like Python but is compiled, faster, and GIL-less.)
+And the winner is …​ I don’t know! I admit that I’m tempted by Mojo, but I’ll quote that futurist baseball player, manager, and coach:
+    It’s tough to make predictions, especially about the future.
+    -Yogi Berra
+Async Frameworks and Servers
+The async additions to Python are recent, and it’s taking time for developers to create async versions of frameworks like Flask.
+The Asynchronous Server Gateway Interface (ASGI) standard is an async version of WSGI, discussed further in “Hello, ASGI” by encode.io.
+Here are some ASGI web servers:
+    Hypercorn
+    Sanic
+    Uvicorn
+And some async web frameworks:
+    aiohttp—Client and server
+    API-Hour
+    asks—Like Requests
+    BlackSheep
+    Channels
+    FastAPI—Uses type annotations
+    Quart
+    Responder
+    Sanic
+    Starlette
+    Tornado
+    Vibora
+Finally, here are some async database interfaces:
+    aiomysql
+    aioredis
+    asyncpg
+Redis
+Our earlier dishwashing code examples, using processes or threads, were run on a single machine. Let’s take another approach to queues that can run on a single machine or across a network. Even with multiple singing processes and dancing threads, sometimes one machine isn’t enough. You can treat this section as a bridge between single-box (one machine) and multiple-box concurrency.
+To try the examples in this section, you’ll need a Redis server and its Python module. You can see where to get them in Chapter 23. In that chapter, Redis’s role is that of a database. Here, I’m featuring its concurrency personality.
+A quick way to make a queue is with a Redis list. A Redis server runs on one machine; this can be the same one as its clients or another that the clients can access through a network. In either case, clients talk to the server via TCP, so they’re networking. One or more provider clients pushes messages onto one end of the list. One or more client workers watches this list with a blocking pop operation. If the list is empty, they all just sit around playing cards. As soon as a message arrives, the first eager worker gets it.
+Like our earlier process- and thread-based examples, redis_washer.py generates a sequence of dishes (Example 21-14).
+print('Washer is done')
+The loop generates four messages containing a dish name, followed by a final message that says “quit.” The loop appends each message to a list called dishes in the Redis server, similar to appending to a Python list.
+And as soon as the first dish is ready, redis_dryer.py does its work (Example 21-15).
+This code waits for messages whose first token is “dishes” and prints that each one is dried. The code then obeys the quit message by ending the loop.
+Next, we start the dryer and then the washer. Using the & at the end puts the first program in the background; it keeps running but doesn’t listen to the keyboard anymore. This works on Linux, macOS, and Windows, although you might see different output on the next line. In this case (macOS), the output shows some information about the background dryer process. Then we start the washer process normally (in the foreground). You’ll see the mingled output of the two processes:
+As soon as dish IDs start arriving at Redis from the washer process, our hard-working dryer process starts pulling them back out. Each dish ID is a number, except the final sentinel value, the string quit. When the dryer process reads that quit dish ID, it quits, and more background process information prints to the terminal (also system dependent). You can use a sentinel (an otherwise invalid value) to indicate something special from the data stream itself—in this case, that we’re done. Otherwise, we’d need to add a lot more program logic, such as the following:
+    Agreeing ahead of time on a maximum dish number, which would kind of be a sentinel anyway
+    Doing a special out-of-band (not in the data stream) interprocess communication
+    Timing out after a certain interval with no new data
+Let’s make a few last changes:
+    Create multiple dryer processes.
+    Add a timeout to each dryer rather than looking for a sentinel.
+After the last dryer subprocess quits, the main dryer program ends:
+[1]+  Done                    python redis_dryer2.py
+Beyond Queues
+With more moving parts, our lovely assembly lines have more chances to be disrupted. If we need to wash the dishes from a banquet, do we have enough workers? What if the dryers get drunk? What if the sink clogs? Worries, worries!
+How will you cope with it all? Common techniques include these:
+Fire and forget
+    Just pass dishes on and don’t worry about the consequences, even if no one is there. That’s the dishes-on-the-floor approach.
+Request-reply
+    The washer receives an acknowledgment from the dryer, and the dryer from the put-away-er, for each dish in the pipeline.
+Back pressure or throttling
+    This technique directs a fast worker to take it easy if someone downstream can’t keep up.
+In real systems, you need to be careful that workers are keeping up with the demand; otherwise, you’ll hear the dishes hitting the floor. You might add new tasks to a pending list, while a worker process pops the latest message and adds it to a working list. When the message is done, it’s removed from the working list and added to a completed list. This lets you know which tasks have failed or are taking too long. You can do this with Redis yourself, or use a system that someone else has already written and tested. Python-based queue packages that add this extra level of management include the following:
+    Celery can execute distributed tasks synchronously or asynchronously, using the approaches we’ve discussed: multiprocessing, gevent, and others.
+
+    RQ is a Python library for job queues, also based on Redis.
