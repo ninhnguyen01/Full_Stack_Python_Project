@@ -10,6 +10,16 @@
 <p>(5) DevOps (Monitoring, Performance)</p>
 <p>(6) AI (LLM, RAG, MCP, Agents, Enterprise)</p>
 
+<h2>8 Fallacies of Distributed Computing - Peter Deutsch:</h2>
+<p>The network is reliable (My comment: Backup plan exists for a reason in the form of on-premises, hybrid, and off-premises).</p>
+<p>Latency is zero (My comment: Always consider distance, usage, transmission type, and infrastructure).</p>
+<p>Bandwidth is infinite (My comment: Assume there is a limit to everything from electricity to technology capability).</p>
+<p>The network is secure (My comment: Having a plan in consideration of threat actors is better than no plan at all).</p>
+<p>Topology doesn’t change (My comment: An example is database, such as SQL, NOSQL, Time Series, and more).</p>
+<p>There is one administrator (My comment: Being dependent on 1 person only never ends well).</p>
+<p>Transport cost is zero (My comment: There's always a cost to someone).</p>
+<p>The network is homogeneous (My comment: The Internet disagree).</p>
+
 <h2>Buy me a Boba</h2>
 <img src="asset/qr-code.png" width=200 height=200>
 <hr>
