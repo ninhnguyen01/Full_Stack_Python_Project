@@ -1,0 +1,845 @@
+Chapter 24. The Web
+    Oh, what a tangled web we weave...
+    - Walter Scott, “Marmion”
+Straddling the French–Swiss border is the European Organization for Nuclear Research (CERN)—a particle physics research institute that smashes atoms multiple times, just to make sure. All that smashing generates a mountain of data. In 1989, the English scientist Tim Berners-Lee first circulated a proposal within CERN to help disseminate information there and across the research community. He called it the World Wide Web and distilled its design into three simple ideas:
+Hypertext Transfer Protocol (HTTP)
+    A protocol for web clients and servers to interchange requests and responses
+Hypertext Markup Language (HTML)
+    A presentation format for results
+Uniform resource locator (URL)
+    A way to uniquely represent a server and a resource on that server
+In its simplest usage, a web client (Berners-Lee was the first to use the term browser) connected to a web server with HTTP, requested a URL, and received HTML. This was all built on the networking base from the internet, which at the time was noncommercial, and known only to a few universities and research organizations.
+He wrote the first web browser and server on a NeXT computer.Web awareness really expanded in 1993, when a group of students at the University of Illinois released the Mosaic2 web browser (for Windows, the Macintosh, and Unix) and the National Center for Supercomputing Applications (NCSA) httpd server.
+When I downloaded Mosaic that summer and started building sites, I had no idea that the web and the internet would soon become part of everyday life. The internet was still officially noncommercial then; there were about five hundred known web servers in the world.
+By the end of 1994, the number of web servers had grown to 10,000. The internet was opened to commercial use, and the authors of Mosaic founded Netscape to write commercial web software. Netscape went public as part of the early internet frenzy, and the web’s explosive growth has never stopped.
+Almost every computer language has been used to write web clients and web servers. The dynamic languages Perl, PHP, and Ruby have been especially popular. In this chapter, I show why Python is a particularly good language for web work at every level:
+    Clients, to access remote sites
+    Servers, to provide data for websites and web APIs
+    Web APIs and services, to interchange data in ways other than viewable web pages
+Web Basics
+The low-level network plumbing of the internet is called Transmission Control Protocol/Internet Protocol, or more commonly, simply TCP/IP (see “TCP/IP”). It moves bytes among computers but doesn’t care what those bytes mean. That’s the job of higher-level protocols—syntax definitions for specific purposes. HTTP is the standard protocol for web data interchange.
+The web is a client-server system. The client makes a request to a server: the client opens a TCP/IP connection, sends the URL and other information via HTTP, and receives a response.
+The format of the response is also defined by HTTP. It includes the status of the request, and (if the request succeeded) the response’s data and format.
+The most well-known web client is a web browser. It can make HTTP requests in multiple ways. You might manually initiate a request by typing a URL into the location bar or clicking a link in a web page. Often, the data returned is used to display a website (HTML documents, JavaScript files, CSS files, and images), but it can be any type of data, not just that intended for display.
+An important aspect of HTTP is that it’s stateless. Each HTTP connection that you make is independent of all the others. This simplifies basic web operations but complicates others. Here are just a few samples of the challenges:
+Caching
+    Remote content that doesn’t change should be saved by the web client and used to avoid downloading from the server again.
+Sessions
+    A shopping website should remember the contents of your shopping cart.
+Authentication
+    Sites that require your username and password should remember them while you’re logged in.
+Solutions to statelessness include cookies, which are small pieces of specific information sent by the server to the client so that the server can then identify the client as unique when the client sends the cookie back.
+HTTP Testing
+To start, we’ll try different ways of connecting to websites with utility programs. This helps show how HTTP works, before we dig into Python web clients and servers.
+Telnet
+HTTP is a text-based protocol, so you can type it yourself for web testing. The ancient Telnet program lets you connect to any server and port, and type commands to any service that’s running there. For secure (encrypted) connections to other machines, it’s been replaced by Secure Shell (SSH).
+Let’s ask everyone’s favorite test site, Google, some basic information about its home page. Type this:
+telnet www.google.com 80
+If a web server is on port 80 (this is where unencrypted http usually runs; encrypted https uses port 443) at google.com (I think that’s a safe bet), telnet will print some reassuring information, and then display a final blank line that’s your cue to type something else:
+Trying 74.125.225.177...
+Connected to www.google.com.
+Escape character is '^]'.
+Now, type an actual HTTP command for Telnet to send to the Google web server. The most common HTTP command (the one your browser uses when you type a URL in its location bar) is GET. This retrieves the contents of the specified resource, such as an HTML file, and returns it to the client. For our first test, we’ll use the HTTP command HEAD, which retrieves basic information about the resource:
+HEAD / HTTP/1.1
+Add an extra carriage return to send a blank line so the remote server knows you’re all done and want a response. That HEAD / sends the HTTP HEAD verb (command) to get information about the home page (/). You’ll receive a response such as Example 24-1. (I replaced some of the long lines with …​ so they wouldn’t stick out of the book.)
+Example 24-1. Results from an HTTP GET query to www.google.com
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=ISO-8859-1
+Content-Security-Policy-Report-Only: ...
+P3P: CP="This is not a P3P policy! See g.co/p3phelp for more info."
+Date: Mon, 20 Jan 2025 12:48:30 GMT
+Server: gws
+X-XSS-Protection: 0
+X-Frame-Options: SAMEORIGIN
+Transfer-Encoding: chunked
+Expires: Mon, 20 Jan 2025 12:48:30 GMT
+Cache-Control: private
+Set-Cookie: AEC=...
+Set-Cookie: NID=...
+These are HTTP response headers and their values. Some, like Date and Content-Type, are required. Others, such as Set-Cookie, are used to track your activity across multiple visits (we talk about state management a little later in this chapter). When you make an HTTP HEAD request, you get back only headers. If you had used the HTTP GET or POST commands, you would also receive data from the home page (a mixture of HTML, CSS, JavaScript, and whatever else Google decided to throw into its home page).
+I don’t want to leave you stranded in Telnet. To close it, type q.
+curl
+Using Telnet is simple but is a completely manual process. The curl program is probably the most popular command-line web client. Documentation includes the book Everything Curl by Daniel Stenberg. A table compares curl with similar tools. The download page includes all the major platforms and many obscure ones.
+The simplest use of curl does an implicit GET (output truncated here):
+$ curl http://www.example.com
+<!doctype html>
+<html>
+<head>
+    <title>Example Domain</title>
+    ...
+This uses HEAD:
+$ curl --head http://www.example.com
+HTTP/1.1 200 OK
+Content-Type: text/html
+ETag: "84238dfc8092e5d9c0dac8ef93371a07:1736799080.121134"
+Last-Modified: Mon, 13 Jan 2025 20:11:20 GMT
+Cache-Control: max-age=420
+Date: Mon, 20 Jan 2025 12:53:07 GMT
+Connection: keep-alive
+If you’re passing arguments, you can include them in the command line or a data file. In these examples, I use the following:
+    url for any website
+    data.txt as a text data file with these contents: a=1&b=2
+    data.json as a JSON data file with these contents: {"a":1, "b": 2}
+    a=1&b=2 as two data arguments
+Using default (form-encoded) arguments:
+$ curl -X POST -d "a=1&b=2" url
+$ curl -X POST -d "@data.txt" url
+For JSON-encoded arguments:
+$ curl -X POST -d "{'a':1,'b':2}" -H "Content-Type: application/json" url
+$ curl -X POST -d "@data.json" url
+HTTPie
+A more Pythonic alternative to curl is HTTPie:
+pip install httpie
+To make a form-encoded POST, similar to the methods for curl shown previously (-f is a synonym for --form), use the following:
+$ http -f POST url a=1 b=2
+$ http POST -f url < data.txt
+The default encoding is JSON:
+$ http POST url a=1 b=2
+$ http POST url < data.json
+HTTPie also handles HTTP headers, cookies, file uploads, authentication, redirects, SSL, and so on. As usual, see the docs.
+httpbin
+You can test your web queries against the site httpbin, or download and run the site in a local Docker image:
+$ docker run -p 80:80 kennethreitz/httpbin
+Web Clients
+The previous section showed various utilities connecting with web servers. Now let’s look at how to write web clients in Python.
+The Standard Library
+In Python 2, web client and server modules were a bit scattered. One of the Python 3 goals was to bundle these modules into two packages (remember from Chapter 12 that a package is just a directory containing module files):
+    http manages all the client-server HTTP details:
+        client does the client-side stuff.
+        server helps you write Python web servers.
+        cookies and cookiejar manage cookies, which save data between site visits.
+    urllib runs on top of http:
+        request handles the client request.
+        response handles the server response.
+        parse cracks the parts of a URL.
+Note
+If you’re trying to write code that’s compatible with both Python 2 and Python 3, keep in mind that urllib changed a lot between the two versions. For a better alternative, refer to “Requests”.
+Let’s use the standard library to get something from a website. The URL in the following example returns information from a test website:
+>>> import urllib.request as ur
+>>>
+>>> url = 'http://www.example.com/'
+>>> conn = ur.urlopen(url)
+This little chunk of Python opens a TCP/IP connection to the remote web server www.example.com, makes an HTTP request, and receives an HTTP response. The response contains more than just the page data. In the official documentation, we find that conn is an HTTPResponse object with multiple methods and attributes. One of the most important parts of the response is the HTTP status code:
+>>> print(conn.status)
+200
+A 200 means that everything is peachy. Dozens of HTTP status codes exist, grouped into five ranges by their first (hundreds) digit:
+1xx (information)
+    The server received the request but has extra information for the client.
+2xx (success)
+    It worked; every success code other than 200 conveys extra details.
+3xx (redirection)
+    The resource moved, so the response returns the new URL to the client.
+4xx (client error)
+    A problem has occurred from the client side, such as the well-known 404 (not found). The 418 code (I’m a teapot) was an April Fools’ joke.
+5xx (server error)
+    500 is the generic whoops; you might see a 502 (bad gateway) if a disconnect between a web server and a backend application server exists.
+To get the actual data contents from the web page, use the read() method of the conn variable. This returns a bytes value. Let’s get the data and print the first 50 bytes:
+>>> data = conn.read()
+>>> print(data[:50])
+b'<!doctype html>\n<html>\n<head>\n    <title>Example D'
+We can convert these bytes to a string and print its first 50 characters:
+>>> str_data = data.decode('utf8')
+>>> print(str_data[:50])
+<!doctype html>
+<html>
+<head>
+    <title>Example D
+>>>
+The rest is more HTML and CSS.
+Out of sheer curiosity, which HTTP headers were sent back to us?
+>>> for key, value in conn.getheaders():
+...     print(key, value)
+...
+Cache-Control max-age=604800
+Content-Type text/html; charset=UTF-8
+Date Sun, 05 May 2019 03:09:26 GMT
+Etag "1541025663+ident"
+Expires Sun, 12 May 2019 03:09:26 GMT
+Last-Modified Fri, 09 Aug 2013 23:54:35 GMT
+Server ECS (agb/5296)
+Vary Accept-Encoding
+X-Cache HIT
+Content-Length 1270
+Connection close
+Remember that Telnet example a little earlier? Now, our Python library is parsing all those HTTP response headers and providing them in a dictionary. Date and Server seem straightforward; some of the others, less so. It’s helpful to know that HTTP has a set of standard headers, such as Content-Type, and many optional ones.
+Requests
+For most purposes, I think web client development with Requests is easier than using the standard Python equivalents. I’ll show the basics of Requests in this section and use this package throughout this book for web client tasks.
+First, install the Requests library with pip install requests.
+Let’s redo our previous example.com query with Requests:
+>>> import requests
+>>> resp = requests.get('http://example.com')
+>>> resp
+<Response [200]>
+>>> resp.status_code
+200
+>>> resp.text[:50]
+'<!doctype html>\n<html>\n<head>\n    <title>Example D'
+Now let’s try rewriting some code that you saw way back in Example 1-5. It accessed a Wayback Machine API, using the standard libraries urllib.request and json. Example 24-2 shows the original version again.
+Example 24-2. ia1.py
+import webbrowser
+import json
+from urllib.request import urlopen
+print("Let's find an old website.")
+site = input("Type a website URL: ")
+era = input("Type a year, month, and day, like 20150613: ") + "0000"
+url = f"http://archive.org/wayback/available?url={site}&timestamp={era}"
+response = urlopen(url)
+contents = response.read()
+text = contents.decode("utf-8")
+data = json.loads(text)
+try:
+    old_site = data["archived_snapshots"]["closest"]["url"]
+    print("Found this copy:", old_site)
+    print("It should appear in your browser now.")
+    webbrowser.open(old_site)
+except:
+    print("Sorry, no luck finding", site)
+Now let’s redo that example by using Requests in Example 24-3.
+Example 24-3. ia2.py
+import webbrowser
+import requests
+print("Let's find an old website.")
+site = input("Type a website URL: ")
+era = input("Type a year, month, and day, like 20250714: ") + "0000"
+url = f"http://archive.org/wayback/available?url={site}&timestamp={era}"
+response = requests.get(url)
+data = response.json()
+try:
+    old_site = data["archived_snapshots"]["closest"]["url"]
+    print("Found this copy:", old_site)
+    print("It should appear in your browser now.")
+    webbrowser.open(old_site)
+except:
+    print("Sorry, no luck finding", site)
+This saves a few steps and seems a bit more natural. Browse the documentation (which is pretty good) for full details.
+Other Web Clients
+AIOHTTP is a purely async alternative to Requests and can be used to build servers as well as clients. Install with pip install aiohttp.
+HTTPX does what requests does, and more—especially, async HTTP connections. Install it with pip install httpx.
+A recent comparison by Georges Haidar recommends the following:
+    Simple synchronous calls: Requests
+    Both synchronous and asynchronous calls: HTTPX
+    Asynchronous calls only: AIOHTTP
+A good example for async is web scraping. If you’re accessing multiple websites, most of the time you’re waiting for the following:
+    Client request → server (I/O)
+    Server (processing your request; now where did I put that file again?)
+    Server results → client (I/O)
+For this use case, async can be orders of magnitude faster. I talked about async in Chapter 21, but here’s a comparison of Requests and HTTPX accessing 10 websites. Example 24-4 compares the run times of the following:
+    An empty function
+    Sequential Requests calls
+    Requests with a single session
+    Async HTTPX
+Example 24-4. bench.py
+I ran the code twice. The second time is faster from system caching. You can see that running requests with a session is faster than individual calls, and that async HTTPX is even faster:
+
+$ python bench.py
+run_nothing                    0.00
+run_requests                   6.24
+run_requests_session           3.10
+run_httpx_async                0.89
+
+$ python bench.py
+run_nothing                    0.00
+run_requests                   1.32
+run_requests_session           0.50
+run_httpx_async                0.25
+
+Web Servers
+Web developers have found Python to be an excellent language for writing web servers and server-side programs. This has led to so many Python-based web frameworks that it can be hard to navigate among them and make choices—not to mention deciding which deserve to go into a book.
+A web framework provides features that you can use to build websites, so it does more than a simple web (HTTP) server. You’ll see features such as routing (URL to server function), templates (HTML with dynamic inclusions), debugging, and more.
+I’m not going to cover all the frameworks here, just those that I’ve found to be relatively simple to use and suitable for real websites.
+The Simplest Python Web Server
+You can run a simple web server by typing just one line of Python:
+$ python -m http.server
+This implements a bare-bones Python HTTP server. If no problems occur, this will print an initial status message:
+Serving HTTP on 0.0.0.0 port 8000 ...
+That 0.0.0.0 means any TCP address, so web clients can access it no matter what address the server has. More low-level details on TCP and other network plumbing are presented in Chapter 22.
+You can now request files, with paths relative to your current directory, and they will be returned. If you type http://localhost:8000 in your web browser, you should see a directory listing there, and the server will print access log lines such as this:
+127.0.0.1 - - [20/Feb/2025 22:02:37] "GET / HTTP/1.1" 200 -
+localhost and 127.0.0.1 are TCP synonyms for your local computer, so this works regardless of whether you’re connected to the internet. You can interpret this line as follows:
+    127.0.0.1 is the client’s IP address.
+    The first - is the remote username, if found.
+    The second - is the login username, if required.
+    [20/Feb/2025 22:02:37] is the access date and time.
+    GET / HTTP/1.1 is the command sent to the web server:
+        The HTTP method (GET)
+        The resource requested (/, the top)
+        The HTTP version (HTTP/1.1)
+    The final 200 is the HTTP status code returned by the web server.
+Click any file. If your browser can recognize the format (HTML, PNG, GIF, JPEG, and so on), the browser should display the file, and the server will log the request. For instance, if you have the file oreilly.png in your current directory, a request for http://localhost:8000/oreilly.png should return the image of the unsettling fellow in 
+Figure 24-1. The O’Reilly tarsier returns
+The log should show something such as this:
+127.0.0.1 - - [25/Feb/2025 22:03:48] "GET /oreilly.png HTTP/1.1" 200 -
+If you have other files in the same directory on your computer, they should show up in a listing on your display, and you can click any one to download it. If your browser is configured to display that file’s format, you’ll see the results on your screen; otherwise, your browser will ask if you want to download and save the file.
+The default port number used is 8000, but you can specify another:
+$ python -m http.server 9999
+You should see this:
+Serving HTTP on 0.0.0.0 port 9999 ...
+This Python-only server is best suited for quick tests. You can stop it by killing its process; in most terminals, press Ctrl+C.
+You should not use this basic server for a busy production website. Traditional web servers such as those by Apache and NGINX are much faster for serving static files. In addition, this simple server has no way to handle dynamic content, which more extensive servers can do by accepting parameters.
+Web Server Gateway Interface
+All too soon, the allure of serving simple files wears off, and we want a web server that can also run programs dynamically. In the early days of the web, the Common Gateway Interface (CGI) was designed for clients to make web servers run external programs and return the results. CGI also handled getting input arguments from the client through the server to the external programs. However, the programs were started anew for each client access. This could not scale well, because even small programs have appreciable startup time.
+To avoid this startup delay, people began merging the language interpreter into the web server. Apache ran PHP within its mod_php module, Perl in mod_perl, and Python in mod_python. Then, code in these dynamic languages could be executed within the long-running Apache process itself rather than in external programs.
+An alternative method was to run the dynamic language within a separate long-running program and have it communicate with the web server. FastCGI and SCGI are examples.
+Python web development made a leap with the definition of the Web Server Gateway Interface (WSGI), a universal API between Python web applications and web servers. All the Python web frameworks and web servers in the rest of this chapter use WSGI. You don’t normally need to know how WSGI works (there really isn’t much to it), but it helps to know what some of the parts under the hood are called. This is a synchronous connection—one step follows another.
+ASGI
+In a few places so far, I’ve mentioned that Python has been introducing asynchronous language features like async, await, and asyncio. Asynchronous Server Gateway Interface (ASGI) is a counterpart of WSGI that uses these new features. For more discussion and examples of new frameworks that use ASGI, see “asyncio”.
+Apache
+The Apache HTTP Server’s best WSGI module is mod_wsgi. This can run Python code within the Apache process or in separate processes that communicate with Apache.
+You should already have Apache if your system is Linux or macOS. For Windows, you’ll need to install Apache.
+Finally, install your preferred WSGI-based Python web framework. Let’s try Bottle here. Almost all the work involves configuring Apache, which can be a dark art.
+Create the test file shown in Example 24-5 and save it as home.wsgi.
+Example 24-5. home.wsgi
+import bottle
+application = bottle.default_app()
+@bottle.route('/')
+def home():
+    return "apache and wsgi, sitting in a tree"
+Do not call run() this time, because that starts the built-in Python web server. We need to assign a name to the variable application because that’s what mod_wsgi looks for to marry the web server and the Python code.
+If Apache and its mod_wsgi module are working correctly, we just need to connect them to our Python script. We want to add one line to the file that defines the default website for this Apache server, but finding that file is a task itself. It could be /etc/apache2/httpd.conf, or /etc/apache2/sites-available/default, or the Latin name of someone’s pet salamander.
+Let’s assume for now that you understand Apache and found that file. Add this line inside the <VirtualHost> section that governs the default website:
+    WSGIScriptAlias / /var/www/test/home.wsgi
+That section might then look like this:
+<VirtualHost *:80>
+    DocumentRoot /var/www
+    WSGIScriptAlias / /var/www/test/home.wsgi
+    <Directory /var/www/test>
+    Order allow,deny
+    Allow from all
+    </Directory>
+</VirtualHost>
+Start apache, or restart it if it was running to make it use this new configuration. If you then browse to http://localhost/, you should see this:
+apache and wsgi, sitting in a tree
+This runs mod_wsgi in embedded mode, as part of Apache itself.
+You can also run it in daemon mode, as one or more processes, separate from Apache. To do this, add two new directive lines to your apache config file:
+WSGIDaemonProcess domain-name user=user-name group=group-name threads=25
+WSGIProcessGroup domain-name
+In the preceding example, user-name and group-name are the operating system user and group names, and the domain-name is the name of your internet domain. A minimal Apache config might look like this:
+<VirtualHost *:80>
+    DocumentRoot /var/www
+    WSGIScriptAlias / /var/www/test/home.wsgi
+    WSGIDaemonProcess mydomain.com user=myuser group=mygroup threads=25
+    WSGIProcessGroup mydomain.com
+    <Directory /var/www/test>
+    Order allow,deny
+    Allow from all
+    </Directory>
+</VirtualHost>
+
+NGINX
+The nginx web server does not have an embedded Python module. Instead, it’s a frontend to a separate WSGI server such as uWSGI or gUnicorn. Together they make a fast and configurable platform for Python web development.
+Other Python Web Servers
+Following are some of the independent Python-based WSGI servers that work like apache or nginx, using multiple processes and/or threads (see Chapter 23) to handle simultaneous requests:
+    CherryPy
+    Pylons
+    Waitress
+Here are some event-based servers, which use a single process but avoid blocking on any single request:
+    Tornado
+    gevent
+    Gunicorn
+I have more to say about events in the discussion about concurrency in Chapter 21.
+Web Server Frameworks
+Web servers handle the HTTP and WSGI details, but you use web frameworks to write the Python code that powers the site. So, let’s talk about frameworks for a while and then get back to alternative ways of serving sites that use them.
+If you want to write a website in Python, there are many (some say too many) Python web frameworks. A web framework handles, at a minimum, client requests and server responses. Most major web frameworks include these tasks:
+    Handle HTTP
+    Perform authentication (authn, or who are you?)
+    Perform authorization (authz, or what can you do?)
+    Manage sessions
+    Get parameters
+    Validate parameters (required/optional, type, range)
+    Handle HTTP verbs
+    Route (functions/classes)
+    Serve static files (HTML, JS, CSS, images)
+    Serve dynamic data (databases, services)
+    Return values and HTTP status
+Optional features include the following:
+    Backend templates
+    Database connectivity, ORMs
+    Rate limiting
+    Asynchronous tasks
+The coming sections contain example code for two frameworks (Bottle and Flask). These are synchronous. Later, I talk about alternatives, especially for database-backed websites. You can find a Python framework to power any site that you can think of.
+Bottle
+Bottle consists of a single Python file, so it’s easy to try out, and it’s easy to deploy later. Bottle isn’t part of standard Python, so to install it, type pip install bottle.
+Here’s code that will run a test web server and return a line of text when your browser accesses the URL http://localhost:9999/. Save it as bottle1.py (Example 24-6).
+Example 24-6. bottle1.py
+from bottle import route, run
+@route('/')
+def home():
+  return "It isn't fancy, but it's my home page"
+run(host='localhost', port=9999)
+Bottle uses the route decorator to associate a URL with the following function; in this case, / (the home page) is handled by the home() function. Make Python run this server script by typing this:
+python bottle1.py
+You should see this on your browser when you access http://localhost:9999/:
+It isn't fancy, but it's my home page
+The run() function executes Bottle’s built-in Python test web server. You don’t need to use this for Bottle programs, but it’s useful for initial development and testing.
+Now, instead of creating text for the home page in code, let’s make a separate HTML file called index.html that contains this line of text:
+My <b>new</b> and <i>improved</i> home page!!!
+Make Bottle return the contents of this file when the home page is requested. Save this script as bottle2.py (Example 24-7).
+Example 24-7. bottle2.py
+from bottle import route, run, static_file
+@route('/')
+def main():
+    return static_file('index.html', root='.')
+run(host='localhost', port=9999)
+In the call to static_file(), we want the file index.html in the directory indicated by root (in this case, ., the current directory). If your previous server example code was still running, stop it. Now, run the new server:
+python bottle2.py
+When you ask your browser to get http:/localhost:9999/, you should see this:
+My new and improved home page!!!
+Let’s add one last example that shows how to pass arguments to a URL and use them. Of course, this will be bottle3.py, which you can see in Example 24-8.
+Example 24-8. bottle3.py
+from bottle import route, run, static_file
+@route('/')
+def home():
+    return static_file('index.html', root='.')
+@route('/echo/<thing>')
+def echo(thing):
+    return "Say hello to my little friend: %s!" % thing
+run(host='localhost', port=9999)`
+We have a new function called echo() and want to pass it a string argument in a URL. That’s what the line @route('/echo/<thing>') in the preceding example does. That <thing> in the route means that whatever was in the URL after /echo/ is assigned to the string argument thing, which is then passed to the echo function. To see what happens, stop the old server if it’s still running and then start it with the new code:
+python bottle3.py
+Then access http://localhost:9999/echo/Mothra in your web browser. You should see the following:
+Say hello to my little friend: Mothra!
+Now, leave bottle3.py running for a minute so that we can try something else. You’ve been verifying that these examples work by typing URLs into your browser and looking at the displayed pages. You can also use client libraries such as Requests to do your work for you. Save this as bottle_test.py (Example 24-9).
+Example 24-9. bottle_test.py
+import requests
+resp = requests.get('http://localhost:9999/echo/Mothra')
+if resp.status_code == 200 and \
+  resp.text == 'Say hello to my little friend: Mothra!':
+    print('It worked! That almost never happens!')
+else:
+    print('Argh, got this:', resp.text)
+Great! Now, run it:
+$ python bottle_test.py
+You should see this in your terminal:
+It worked! That almost never happens!
+This is a little example of a unit test. Chapter 15 provides more details on why tests are good and how to write them in Python.
+There’s more to Bottle than I’ve shown here. In particular, you can try adding these arguments when you call run():
+    debug=True creates a debugging page if you get an HTTP error.
+    reloader=True reloads the page in the browser if you change any of the Python code.
+Bottle is well documented at the developer site.
+Flask
+Bottle is a good initial web framework. If you need a few more cowbells and whistles, try Flask. It started in 2010 as an April Fools’ joke, but enthusiastic response encouraged the author, Armin Ronacher, to make it a real framework. He named the result Flask as a wordplay on Bottle.
+Flask is about as simple to use as Bottle, but it supports many extensions that are useful in professional web development, such as Facebook authentication and database integration. Flask balances ease of use with a rich feature set, but, like an Ikea bookshelf, some assembly is required.
+The Flask package includes the Werkzeug WSGI library and the Jinja2 template library. You can install Flask with pip install flask.
+Let’s replicate the final Bottle example code in Flask. First, though, we need to make a few changes:
+    Flask’s default home directory for static files is static, and URLs for files there also begin with /static. We change the folder to . (current directory) and the URL prefix to '' (empty) to allow the URL / to map to the file index.html.
+    In the run() function, setting debug=True also activates the automatic reloader; Bottle used separate arguments for debugging and reloading.
+Save this file to flask1.py (Example 24-10).
+Example 24-10. flask1.py
+from flask import Flask
+app = Flask(__name__, static_folder='.', static_url_path='')
+@app.route('/')
+def home():
+    return app.send_static_file('index.html')
+@app.route('/echo/<thing>')
+def echo(thing):
+    return "Say hello to my little friend: %s" % thing
+app.run(port=9999, debug=True)
+Then run the server from a terminal or window:
+python flask1.py 
+Test the home page by typing this URL into your browser: http://localhost:9999/.
+You should see the following (as you did for Bottle):
+My new and improved home page!!!
+Try the /echo endpoint: http://localhost:9999/echo/Godzilla.
+You should see this:
+Say hello to my little friend: Godzilla
+Setting debug to True when calling run has another benefit. If an exception occurs in the server code, Flask returns a specially formatted page with useful details about what went wrong, and where. Even better, you can type some commands to see the values of variables in the server program.
+Warning
+Do not set debug = True in production web servers. It exposes too much information about your server to potential intruders.
+So far, the Flask example replicates what we did with Bottle. What can Flask do that Bottle can’t? Flask includes Jinja2, a more extensive templating system. Here’s a tiny example of how to use Jinja2 and Flask together.
+Create a directory called templates and a file within it called flask2.html (Example 24-11).
+Example 24-11. flask2.html
+<html>
+<head>
+<title>Flask2 Example</title>
+</head>
+<body>
+Say hello to my little friend: {{ thing }}
+</body>
+</html>
+Next, we write the server code to grab this template, fill in the value of thing that we passed it, and render it as HTML (I’m dropping the home() function here to save space). Save this as flask2.py (Example 24-12).
+Example 24-12. flask2.py
+from flask import Flask, render_template
+app = Flask(__name__)
+@app.route('/echo/<thing>')
+def echo(thing):
+    return render_template('flask2.html', thing=thing)
+app.run(port=9999, debug=True)
+That thing = thing argument means to pass a variable named thing to the template, with the value of the string thing.
+Ensure that flask1.py isn’t still running, and then start flask2.py:
+python flask2.py
+Now, type this URL: http://localhost:9999/echo/Gamera.
+You should see the following:
+Say hello to my little friend: Gamera
+Let’s modify our template and save it in the templates directory as flask3.html:
+<html>
+<head>
+<title>Flask3 Example</title>
+</head>
+<body>
+Say hello to my little friend: {{ thing }}.
+Alas, it just destroyed {{ place }}!
+</body>
+</html>
+You can pass this second argument to the echo URL in many ways. One approach is to pass an argument as part of the URL path.
+Using this method, you simply extend the URL itself. Save the code shown in Example 24-13 as flask3a.py.
+Example 24-13. flask3a.py
+from flask import Flask, render_template
+app = Flask(__name__)
+@app.route('/echo/<thing>/<place>')
+def echo(thing, place):
+    return render_template('flask3.html', thing=thing, place=place)
+app.run(port=9999, debug=True)
+As usual, stop the previous test server script if it’s still running and then try this new one:
+python flask3a.py
+The URL would look like this: http://localhost:9999/echo/Rodan/McKeesport. And you should see the following:
+Say hello to my little friend: Rodan. Alas, it just destroyed McKeesport!
+Or you can provide the arguments as GET parameters, as shown in Example 24-14; save this as flask3b.py.
+Example 24-14. flask3b.py
+from flask import Flask, render_template, request
+app = Flask(__name__)
+@app.route('/echo/')
+def echo():
+    thing = request.args.get('thing')
+    place = request.args.get('place')
+    return render_template('flask3.html', thing=thing, place=place)
+app.run(port=9999, debug=True)
+Run the new server script:
+python flask3b.py
+This time, use this URL: http://localhost:9999/echo?thing=Gorgo&place=Wilmerding.
+You should get back what you see here:
+Say hello to my little friend: Gorgo. Alas, it just destroyed Wilmerding!
+When a GET command is used for a URL, any arguments are passed in the form &key1=val1&key2=val2&....
+You can also use the dictionary ** operator to pass multiple arguments to a template from a single dictionary (call this flask3c.py), as shown in Example 24-15.
+Example 24-15. flask3c.py
+from flask import Flask, render_template, request
+app = Flask(__name__)
+@app.route('/echo/')
+def echo():
+    kwargs = {}
+    kwargs['thing'] = request.args.get('thing')
+    kwargs['place'] = request.args.get('place')
+    return render_template('flask3.html', **kwargs)
+app.run(port=9999, debug=True)
+That **kwargs acts like thing=thing, place=place. It saves some typing if you have a lot of input arguments.
+The Jinja2 templating language does a lot more than this. If you’ve programmed in PHP, you’ll see many similarities.
+Django
+Django is a popular Python web framework, especially for large sites—even very large sites like Instagram. This framework is worth learning for many reasons, including frequent requests for Django experience in Python job ads. Django includes ORM code (see “The Object-Relational Mapper”) to create automatic web pages for the typical database CRUD functions (create, replace, update, delete) that we looked at in Chapter 23. It also includes some automatic admin pages for these, but they’re designed for internal use by programmers rather than public web page use. You don’t have to use Django’s ORM if you prefer another, such as SQLAlchemy, or direct SQL queries.
+FastAPI
+FastAPI handles both synchronous (WSGI) and asynchronous (ASGI) calls, uses type hints, generates test pages, and is extremely well documented. I recommend using it. I’ve written a separate book about FastAPI, but I’ll condense the salient parts here:
+Asynchronous
+    FastAPI supports (asynchronous) ASGI, thanks to the Starlette library. But it also handles the traditional WSGI (synchronous) calls.
+Routing
+    The connection between URLs and functions is similar to Flask, using decorators.
+Documentation
+    World-class documentation and automatic test-form generation.
+Performance
+    Faster than most Python frameworks, largely from ASGI support.
+Data validation
+    Pydantic checks data types and values, greatly reducing many lines of traditional web verification code.
+Litestar
+Litestar is a newer framework. I have not yet worked with it in production, but it looks very good. It’s similar to FastAPI:
+    Synchronous and asynchronous (ASGI) workflows
+    Uses type hints
+    Self-documenting with OpenAPI
+    Websocket support
+It also goes beyond a bit, with extra support for the following:
+    ORM for database
+    Extension plug-ins
+    Even better performance
+    Authentication and authorization
+    CORS and CSRF protection
+    HTMX
+    Stoplight as well as OpenAPI for API design
+    Data validation methods beyond pydantic
+Database Frameworks
+The web and databases are the peanut butter and jelly of computing: where you find one, you’ll eventually find the other. In real-life Python applications, at some point you’ll probably need to provide a web interface (site and/or API) to a relational database.
+You could build your own with these:
+    A web framework like Bottle or Flask
+    A database package, like DB-API or SQLAlchemy
+    A database driver, like PyMySQL
+Instead, you could use a web/database package like one of these:
+    Connexion
+    Datasette
+    sandman2
+    Flask-Restless
+Or you could use a framework with built-in database support, like Django.
+Your database may not be a relational one. If your data schema varies significantly (with columns that differ markedly across rows), considering a schemaless database might be worthwhile, such as one of the NoSQL databases discussed in Chapter 23.
+Web Services and Automation
+We’ve just looked at traditional web client and server applications, consuming and generating HTML pages. Yet the web has turned out to be a powerful way to glue applications and data in many more formats than HTML.
+webbrowser
+Let’s start with a little surprise. Start a Python session in a terminal window and type the following:
+>>> import antigravity
+This secretly calls the standard library’s webbrowser module and directs your browser to an enlightening Python link.3
+You can use this module directly. This program loads the main Python site’s page in your browser:
+>>> import webbrowser
+>>> url = 'http://www.python.org/'
+>>> webbrowser.open(url)
+True
+This opens the page in a new window:
+>>> webbrowser.open_new(url)
+True
+And this opens the page in a new tab, if your browser supports tabs:
+>>> webbrowser.open_new_tab('http://www.python.org/')
+True
+The webbrowser module makes your browser do all the work.
+webview
+Rather than calling your browser as webbrowser does, webview displays the page in its own window, using your machine’s native GUI. To install on Linux or macOS, use pip install pywebview[qt]. For Windows: pip install pywebview[cef]. See the installation notes if you have problems.
+Here’s an example that gives webview the official US government current time site:
+>>> import webview
+>>> url = input("URL? ")
+URL? http://time.gov
+>>> webview.create_window(f"webview display of {url}", url)
+To stop the program, kill the display window.
+Web APIs and REST
+Often data is available only within web pages. If you want to access it, you need to access the pages through a web browser and read it. If the authors of the website made any changes since the last time you visited, the location and style of the data might have changed.
+Instead of publishing web pages, you can provide data through a web application programming interface (API). Clients access your service by making requests to URLs and getting back responses containing status and data. Instead of HTML pages, the data is in formats that are easier for programs to consume, such as JSON or XML (refer to Chapter 25 for more about these formats).
+Representational State Transfer (REST) was defined by Roy Fielding in his doctoral thesis. Many products claim to have a REST interface or a RESTful interface. In practice, this often means only that they have a web interface—definitions of URLs to access a web service.
+A RESTful service uses the HTTP verbs in specific ways:
+    HEAD gets information about the resource but not its data.
+    GET retrieves the resource’s data from the server. This is the standard method used by your browser. GET should not be used to create, change, or delete data.
+    POST creates a new resource.
+    PUT replaces an existing resource, creating it if it doesn’t exist.
+    PATCH partially updates a resource.
+    DELETE deletes. Truth in advertising!
+A RESTful client can also request one or more content types from the server by using HTTP request headers. For example, a complex service with a REST interface might prefer its input and output to be JSON strings.
+WebSockets
+HTTP is stateless, so it requires a new connection between the client and server every time the client wants something. Oh, and the server can’t initiate a connection with a client.
+A whole category of applications is handled better by a continuous, two-way connection between a client and server. Here are some examples:
+    Stock tickers
+    Games
+    Collaborative document editing
+    Chat
+    Notifications
+    Asset tracking
+This two-way connection is what WebSockets does. Example 24-16 shows a simple WebSockets server and client, copied from the site I just referenced. First, use pip install websockets.
+Example 24-16. websocket_server.py
+import asyncio
+from websockets.asyncio.server import serve
+async def hello(websocket):
+    name = await websocket.recv()
+    print(f"<<< {name}")
+    greeting = f"Hello {name}!"
+    await websocket.send(greeting)
+    print(f">>> {greeting}")
+async def main():
+    async with serve(hello, "localhost", 8765):
+        await asyncio.get_running_loop().create_future()  # run forever
+if __name__ == "__main__":
+    asyncio.run(main())
+Run the server in the background, and its built-in interactive client:
+$ python websocket_server.py &
+Example 24-17 is a client that says hello to the server, gets its response, and prints it.
+Example 24-17. websocket_client.py
+import asyncio
+from websockets.asyncio.client import connect
+async def hello():
+    async with connect("ws://localhost:8765") as websocket:
+        await websocket.send("Hello world!")
+        message = await websocket.recv()
+        print(message)
+if __name__ == "__main__":
+    asyncio.run(hello())
+Run the client:
+$ python websocket_client.py
+<<< Hello world!
+>>> Hello Hello world!!
+Hello Hello world!!
+You can also try the server’s built-in interactive client:
+$ python -m websocket websocket_server.py
+The web framework FastAPI (see “FastAPI”) includes WebSockets support, letting you mix HTTP and WebSocket endpoints.
+Webhooks
+I mentioned notifications in the previous section. That’s also one of the use cases for webhooks. Rather than a URL, you pass a webhook name (a string) to a server that responds as an HTTP client.
+FastAPI includes direct and well-documented support for webhooks.
+Web Frontends
+A web frontend directly faces the user and has the following characteristics:
+    Is usually written in a combination of JavaScript, HTML, and CSS
+    May communicate with a backend server, using tools like those already discussed in this chapter, via APIs or RPCs
+You’ll see in Chapter 25 that data visualization applications can be handled with all-in-one Python tools. In this section, we’ll look at all-in-one Python packages that can produce traditional text-oriented web pages.
+htmx
+htmx is a JavaScript library that hides the JavaScript. Instead, you specify special HTML tags that run JavaScript invisibly. The library lets you do things that plain HTML can’t:
+    Any HTML element (not just A and FORM) can make HTTP requests to a backend.
+    HTTP requests can be generated by other events (not just A clicks or FORM submits).
+    Any HTML verb (not just GET and POST) can be used.
+    AJAX requests can be made, with HTML results targeted to any HTML element.
+This lets developers who aren’t fluent in modern JavaScript create single- and multi-page applications in HTML. The htmx documentation has a useful page of examples.
+FastHTML
+A traditional web service might have a Python backend and generate web pages in various ways:
+    Full frontend (e.g., React) components with JSON APIs to a backend
+    A backend returning separate static HTML and JavaScript files
+    A backend mixing code and HTML with Jinja2 templates
+FastHTML is a newer Python library that can produce full web pages. A walk-through summarizes how it works and shows example code. Python functions like Div() and P() mirror their HTML (and our new friend htmx!) counterparts.
+To install it, use pip install python-fasthtml. Example 24-18 is a minimal example, adapted from some of the documents pages.
+Example 24-18. fast.py
+from fasthtml.common import FastHTML, serve
+app = FastHTML()
+@app.get("/")
+def home():
+    return "<p>Yes, it works.</p>"
+serve()
+That’s server code, similar to what you might create with Flask or FastAPI. If you saved that to the file fast.py, you run it in a test web server with python fast.py.
+Give the URL localhost:5001 to your web browser, and you’ll see: Yes, it works. The test web server will print these logs:
+INFO:     Will watch for changes in these directories: ['...']
+INFO:     Uvicorn running on http://0.0.0.0:5001 (Press CTRL+C to quit)
+INFO:     Started reloader process [46447] using WatchFiles
+INFO:     Started server process [46449]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:49884 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49884 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+FastHTML might appeal to Python developers who, like me, can no longer claim to be “full stack” developers. Instead of editing an HTML file (with or without htmx features), you write everything in Python.
+Crawl and Scrape
+Sometimes you might want a little bit of information (for example, a movie rating, stock price, or product availability), but what you need is available only in HTML pages, surrounded by ads and extraneous content.
+You could manually extract what you’re looking for by doing the following:
+    Type the URL into your browser.
+    Wait for the remote page to load.
+    Look through the displayed page for the information you want.
+    Write it down somewhere.
+    Possibly repeat the process for related URLs.
+However, automating some or all of these steps is much more satisfying. An automated web fetcher is called a crawler or spider. After the contents have been retrieved from the remote web servers, a scraper parses it to find the needle in the haystack.
+Scrapy
+If you need an industrial-strength combined crawler and scraper, Scrapy is worth downloading. The pip install scrapy command installs the module and a standalone command-line Scrapy program.
+Scrapy is a framework, not just a module such as Beautiful Soup. Scrapy does more, but it’s more complex to set up. To learn more about Scrapy, read “Scrapy at a Glance” and the tutorial, both in the documentation.
+Beautiful Soup
+If you already have the HTML data from a website and just want to extract data from it, Beautiful Soup is a good choice. HTML parsing is harder than it sounds. This is because much of the HTML on public web pages is technically invalid: unclosed tags, incorrect nesting, and other complications. If you try to write your own HTML parser by using regular expressions (discussed in “Text Strings: Regular Expressions”), you’ll soon encounter these messes.
+To install Beautiful Soup, type the following command (don’t forget the final 4, or pip will try to install an older version and probably fail): pip install beautifulsoup4.
+Now, let’s use Beautiful Soup to get all the links from a web page. The HTML a element represents a link, and href is its attribute representing the link destination. Example 24-19 defines the function get_links() to do the grunt work, and a main program to get one or more URLs as command-line arguments.
+Example 24-19. links.py
+def get_links(url):
+    import requests
+    from bs4 import BeautifulSoup as soup
+    result = requests.get(url)
+    page = result.text
+    doc = soup(page, features="html.parser")
+    links = [element.get('href') for element in doc.find_all('a')]
+    return links
+if __name__ == '__main__':
+    import sys
+    for url in sys.argv[1:]:
+        print('Links in', url)
+        for num, link in enumerate(get_links(url), start=1):
+            print(num, link)
+        print()
+I saved this program as links.py and then ran this command:
+$ python links.py http://boingboing.net
+Here are the first few lines that it printed:
+Links in http://boingboing.net
+1 https://boingboing.net
+2 https://boingboing.net/search
+3 https://store.boingboing.net
+4 https://boingboing.net/search
+5 https://store.boingboing.net
+6 https://boingboing.net/blog
+7 https://bbs.boingboing.net
+8 https://bbs.boingboing.net/faq
+9 https://store.boingboing.net
+10 https://bit.ly/boingboingdealssupport
+Requests-HTML
+Kenneth Reitz, the author of the popular web client package Requests, has written a new scraping library called requests-html (for Python 3.6 and newer versions). It gets a page and processes its elements, so you can find, for example, all its links, or all the contents or attributes of any HTML element.
+Requests-HTML has a clean design, similar to Requests and other packages by the same author. Overall, it may be easier to use than Beautiful Soup or Scrapy.
+This program searches for videos by using an API at the Internet Archive. This is one of the few APIs that allows anonymous access and should still be around after this book is printed.
+Note
+Most web APIs require you to first get an API key and then provide it every time you access that API. Why? It’s the tragedy of the commons: free resources with anonymous access are often overused or abused. That’s why we can’t have nice things.
+The following program (save Example 24-20 as iamovie.py) does the following:
+    Prompts you for part of a movie or video title
+    Searches for it at the Internet Archive
+    Returns a list of identifiers, names, and descriptions
+    Lists them and asks you to select one
+    Displays that video in your web browser
+Example 24-20. iamovie.py
+"""Find a video at the Internet Archive
+by a partial title match and display it."""
+
+import sys
+import webbrowser
+import requests
+
+def search(title):
+    """Return a list of 3-item tuples (identifier,
+       title, description) about videos
+       whose titles partially match :title."""
+    search_url = "https://archive.org/advancedsearch.php"
+    params = {
+        "q": f"title:({title}) AND mediatype:(movies)",
+        "fl": "identifier,title,description",
+        "output": "json",
+        "rows": 20,
+        "page": 1,
+        }
+    resp = requests.get(search_url, params=params)
+    data = resp.json()
+    docs = [(doc["identifier"], doc["title"], doc["description"])
+            for doc in data["response"]["docs"]]
+    return docs
+
+def choose(docs):
+    """Print line number, title and truncated description for
+       each tuple in :docs. Get the user to pick a line
+       number. If it's valid, return the first item in the
+       chosen tuple (the "identifier"). Otherwise, return None."""
+    last = len(docs) - 1
+    for num, doc in enumerate(docs):
+        print(f"{num}: ({doc[1]}) {doc[2][:30]}...")
+    index = input(f"Which would you like to see (0 to {last})? ")
+    try:
+        return docs[int(index)][0]
+    except:
+        return None
+
+def display(identifier):
+    """Display the Archive video with :identifier in the browser"""
+    details_url = f"https://archive.org/details/{identifier}"
+    print("Loading", details_url)
+    webbrowser.open(details_url)
+
+def main(title):
+    """Find any movies that match :title.
+       Get the user's choice and display it in the browser."""
+    identifiers = search(title)
+    if identifiers:
+        identifier = choose(identifiers)
+        if identifier:
+            display(identifier)
+        else:
+            print("Nothing selected")
+    else:
+        print("Nothing found for", title)
+
+if __name__ == "__main__":
+    main(sys.argv[1])
+
+The search() function uses Requests to access the URL, get the results, and convert them to JSON. The other functions handle everything else. You’ll see usage of list comprehensions, string slices, and other things that you’ve seen in previous chapters.
+Here’s what I got when I ran this program and searched for eegah:
+
+$ python iamovie.py eegah
+0: (Cinema Insomnia presents Eegah) Used with permission for The V...
+1: (Fright Night Theatre presents Eegah!) Used with permission for the V...
+2: (Creature Feature S1-E15 - The Wasp Woman - Eegah) Air Date 04/10/2021 ...
+3: (It's "Eegah" - Part 2) Wait till you see how this end...
+4: (It's "Eegah" - Part 1) Count Gore De Vol shares some ...
+5: (Eegah) This film has fallen into the ...
+6: (Eegah) Teenagers stumble across a pre...
+7: (eegah) Horror...
+8: (EEGAH trailer) The infamous modern-day cavema...
+9: (Midnight Movie show: eegah) Arch Hall Jr...
+10: (Eegah) From IMDb : While driving thro...
+11: (Eegah 1962 Slightly Enhanced) This is a slightly "enhanced" ...
+12: (Eegah) A giant caveman has lived near...
+13: (Bordello of Horror presents Eegah) The Vortexx Archives For use o...
+14: (Hexan Arcane presents Eegah 1962) The Horror Host Network The Vo...
+15: (Eegah ½ 1962 [1:32:32]; Comedy/Fantasy [Great Quality];) Often consid ...
+16: (Eegah (1962)) While driving through the dese...
+17: (Stoneham Cinema - Eegah) Eegah...
+18: (EEGAH (1962) RE EDIT) A Re-edit of the notorious 196...
+19: (SCCtv's Professor Fred's Movie Marvels - Eegah) SCCtv's Professor ...
+Which would you like to see (0 to 19)? 18
+Loading https://archive.org/details/eegah-1962-re-edit
+
+The program displayed the page in my browser, ready to run.
+Review/Preview
+One chapter doesn’t do the web justice. This was a review of the ways that Python can be used as a web client, server, and intermediate tool.
+The next chapter features an area in which Python has gone boom (in a good way): data science.
+NeXT was a company founded by Steve Jobs during his exile from Apple.
+One of its authors, Marc Andreesen, used the blue color for web links, added the IMG tag to HTML, joined Netscape, and is now a billionaire venture capitalist.
+If you don’t see the link for some reason, visit xkcd.
+Unappealing terms to arachnophobes.
+As you may remember, I used another Archive API in the main example program we looked at in Chapter 1.
