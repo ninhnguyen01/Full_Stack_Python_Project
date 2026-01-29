@@ -1,0 +1,329 @@
+Chapter 23. Data in a Box: Persistent Storage
+One thing a computer can do that most humans can’t is be sealed up in a cardboard box and sit in a warehouse.
+    - Jack Hande
+An active program accesses data stored in random access memory, or RAM. RAM is very fast, but it is expensive and requires a constant supply of power; if the power goes out, all the data in memory is lost. Disk drives are slower than RAM but have more capacity, cost less, and retain data even after someone trips over the power cord. Thus, a huge amount of effort in computer systems has been devoted to making the best trade-offs between storing data on disk and RAM. As programmers, we need persistence: storing and retrieving data using nonvolatile media such as disks.
+This chapter is all about the different flavors of data storage, each optimized for different purposes: flat files, structured files, and databases. File operations like input and output are covered in Chapter 20.
+Text Files
+The simplest persistence is a plain old flat text file. This works well if your data has a simple structure and you exchange all of it between disk and memory. Plain text data might be suitable for this treatment.
+A record is a term for one chunk of related data, consisting of individual fields.
+In a padded text file, each field in a record has a fixed width, and the data is padded (usually with space characters) to that width in the file, giving each line (record) the same width. A programmer can use seek() to jump around the file and read and write only the records and fields that are needed.
+Tabular and Delimited Text Files
+With simple text files, the only level of organization is the line. Sometimes you want more structure than that. You might want to save data for your program to use later, or send data to another program.
+Text files can have many formats, and here’s how you can distinguish them:
+    A separator, or delimiter, character like a tab (\t), comma (,), or vertical bar (|). This is an example of the comma-separated values (CSV) format.
+    < and > around tags. Examples include XML and HTML.
+    Punctuation. An example is JavaScript Object Notation (JSON).
+    Indentation. An example is YAML (which is recursively defined as YAML Ain’t Markup Language).
+    Miscellaneous, such as configuration files for programs.
+Each of these structured file formats can be read and written by at least one Python module.
+CSV
+Delimited files are often used as an exchange format for spreadsheets and databases. You could read CSV files manually, a line at a time, splitting each line into fields at comma separators, and adding the results to data structures such as lists and dictionaries. But it’s better to use the standard csv module, because parsing these files can get more complicated than you think. Following are a few important characteristics to keep in mind when working with CSV:
+    Some have alternate delimiters besides a comma; | and \t (tab) are common.
+    Some have escape sequences. If the delimiter character can occur within a field, the entire field might be surrounded by quote characters or preceded by an escape character.
+    Files have different line-ending characters. Unix uses \n, Microsoft uses \r\n, and Apple used to use \r but now uses \n.
+    The first line may contain column names.
+First, we see how to read and write a list of rows, each containing a list of columns:
+That with open line is a context manager that automatically closes the file when its code block ends; see “Close Files Automatically by Using with”.
+This creates the file villains with these lines:
+Doctor,No
+Rosa,Klebb
+Mister,Big
+Auric,Goldfinger
+Ernst,Blofeld
+We’re taking advantage of the structure created by the reader() function. It created rows in the cin object that we can extract in a for loop.
+Using reader() and writer() with their default options, the columns are separated by commas and the rows by line feeds.
+The data can be a list of dictionaries rather than a list of lists. Let’s read the villains file again, this time using the new DictReader() function and specifying the column names:
+OrderedDict([('first', 'Ernst'), ('last', 'Blofeld')])]
+That OrderedDict is there for compatibility with versions of Python before 3.6, when dictionaries kept their order by default.
+Let’s rewrite the CSV file by using the new DictWriter() function. We also call writeheader() to write an initial line of column names to the CSV file:
+Now, let’s read back the file. By omitting the fieldnames argument in the Dic⁠t​Reader() call, we tell it to use the values in the first line of the file (first,last) as column labels and matching dictionary keys:
+Delimited files convey only two dimensions: rows (lines) and columns (fields within a line). If you want to exchange data structures among programs, you need a way to encode hierarchies, sequences, sets, and other structures as text.
+Extensible Markup Language (XML) is a prominent markup format that does this. It uses tags to delimit data, as in this 
+Following are a few important characteristics of XML:
+    Tags begin with a < character. The tags in this sample are menu, breakfast, lunch, dinner, and item.
+    Whitespace is ignored.
+    Usually a start tag such as <menu> is followed by other content and then a final matching end tag such as </menu>.
+    Tags can nest within other tags to any level. In this example, item tags are children of the breakfast, lunch, and dinner tags; they, in turn, are children of menu.
+    Optional attributes can occur within the start tag. In this example, price is an attribute of item.
+    Tags can contain values. In this example, each item has a value, such as pancakes for the second breakfast item.
+    If a tag named thing has no values or children, it can be expressed as the single tag by including a forward slash just before the closing angle bracket, such as <thing/>, rather than a start and end tag, like <thing></thing>.
+    The choice of where to put data—attributes, values, child tags—is somewhat arbitrary. For instance, we could have written the last item tag as <item price="$8.00" food="spaghetti"/>.
+XML is often used for data feeds and messages and has subformats like RSS and Atom. Some industries have many specialized XML formats, such as the finance field.
+XML’s über-flexibility has inspired multiple Python libraries that differ in approach and capabilities.
+The simplest way to parse XML in Python is by using the standard ElementTree module. Here’s a little program to parse the menu.xml file and print some tags and attributes:
+For each element in the nested lists, tag is the tag string, and attrib is a dictionary of its attributes. ElementTree has many other ways of searching XML-derived data, modifying it, and even writing XML files. The ElementTree documentation has the details.
+Other standard Python XML libraries include the following:
+xml.dom
+    The Document Object Model (DOM), familiar to JavaScript developers, represents web documents as hierarchical structures. This module loads the entire XML file into memory and lets you access all the pieces equally.
+xml.sax
+    Simple API for XML, or SAX, parses XML on the fly, so it does not have to load everything into memory at once. Therefore, it can be a good choice if you need to process very large streams of XML.
+An XML Security Note
+You can use all the formats described in this chapter to save objects to files and read them back again. It’s possible to exploit this process and cause security problems.
+For example, the following XML snippet from the “Billion Laughs Attack” Wikipedia page defines 10 nested entities, each expanding the lower level 10 times for a total expansion of one billion:
+The bad news: the billion laughs would blow up all the XML libraries mentioned in the previous sections. Defused XML lists this attack and others, along with the vulnerability of Python libraries.
+The link shows how to change the settings for many of the libraries to avoid these problems. Also, you can use the defusedxml library as a security frontend for the other libraries:
+The standard Python site also has its own page on XML vulnerabilities.
+HTML
+Gigagobs of data are saved as Hypertext Markup Language (HTML), the basic document format of the web. The problem is that much of it doesn’t follow the HTML rules, which can make it difficult to parse. HTML is a better display format than a data interchange format. Because this chapter is intended to describe fairly well-defined data formats, I’ve separated out the discussion about HTML to Chapter 24.
+JSON
+JavaScript Object Notation (JSON) has become a popular data interchange format, beyond its JavaScript origins. The JSON format is a subset of JavaScript, and often legal Python syntax as well. Its close fit to Python makes it a good choice for data interchange among programs. You’ll see many examples of JSON for web development in Chapter 24.
+Unlike the variety of XML modules, there’s one main JSON module, with the unforgettable name json. This program encodes (dumps) data to a JSON string and decodes (loads) a JSON string back to data. In this next example, let’s build a Python data structure containing the data from the earlier XML example:
+Next, encode the data structure (menu) to a JSON string (menu_json) by using dumps():
+And now, let’s turn the JSON string menu_json back into a Python data structure (menu2) by using loads():
+The menu and menu2 objects are both dictionaries with the same keys and values.
+You might get an exception while trying to encode or decode some objects, including objects such as datetime (covered in detail in Chapter 19), as demonstrated here:
+This can happen because the JSON standard does not define date or time types; it expects you to define how to handle them. You could convert the datetime to something JSON understands, such as a string or an epoch value (see Chapter 19):
+If the datetime value could occur in the middle of normally converted data types, making these special conversions might be annoying. You can modify the way JSON is encoded by using inheritance, which is described in Chapter 11. Python’s JSON documentation gives an example of this for complex numbers, which also makes JSON play dead. Let’s modify the code for datetime:
+The new class DTEncoder is a subclass, or child class, of JSONEncoder. We need to override its only default() method to add datetime handling. Inheritance ensures that everything else will be handled by the parent class.
+The isinstance() function checks whether the object obj is of the class datetime.datetime. Because everything in Python is an object, isinstance() works everywhere:
+For JSON and other structured text formats, you can load from a file into data structures without knowing anything about the structures ahead of time. Then you can walk through the structures by using isinstance() and type-appropriate methods to examine their values. For example, if one of the items is a dictionary, you can extract contents through keys(), values(), and items().
+After making you do it the hard way, it turns out that there’s an even easier way to convert datetime objects to JSON:
+That default=str tells json.dumps() to apply the str() conversion function for data types that it doesn’t understand. This works because the definition of the datetime.datetime class includes a __str__() method.
+YAML
+Similar to JSON, YAML has keys and values, but handles more data types such as dates and times. The standard Python library does not yet include YAML handling, so you need to install a third-party library named PyYAML to manipulate it. The load() function converts a YAML string to Python data, whereas dump() does the opposite.
+The following YAML file, mcintyre.yaml, contains information on the Canadian poet James McIntyre, including two of his poems:
+Values such as true, false, on, and off are converted to Python Booleans. Integers and strings are converted to their Python equivalents. Other syntax creates lists and dictionaries:
+The data structures that are created match those in the YAML file, which in this case are more than one level deep in places. You can get the title of the second poem with this dict/list/dict reference:
+PyYAML can load Python objects from strings, and this is dangerous. Use safe_load() instead of load() if you’re importing YAML that you don’t trust. Better yet, always use safe_load(). Read Ned Batchelder’s blog post “War Is Peace” for a description of how unprotected YAML loading compromised the Ruby on Rails platform.
+TOML
+Tom’s Obvious Minimal Language (TOML) is like YAML, but easier to understand and parse. TOML supports comments and is handy for config files, and unlike YAML, has a module in the Python standard library: tomllib.
+Tablib
+One third-party package lets you import, export, and edit tabular data in CSV, JSON, or YAML format, as well as Microsoft Excel, pandas DataFrame, and a few others. Install Tablib with pip install tablib, and look at the docs.
+Configuration Files
+Most programs offer various options, or settings. Dynamic ones can be provided as program arguments, but long-lasting ones need to be kept somewhere. The temptation to define your own quick-and-dirty config file format is strong—but resist it. The format often turns out to be dirty but not so quick. You need to maintain both the writer program and the reader program (sometimes called a parser). Good alternatives are available that you can just drop into your program, including those in the previous sections.
+Here, we’ll use the standard configparser module, which handles Windows-style .ini files. Such files have sections of key = value definitions. Here’s a minimal settings.cfg file:
+Other options are available, including fancier interpolation. See the configparser documentation. If you need deeper nesting than two levels, try YAML or JSON.
+Binary Files
+Some file formats were designed to store particular data structures but are neither relational nor NoSQL databases. The sections that follow present some of them.
+Padded Binary Files and Memory Mapping
+Padded binary files are similar to padded text files, but the contents may be binary, and the padding byte may be \x00 instead of a space character. Each record has a fixed size, as does each field within a record. This makes it simpler to seek() throughout the file for the desired records and fields. Every operation on the data is manual, so this approach tends to be used only in very low-level (e.g., close to the hardware) situations.
+Data in this form can be memory mapped with the standard mmap library. See some examples and the standard documentation.
+Spreadsheets
+Spreadsheets, notably Microsoft Excel, are widespread binary data formats. If you can save your spreadsheet to a CSV file, you can read it by using the standard csv module described earlier. This will work for a binary XLS file, xlrd, or Tablib (mentioned in “Tablib”).
+HDF5
+HDF5 is a binary data format for multidimensional or hierarchical numeric data. It’s used mainly in science, where fast random access to large datasets (gigabytes to terabytes) is a common requirement. Even though HDF5 could be a good alternative to databases in some cases, for some reason HDF5 is almost unknown in the business world. It’s best suited to write once, read many (WORM) applications for which database protection against conflicting writes is not needed. Here are some modules that you might find useful:
+    h5py is a full-featured low-level interface. Read the documentation and code.
+    PyTables is a bit higher-level, with database-like features. Read the documentation and code.
+I’m mentioning HDF5 here in case you have a need to store and retrieve large amounts of data and are willing to consider something outside the box as well as the usual database solutions. A good example of this kind of data is the Million Song dataset, which has downloadable song data in HDF5 and SQLite formats.
+TileDB
+A recent successor to HDF5 for dense or spare array storage is TileDB. Install the Python interface (which includes the TileDB library itself) by running pip install tiledb. This is aimed at scientific data and applications.
+Relational Databases
+Relational databases are only about 40 years old but are ubiquitous in the computing world. You’ll almost certainly have to deal with them at one time or another. When you do, you’ll appreciate what they provide:
+    Access to data by multiple simultaneous users
+    Protection from corruption by those users
+    Efficient methods to store and retrieve the data
+    Data defined by schemas and limited by constraints
+    Joins to find relationships across diverse types of data
+    A declarative (rather than imperative) query language: Structured Query Language (SQL)
+These are called relational because they show relationships among different kinds of data in the form of rectangular tables. For instance, in our menu example earlier, there is a relationship between each item and its price.
+A table is a rectangular grid of columns (data fields) and rows (individual data records), similar to a spreadsheet. The intersection of a row and column is a table cell. To create a table, name it and specify the order, names, and types of its columns. Each row has the same columns, although a column may be defined to allow missing data (called nulls) in cells. In the menu example, you could create a table with one row for each item being sold. Each item has the same columns, including one for the price.
+A column or group of columns is usually the table’s primary key; its values must be unique in the table. This prevents adding the same data to the table more than once. This key is indexed for fast lookups during queries. An index works a little like a book index, making it fast to find a particular row.
+Each table lives within a parent database, like a file within a directory. Two levels of hierarchy help keep things organized a little better.
+Note
+Yes, the word database is used in multiple ways: as the server, the table container, and the data stored therein. If you’ll be referring to all of them at the same time, it might help to call them database server, database, and data.
+If you want to find rows by a nonkey column value, define a secondary index on that column. Otherwise, the database server must perform a table scan—a brute-force search of every row for matching column values.
+Tables can be related to each other with foreign keys, and column values can be constrained to these keys.
+SQL
+SQL is not an API or a protocol, but a declarative language: you say what you want rather than how to do it. It’s the universal language of relational databases. SQL queries are text strings sent by a client to the database server, which in turn figures out what to do with them.
+There have been various SQL standard definitions, and all database vendors have added their own tweaks and extensions, resulting in many SQL dialects. If you store your data in a relational database, SQL gives you some portability. Still, dialect and operational differences can make it difficult to move your data to another type of database. SQL statements are divided into two main categories:
+Data definition language (DDL)
+    Handles creation, deletion, constraints, and permissions for tables, databases, and users
+Data manipulation language (DML)
+    Handles data insertions, selects, updates, and deletions
+Why all the CAPITAL LETTERS? SQL is case-insensitive, but it’s a tradition (don’t ask me why) to SHOUT its keywords in code examples to distinguish them from column names.
+The main DML operations of a relational database are often known by the acronym CRUD:
+    Create by using the SQL INSERT statement
+    Read by using SELECT
+    Update by using UPDATE
+    Delete by using DELETE
+An application programming interface (API) is a set of functions that you can call to get access to a service. DB-API is Python’s standard API for accessing relational databases. Using it, you can write a single program that works with multiple kinds of relational databases instead of writing a separate program for each one. It’s similar to Java Database Connectivity (JDBC) or Perl DBI.
+The API’s main functions are the following:
+connect()
+    Make a connection to the database; this can include arguments such as username, password, server address, and others.
+cursor()
+    Create a cursor object to manage queries.
+execute() and executemany()
+    Run one or more SQL commands against the database.
+fetchone(), fetchmany(), and fetchall()
+    Get the results from execute().
+The Python database modules in the coming sections conform to DB-API, often with extensions and some differences in details.
+SQLite
+SQLite is a good, light, open source relational database. It’s implemented as a standard Python library and stores databases in normal files. These files are portable across machines and operating systems, making SQLite a very portable solution for simple relational database applications. It isn’t as full featured as MySQL or PostgreSQL, but it does support SQL, and it manages multiple simultaneous users. Web browsers, smartphones, and other applications use SQLite as an embedded database.
+You begin with a connect() to the local SQLite database file that you want to use or create. This file is the equivalent of the directory-like database that parents tables in other servers. The special string :memory: creates the database in memory only; this is fast and useful for testing but will lose data when your program terminates or if your computer goes down.
+For the next example, let’s make a database called enterprise.db and the table zoo to manage our thriving roadside petting zoo business. The table columns are as follows:
+critter
+    A variable-length string and our primary key
+count
+    An integer count of our current inventory for this animal
+damages
+    The dollar amount of our current losses from animal–human interactions
+Let’s create the zoo table:
+Python’s triple quotes are handy when creating long strings such as SQL queries.
+Now, add some animals to the zoo:
+You can use a safer way to insert data, using a placeholder:
+This time, we use three question marks in the SQL to indicate that we plan to insert three values, and then pass those three values as a tuple to the execute() function. Placeholders handle tedious details such as quoting. They protect you against SQL injection—a kind of external attack that inserts malicious SQL commands into the system (and which is common on the web).
+Now, let’s see if we can get all our animals out again:
+Let’s get them again, but ordered by their counts:
+Hey, we wanted them in descending order:
+Which type of animal is costing us the most?
+You would have thought it was the bears. It’s always best to check the actual data.
+Before we leave SQLite, we need to clean up. If we opened a connection and a cursor, we need to close them when we’re done:
+DuckDB
+DuckDB is similar to SQLite: it runs as part of your program, not a separate process or server. One difference is that its focus is online analytical processing (OLAP). DuckDB has SQL that’s extended to read and write external file formats like CSV, JSON, and even Amazon Simple Storage Service (S3) buckets. I’ll say more about DuckDB in Chapter 25.
+MySQL
+MySQL is a popular open source relational database. Unlike SQLite, it’s an actual server, so clients can access it from different devices across the network.	
+The most popular driver is psycopg2, but its installation requires the PostgreSQL client libraries.
+SQLAlchemy
+SQL is not quite the same for all relational databases, and DB-API takes you only so far. Each database implements a particular dialect reflecting its features and philosophy. Many libraries try to bridge these differences in one way or another. The most popular cross-database Python library is SQLAlchemy.
+It isn’t in the standard library, but it’s well known and used by many people. You can install it on your system by using this command:
+pip install sqlalchemy
+You can use SQLAlchemy on several levels:
+    The lowest level manages open database connection pools (caching these saves startup time), executes SQL commands, and returns results. This is closest to the DB-API.
+    Next up is the SQL expression language, which lets you express queries in a more Python-oriented way.
+    Highest is the ORM (Object Relational Mapper) layer, which uses the SQL Expression Language and binds application code with relational data structures.
+As we go along, you’ll understand what the terms mean in those levels. SQLAlchemy works with the database drivers documented in the previous sections. You don’t need to import the driver; the initial connection string you provide to SQLAlchemy will determine it. That string looks like this:
+dialect + driver :// user : password @ host : port / dbname
+The values you put in this string are as follows:
+dialect
+    The database type
+driver
+    The particular driver you want to use for that database
+user and password
+    Your database authentication strings
+host and port
+    The database server’s location (: port is needed only if it’s not the standard one for this server)
+dbname
+    The database to initially connect to on the server
+See also the SQLAlchemy details on dialects for MySQL, SQLite, PostgreSQL, and other databases.
+The engine layer
+First, let’s try the lowest level of SQLAlchemy, which does little more than the base DB-API functions.
+Let’s try it with SQLite, which is already built into Python. The connection string for SQLite skips the host, port, user, and password. The dbname tells SQLite which file to use to store your database. If you omit the dbname, SQLite builds a database in memory. If the dbname starts with a slash (/), it’s an absolute filename on your computer (as in Linux and macOS; for example, C:\ on Windows). Otherwise, it’s relative to your current directory.
+The following segments are all part of one program, separated here for explanation.
+To begin, you need to import what we need. The following is an example of an import alias, which lets us use the string sa to refer to SQLAlchemy methods. I do this mainly because sa is a lot easier to type than sqlalchemy:
+Connect to the database and create the storage for it in memory (the argument string sqlite:///:memory: also works):
+Create a database table called zoo that comprises three columns:
+Running conn.execute() returns a SQLAlchemy object called a ResultProxy. You’ll soon see what to do with it.
+Now, insert three sets of data into your new empty table:
+Next, ask the database for everything that we just put in:
+In SQLAlchemy, rows is not a list; it’s that special ResultProxy object that we can’t print directly:
+However, you can iterate over it like a list, so we can get a row at a time:
+That was almost the same as the SQLite DB-API example that you saw earlier. The one advantage is that we didn’t need to import the database driver at the top; SQLAlchemy figured that out from the connection string. Just changing the connection string would make this code portable to another type of database. SQLAlchemy supports various SQL dialects. Another plus is SQLAlchemy’s connection pooling, which you can read about at its documentation site.
+The SQL Expression Language
+The next level up is SQLAlchemy’s SQL Expression Language. It introduces functions to create the SQL for various operations. The Expression Language handles more of the SQL dialect differences than the lower-level engine layer does. It can be a handy middle-ground approach for relational database applications.
+Here’s how to create and populate the zoo table. Again, these are successive fragments of a single program.
+The import and connection are the same as before:
+To define the zoo table, we begin using some of the Expression Language instead of SQL:
+Check out the parentheses in that multiline call in the preceding example. The structure of the Table() method matches the structure of the table. Just as our table contains three columns, there are three calls to Column() inside the parentheses of the Table() method call.
+Meanwhile, zoo is a magic object that bridges the SQL database world and the Python data structure world.
+Insert the data with more Expression Language functions:
+Next, create the SELECT statement (zoo.select() selects everything from the table represented by the zoo object, just as SELECT * FROM zoo would do in plain SQL):
+Finally, get the results:
+The Object-Relational Mapper
+In the previous section, the zoo object was a midlevel connection between SQL and Python. At the top layer of SQLAlchemy, the ORM uses the SQL Expression Language but tries to make the actual database mechanisms invisible. You define classes, and the ORM handles how to get their data in and out of the database. The basic idea behind that complicated term, object-relational mapper, is that you can refer to objects in your code and thus stay close to the way Python likes to operate while still using a relational database.
+We’ll define a Zoo class and hook it into the ORM. This time, we make SQLite use the zoo.db file so that we can confirm that the ORM worked.
+As in the previous two sections, the snippets that follow are actually one program separated by explanations. Don’t worry if you don’t understand some of it. The SQLAlchemy documentation has all the details—and this stuff can get complex. I just want you to get an idea of the amount of work this requires, so you can decide which of the approaches discussed in this chapter suits you.
+The initial import is the same, but this time we need something else also:
+Here, we make the connection:
+Now, we get into SQLAlchemy’s ORM. We define the Zoo class and associate its attributes with table columns:
+The following line magically creates the database and table:
+You can then insert data by creating Python objects. The ORM manages these internally:
+Next, we get the ORM to take us to SQL land. We create a session to talk to the database:
+Within the session, we write the three objects that we created to the database. The add() function adds one object, and add_all() adds a list:
+Finally, we need to force everything to complete:
+The purpose of this section is to show what an ORM is and how it works at a high level. There is a full tutorial on the SQLAlchemy site. After reading this, decide which of the following levels would best fit your needs:
+    Plain DB-API, as in “SQLite”
+    The SQLAlchemy engine
+    The SQLAlchemy Expression Language
+    The SQLAlchemy ORM
+Using an ORM to avoid the complexities of SQL seems like a natural choice. Should you use one? Some people think ORMs should be avoided, but others think the criticism is overdone. Whoever’s right, an ORM is an abstraction, and all abstractions are leaky and break down at some point. When your ORM doesn’t do what you want, you must figure out both how it works and how to fix it in SQL. To borrow an internet meme:
+    Some people, when confronted with a problem, think, “I know, I’ll use an ORM.” Now they have two problems.
+Use ORMs for simple applications or applications that map data pretty directly to database tables. If the application is that simple, you may consider using straight SQL or the SQL Expression Language.
+Other Database Access Packages
+If you’re looking for Python tools that will handle multiple databases, with more features than the bare DB-API but less than SQLAlchemy, these are worth a look:
+    dataset claims the goal “databases for lazy people.” It’s built on SQLAlchemy and provides a simple ORM for SQL, JSON, and CSV storage.
+    Records bills itself as “SQL for humans.” It supports only SQL queries, using SQLAlchemy internally to handle SQL dialect issues, connection pooling, and other details. Its integration with Tablib (mentioned in “Tablib”) lets you export data to CSV, JSON, and other formats.
+NoSQL Data Stores
+Relational tables can be visualized as rectangles (rows and columns), but data comes in many shapes and may be difficult to fit without significant effort and contortion. It’s a square-peg-in-a-round-hole problem.
+Some nonrelational databases have been written to allow more flexible data definitions as well as to process very large datasets or support custom data operations. These datasets have been collectively labeled NoSQL (formerly meaning no SQL, now the less confrontational not only SQL).
+The simplest type of NoSQL databases are key-value stores. One popularity ranking from db-engines.com shows some that I cover in the following sections.
+The dbm Family
+The dbm formats were around long before the NoSQL label was coined. They’re simple key-value stores, often embedded in applications such as web browsers to maintain various settings. A dbm database is like a Python dictionary in the following ways:
+    You can assign a value to a key, and it’s automatically saved to the database on disk.
+    You can query a key for its value.
+The following is a quick example. The second argument to the following open() method is r to read, w to write, and c for both, creating the file if it doesn’t exist:
+To create key-value pairs, just assign a value to a key just as you would for a dictionary:
+Let’s pause and check what we have so far:
+Now close, then reopen, to see whether the program saved what we gave it:
+Keys and values are stored as bytes. You cannot iterate over the database object db, but you can get the number of keys by using len(). The get() and setdefault() functions work as they do for dictionaries.
+Memcached
+Memcached is a fast in-memory key-value cache server. It’s often put in front of a database or used to store web-server session data.
+You can download versions for Linux and macOS. If you want to try out this section, you’ll need a running Memcached server and Python driver.
+Many Python drivers exist; one that works with Python 3 is python3-memcached, which you can install by using this command:
+pip install python-memcached
+To use it, connect to a Memcached server, after which you can do the following:
+    Set and get values for keys
+    Increment or decrement a value
+    Delete a key
+Data keys and values are not persistent, and data that you wrote earlier might disappear. This is inherent in Memcached—it’s a cache server, not a database, and it avoids running out of memory by discarding old data.
+You can connect to multiple Memcached servers at the same time. In this next example, we’re just talking to one on the same computer:
+Redis
+Redis is a data structure server. It handles keys and their values, but the values are richer than those in other key-value stores. Like Memcached, all the data in a Redis server should fit in memory. Unlike Memcached, Redis can do the following:
+    Save data to disk for reliability and restarts
+    Keep old data
+    Provide more data structures than simple strings
+The Redis data types are a close match to Python’s, and a Redis server can be a useful intermediary for one or more Python applications to share data. I’ve found it so useful that it’s worth a little extra coverage here.
+The Python driver redis-py has its source code and tests on GitHub as well as documentation. You can install it by using this command:
+pip install redis
+The Redis server has good documentation. If you install and start the Redis server on your local computer (with the network nickname localhost), you can try the programs in the following sections.
+Strings
+A key with a single value is a Redis string. Simple Python data types are automatically converted. Connect to a Redis server at a host (the default is localhost) and port (default is 6379):
+Connecting to redis.Redis('localhost') or redis.Redis('localhost', 6379) would have given the same result.
+List all keys (we have none so far):
+Set a simple string (key secret), integer (key carats), and float (key fever):
+Get the values back (as Python byte values) by key:
+Here, the setnx() method sets a value only if the key does not exist:
+It failed because we had already defined secret:
+The getset() method returns the old value and sets it to a new one at the same time:
+Let’s not get too far ahead of ourselves. Did it work?
+Now, get a substring by using getrange() (as in Python, offset 0 means start, and -1 means end):
+Replace a substring by using setrange() (using a zero-based offset):
+Next, set multiple keys at once by using mset():
+Get more than one value at once by using mget():
+Delete a key by using delete():
+Increment by using the incr() or incrbyfloat() commands, and decrement with decr():
+There’s no decrbyfloat(). Use a negative increment to reduce the fever:
+Redis lists can contain only strings. The list is created when you do your first insertion. Insert at the beginning by using lpush():
+Redis hashes are similar to Python dictionaries but can contain only strings. Also, you can go only one level deep, not make deep-nested structures. Here are examples that create and play with a Redis hash called song:
+One of the most versatile Redis data types is the sorted set, or zset. It’s a set of unique values, but each value has an associated floating-point score. You can access each item by its value or score. Sorted sets have many uses:
+    Leaderboards
+    Secondary indices
+    Time series, using timestamps as scores
+We show the last use case, tracking user logins via timestamps. We’re using the Unix epoch value that’s returned by the Python time() function:
+Caches and expiration
+All Redis keys have a time to live, or expiration date. By default, this is forever. We can use the expire() function to instruct Redis how long to keep the key. The value is a number of seconds:
+The expireat() command expires a key at a given epoch time. Key expiration is useful to keep caches fresh and to limit login sessions. An analogy: in the refrigerated room behind the milk racks at your grocery store, store employees yank those gallons as they reach their freshness dates.
+Redis Alternative: Valkey?
+After all that detail on Redis, I should mention some nontechnical news that might make you look for an alternative. In 2024, the Redis license was changed from open source. There are commercial reasons: cloud providers could charge for services based on open source tools, but none of the money flowed to the tool developers.
+After this license change, many alternative tools popped up. The best choice now seems to be Valkey, which has these characteristics:
+    API-compatible with Redis
+    Maintained by experienced Redis core developers
+    As performant as Redis, or better
+See the Valkey documentation for the Valkey server installation steps. Then use pip install valkey to get the Python driver. Read the valkey-py docs for details and walk-throughs of the Python API.
+Document Databases
+A document database is a NoSQL database that stores data with varying fields. Compared to a relational table (with evenly shaped rows and columns), such data is “ragged,” with varying fields (columns) per row and even nested fields. You could handle data like this in memory with Python dictionaries and lists, or store it as JSON files. To store such data in a relational database table, you would need to define every possible column and use nulls for missing data.
+ODM can stand for object data manager or object document mapper (at least they agree on the O part). An ODM is the document database counterpart of a relational database ORM. Some popular document databases and tools (drivers and ODMs) are listed in 
+PostgreSQL can do some of the things that document databases do. Some of its extensions allow it to escape relational orthodoxy while keeping features like transactions, data validation, and foreign keys: multidimensional arrays store more than one value in a table cell, and jsonb stores JSON data in a cell, with full indexing and querying.
+Time-Series Databases
+Time-series data may be collected at fixed intervals (such as computer performance metrics) or at random times, which has led to many storage methods. Among many of these, some with Python support are listed in Table 23-7.
+For our last case of data that needs its own database category, we have graphs: nodes (data) connected by edges or vertices (relationships). An individual X user could be a node, with edges to other users like following and followed.
+Graph data has become more visible with the growth of social media, where the value is in the connections as much as the content. Some popular graph databases are outlined in Table 23-8.
+Finally, a special category of databases is for full-text search. These databases index everything, so you can find that poem that talks about windmills and giant wheels of cheese. You can see some popular open source examples along with their Python APIs in Table 23-10.
+The recent kaboom of AI has led to ways to access the internal data of machine learning: arrays (vectors) of numbers that fill the hidden layers of machine learning systems. These are useful for similarity searching, rather than the exact matching used in relational databases. The following are some vector databases that have Python access:
+    Chroma
+    VectorDB
+    pgvector
+Geospatial Databases
+Looking through our database warehouse, even more are on the shelf. These are extensions to existing relational databases that have been mentioned earlier:
+    PostGIS
+    GeoPandas
+    SpatiaLite
