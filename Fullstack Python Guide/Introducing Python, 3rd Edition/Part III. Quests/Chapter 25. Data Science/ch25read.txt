@@ -1,0 +1,188 @@
+Chapter 25. Data Science
+It is a capital mistake to theorize before one has data.
+    -Sherlock Holmes
+The world is messy, and so is data. A lot of your time will be spent on cleaning up, merging, splitting, and pushing data around to get what you need.
+Python has become the most popular computer language in part because of its adoption by many developers to deal with their nemesis—data. This chapter covers a wide range of data topics, including these:
+    Data wrangling
+    Format conversion
+    Analysis and statistics
+    Visualization
+I’ll first discuss what you get when you open and shake the standard Python box. Then I’ll dive into the rich set of third-party tools that people have written to tame data.
+AI will have to wait for the next chapter. I’ll bet it didn’t predict that.
+Standard Python
+First, let’s look at some Python features that I haven’t mentioned yet.
+I mentioned sort() and sorted() in Chapter 8, but applied them only to lists. The operator module has the handy functions itemgetter() and attrgetter() that can tell sort() and sorted() how to do their sorting.
+The basic itemgetter() function returns one or more items from an iterable—an object that lets you access items with [], like a list or tuple:
+If you give itemgetter() multiple indices, it will return a tuple:
+A common use is to sort an iterable, like the following list of lists. It will look up index 1, in each sublist, get the items y, e, and b, then sort their lists by those values:
+Try it with a list of strings instead of a list of lists:
+This also works for dicts, which allow access by a key instead of an index. Let’s sort a list of chemical element dicts by their sym (symbol) key:
+You can give itemgetter() more than one value, and the latter ones will be used to break ties when the earlier ones are equal.
+A similar function called attrgetter() applies to objects. You give it one or more attribute names as strings, and it returns the values of those attributes. Let’s make and sort a list of chemical element objects:
+Format Conversions
+Chapter 17 discussed text data, including conversion of formats like JSON, CSV, and TOML to and from Python data structures. Chapter 18 looked at binary data and how to parse it. Chapter 23 talked about databases, which are specific binary formats. Later in this chapter, we’ll look at pandas and other tools that handle input and output of such data formats, beyond what the Python standard library provides.
+Math
+Python has a menagerie of math functions in the standard math library. Just type import math to access them from your programs.
+The library has a few constants such as pi and e:
+Most of the library consists of functions, so let’s look at the most useful ones.
+The fabs() function returns the absolute value of its argument:
+Get the integer below (floor()) and above (ceil()) a certain number:
+Calculate the factorial (in math, n !) by using factorial():
+Get the logarithm of the argument in base e with log():
+If you want a different base for the log, provide it as a second argument:
+The pow() function does the opposite, raising a number to a power:
+Python also has the built-in exponentiation operator ** to do the same, but it doesn’t automatically convert the result to a float if the base and power are both integers:
+The usual trigonometric functions are all there, and I’ll just list their names here: sin(), cos(), tan(), asin(), acos(), atan(), and atan2(). If you remember the Pythagorean theorem (or can say it fast three times without spitting), the math library also has a hypot() function to calculate the hypotenuse from two sides:
+If you don’t trust all these fancy functions, you can verify it yourself:
+A last set of functions converts angular coordinates:
+Complex numbers are fully supported in the base Python language, with their familiar notation of real and imaginary parts:
+Because the imaginary number i (1j in Python) is defined as the square root of –1, we can execute the following:
+Some complex math functions are in the standard cmath module.
+Calculate Accurate Floating Point Values with decimal
+Floating-point numbers in computers are not quite like the real numbers we learned in school:
+Hey, what’s that 5 at the end? It should be 3 all the way down. This happens because there are only so many bits in computer CPU registers, and numbers that aren’t exact powers of two can’t be represented exactly.
+With Python’s decimal module, you can represent numbers to your desired level of significance. This is especially important for calculations involving money. US currency doesn’t go lower than a cent (a hundredth of a dollar), so if we’re calculating money amounts as dollars and cents, we want to be accurate to the penny. If we try to represent dollars and cents through floating-point values such as 19.99 and 0.06, we’ll lose some significance way down in the end bits before we even begin calculating with them. How do we handle this? Easy. We use the decimal module instead:
+We create the price and tax with string values to preserve their significance. The total calculation maintains all the significant fractions of a cent, but we want to get the nearest cent:
+You might get the same results with plain old floats and rounding, but not always. You could also multiply everything by 100 and use integer cents in your calculations, but that may bite you eventually too.
+Perform Rational Arithmetic with fractions
+You can represent numbers as a numerator divided by a denominator through the standard Python fractions module. Here is a simple operation multiplying one-third by two-thirds:
+Floating-point arguments can be inexact, so you can use Decimal within Fraction:
+Get the greatest common divisor of two numbers with the gcd() function:
+Use Packed Sequences with array
+A Python list is more like a linked list than an array. If you want a one-dimensional sequence of the same type, use the array type. It uses less space than a list and supports many list methods. Create one with array( typecode , initializer ). The typecode specifies the data type (like int or float), and the optional initializer contains initial values, which you can specify as a list, string, or iterable.
+I’ve never used this package for real work. It’s a low-level data structure, useful for information such as image data. If you need an array (especially with more then one dimension) to do numeric calculations, you’re much better off with NumPy, which we’ll get to soon.
+Statistics
+Beginning with Python 3.4, statistics is a standard module. It has the usual functions: mean, media, mode, standard deviation, variance, and so on. Input arguments are sequences (lists or tuples) or iterators of various numeric data types: int, float, decimal, and fraction. One function, mode(), also accepts strings. Many more statistical functions are available in packages such as SciPy and pandas, featured later in this chapter.
+Matrix Multiplication
+Starting with Python 3.5, you’ll see the @ character doing something out of character. It will still be used for decorators, but it will also have a new use for matrix multiplication. If you’re using an older version of Python, NumPy (coming right up, I promise) is your best bet.
+NumPy
+Early Python libraries like NumArray and Numeric were written to enable more efficient numeric computing. They were adapted by Travis Oliphant to create NumPy. It introduced the ndarray: a multidimensional, contiguous, single-typed array—not like Python’s list, which links separate elements in a sparse layout. This supported linear algebra data structures (vectors and matrices) and operations on them.
+NumPy refers to an array’s number of dimensions as its rank. A one-dimensional array is like a row of values, a two-dimensional array is like a table of rows and columns, and a three-dimensional array is like a Rubik’s Cube. The lengths of the dimensions need not be the same.
+Note
+The NumPy array and the standard Python array are not the same thing. For the rest of this chapter, when I say array, I’m referring to a NumPy array.
+But why do you need an array?
+    Scientific data often consists of large sequences of data.
+    Scientific calculations on this data often use matrix math, regression, simulation, and other techniques that process many data points at a time.
+    NumPy handles arrays much faster than standard Python lists or tuples.
+You can make a NumPy array in many ways.
+Make an Array with array()
+You can make an array from a normal list or tuple:
+The attribute ndim returns the rank:
+The total number of values in the array is given by size:
+The number of values in each rank is returned by shape:
+Make an Array with arange()
+NumPy’s arange() method is similar to Python’s standard range(). If you call arange() with a single integer argument num, the method returns an ndarray from 0 to num-1:
+With two values, arange() creates an array from the first to the last, minus one:
+And you can provide a step size to use instead of one as a third argument:
+So far, our examples have used integers, but floats work just fine:
+And one last trick: the dtype argument tells arange() what type of values to produce:
+Make an Array with zeros(), ones(), or random()
+The zeros() method returns an array in which all the values are zero. The argument you provide is a tuple with the shape that you want. Here’s a one-dimensional array:
+This one is of rank two:
+The other special function that fills an array with the same value is ones():
+One last initializer creates an array with random values from 0.0 to 1.0:
+Change an Array’s Shape with reshape()
+So far, an array doesn’t seem that different from a list or tuple. One difference is that you can get an array to do tricks such as change its shape by using reshape():
+You can reshape the same array in different ways:
+Assigning a shapely tuple to shape does the same thing:
+The only restriction on a shape is that the product of the rank sizes needs to equal the total number of values (in this case, 10):
+Get an Element with []
+A one-dimensional array works like a list:
+However, if the array has a different shape, use comma-separated indices within the square brackets:
+That’s different from a two-dimensional Python list, which has its indices in separate square brackets:
+One last point: slices work, but again, only within one set of square brackets. Let’s make our familiar test array again:
+Use a slice to get the first row, elements from offset 2 to the end:
+Now, get the last row, elements up to the third from the end:
+Making and reshaping arrays was so much fun that we almost forgot to do something with them. For our first trick, we use NumPy’s redefined multiplication (*) operator to multiply all the values in a NumPy array at once:
+If you tried to multiply each element in a normal Python list by a number, you’d need a loop or a list comprehension:
+This all-at-once behavior also applies to addition, subtraction, division, and other functions in the NumPy library. For example, you can initialize all members of an array to any value by using zeros() and +:
+Linear Algebra
+NumPy includes many functions for linear algebra. For example, let’s define this system of linear equations:
+4x + 5y = 20
+ x + 2y = 13
+How do we solve for x and y? We build two arrays:
+    The coefficients (multipliers for x and y)
+    The dependent variables (right side of the equation)
+Now, use the solve() function in the linalg module:
+How about that. To avoid all that typing, you can also ask NumPy to get the dot product of the arrays for you:
+The values in the product array should be close to the values in dependents if this solution is correct. You can use the allclose() function to check whether the arrays are approximately equal (they might not be exactly equal because of floating-point rounding):
+NumPy also has modules for polynomials, Fourier transforms, statistics, and some probability distributions.
+SciPy
+Even more is available in a library of mathematical and statistical functions built on top of NumPy: SciPy. The SciPy release includes NumPy, SciPy, pandas (coming later in this chapter), and other libraries.
+SciPy includes many modules, including some for the following tasks:
+    Optimization
+    Statistics
+    Interpolation
+    Linear regression
+    Integration
+    Image processing
+    Signal processing
+If you’ve worked with other scientific computing tools, you’ll find that Python, NumPy, and SciPy cover some of the same ground as the commercial MATLAB or open source R.
+pandas
+The pandas Python library handles real-life data issues:
+    Read and write many text and binary file formats:
+        Text, with fields separated by commas (CSV), tabs (TSV), or other characters
+        Fixed-width text
+        Excel
+        JSON
+        HTML tables
+        SQL
+        HDF5
+        and others
+    Group, split, merge, index, slice, sort, select, label
+    Convert data types
+    Change size or shape
+    Handle missing data
+    Generate random values
+    Manage time series
+NumPy is oriented toward traditional scientific computing, which tends to manipulate multidimensional datasets of a single type, usually floating point. The pandas library is more like a database editor, handling multiple data types in groups. Its purpose is to simplify the handling of the kind of data you’re likely to encounter not just in science, but also in business. In fact, pandas was originally designed to manipulate financial data, for which the most common alternative is a spreadsheet.
+The pandas library conducts ETL operations for real-world, messy data of all data types (for example, missing values, oddball formats, and scattered measurements). You can split, join, extend, fill in, convert, reshape, slice, load, and save files. It integrates with the tools we’ve just discussed (NumPy and SciPy) to calculate statistics, fit data to models, draw plots, publish, and so on.
+In some languages, data-organizing groups are called records or structures. The pandas library defines a base data structure called a DataFrame—an ordered collection of rows and columns with names and types. It has some resemblance to a database table, a spreadsheet, a Python named tuple, and a Python nested dictionary. Its one-dimensional little brother is a Series.
+Let’s create a CSV file of early Bond villains:
+first,last
+Doctor,No
+Rosa,Klebb
+Mister,Big
+Auric,Goldfinger
+Ernst,Blofeld
+The data variable just shown is a DataFrame, and it has many more tricks than a basic Python dictionary. The variable is especially useful for heavy numeric work with NumPy, and data preparation for machine learning.
+Refer to the “Getting Started” section of the documentation for pandas features, and “10 Minutes to pandas” for working examples.
+Let’s use pandas for a little calendar example: make a list of the first day of the first three months in 2025:
+You could write something that does this, using the time and date functions described in Chapter 19, but it would be a lot more work—especially debugging (dates and times are frustrating). The pandas toolset also handles many special date/time details, like business months and years.
+Polars
+Polars is a successor to pandas. Polars also manages DataFrames but was written in Rust for better performance. It can handle larger datasets than pandas (even those larger than available memory), as well as using all multiple CPU cores. Installation is no surprise: pip install polars.
+DuckDB
+DuckDB is a self-contained relational database (no separate server), similar to SQLite. It’s a hybrid duck, with features of two worlds:
+Online transaction processing (OLTP)
+    SQL queries, analysis, reports
+Online analytic processing (OLAP)
+    The stuff of this chapter—DataFrames, CSV, JSON
+If you love details, the developers also offer a free downloadable book, DuckDB in Action by Mark Needham et al. (Manning).
+In a nutshell, you can perform SQL queries on DataFrames (from various source formats, including CSV or JSON files) as well as on traditional relational database tables. Example 25-2 (copied from the “SQL on pandas” documentation page) is an example.
+Example 25-2. DuckDB SQL query of a DataFrame
+import duckdb
+import pandas
+# Create a Pandas dataframe
+my_df = pandas.DataFrame.from_dict({'a': [42]})
+# query the Pandas DataFrame "my_df"
+# Note: duckdb.sql connects to the default in-memory database connection
+results = duckdb.sql("SELECT * FROM my_df").df()
+The DuckDB engine is very efficient, and includes connections with NumPy and Polars as well as pandas. DuckDB is worth a look. Type pip install duckdb to install it, and dive into the docs.
+Data Visualization
+    The purpose of visualization is insight, not pictures.
+    -Ben Schneiderman
+A picture is worth a thousand words: this has been attributed (with different wordings) to Confucius, and to a speaker at an advertiser’s club a hundred years ago. Whoever coined the phrase, we can transform data into charts, graphs, plots, maps, or feedbags for AI to munch on. Here’s a list of the most prominent Python data visualization packages:
+Matplotlib
+    One of Python’s oldest 2D and 3D plotting packages. Examples.
+seaborn
+    A newer statistical data visualization library, based on Matplotlib but at a little higher level. It works with other data science tools like pandas and Jupyter Notebook. Examples.
+Plotly
+    A very extensive library for interactive visualization. Examples.
+Bokeh
+    Blends frontend interactivity. Examples.
+Streamlit
+    Has AI hooks and deployment support. Examples.
+These cover a lot of ground. Here’s one set of opinions on Reddit.
+Review/Preview
+Data science is a broad term for many tasks, from cleanup drudgery to high-level manipulation of terabytes.
+We can’t avoid it any longer: the next chapter dips all its toes, (counting them afterward) into AI.
