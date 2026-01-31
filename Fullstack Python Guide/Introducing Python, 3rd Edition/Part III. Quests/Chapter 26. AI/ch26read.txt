@@ -1,0 +1,138 @@
+Chapter 26. AI
+Even a cat has things it can do that AI cannot.
+    - Fei-Fei Li
+Python gained much of its recent prominence from its rich set of AI tools. In this chapter, I’ll include some AI history, as well as some recent developments. Given the insane speed of current AI development, some references will inevitably be eclipsed by brighter, shinier objects.
+Traditional math lets you fit the best line or curve to a group of points by minimizing errors. But with AI problems, we’re looking for patterns that might have a complex multidimensional shape, with many local minima for errors. This is pattern recognition, and we really don’t understand how the model does it. Actually, we don’t understand how we do it either.
+In this chapter, we’ll cover the following:
+    The recent history of AI, including insights that led to breakthroughs
+    Python’s role in AI development, from frameworks to full models
+    An overview of the most prominent current AI models
+    Some AI exercises using a real Python-based framework
+First, let’s look at some definitions of terms that are often mushed together:
+Artificial intelligence (AI)
+    An old, ever-broadening term for machines mimicking human abilities
+Machine learning (ML)
+    A subset of AI, in which computers learn patterns from data without explicit human direction
+Deep learning (DL)
+    A subset of ML that uses multiple-layered neural networks
+It Turns Out…​
+I’ve always liked the phrase “it turns out,” when a puzzling problem is followed by the solution. Like a murder mystery, where it turns out the murderer was not the butler, but the duke’s odious nephew Reginald, a cad who is also a vampire. Or a software debugging session that was eventually solved by a combination of logic, insight, googling, brute force, and blind luck.
+The history of AI has many “it turns out” moments. Here are a few.
+Expert Systems
+At the beginning (say the 1950s through the 1980s), AI was mainly expert systems: top-down, or symbolic. You provided the rules in code to solve a specific problem. The game of chess was considered a formidable target, and hardware and software improved over the years. Belle, a custom-built chess computer, achieved a master-level rating in 1983; in 1997, IBM’s Deep Blue was the first machine to beat a grandmaster in a chess tournament.
+Sneak preview: in 2016, an AI system named AlphaGo was the first to beat a human champion in the game of Go—a much more complex game than chess. A later version named AlphaGo Zero learned the game by playing millions of games, but without being taught any of the rules. It beat AlphaGo.
+Perceptrons
+In our brains, billions of neurons make trillions of connections (synapses) to other neurons, exciting or inhibiting them to some degree. For a long time people struggled to develop computer-based neural nets to vaguely simulate their biological equivalents (examples of existence proofs: if something exists, then, um, it’s possible).
+An early neural model was the perceptron.1 An input layer, containing multiple “neurons,” provides raw data. Each is multiplied by a separate weight, then fed to internal functions that smooth and eventually calculate a result value. This worked well for some simple classification problems, but was later proven to be unable to solve others. This froze research on this approach for several years.
+The Breakthrough
+But it turns out…​you can solve these other problems with the multilayer perceptron, which has two crucial but nonobvious additions:
+Hidden layers
+    More weights, added internally, after the input layer
+Back-propagation
+    Iteratively adjust the internal weights, backward from the intended results
+This approach was developed in 1986 by David Rumelhart, Geoffrey Hinton, and Ronald Williams, who were experimenting with Hopfield networks and Boltzmann machines. A developer first trains the system with known inputs and their corresponding outputs. Starting with random weights, at each step you calculate how well the results using them fits the true results (also known as minimizing a loss function). Then you adjust the weights, going backward from the final to the start layer, continuing until the loss is minimal.2 Instead of baby-stepping through constant little changes in weights, gradient descent uses the slope of the loss curve (thanks to the derivative and chain rule from calculus) to make larger adjustments when the loss is far from its minimum. Once you have these optimized weights, you can feed in previously unseen test data to predict results. This stage is called inference.
+This was a turning point for modern AI; subsequent systems still use variations of these techniques. Hopfield and Hinton received the 2024 Nobel Prize in Physics, even though their discoveries didn’t involve black holes or subatomic particles.
+Image Recognition: ImageNet and AlexNet
+ImageNet is a dataset of millions of manually categorized (labeled) images. Starting in 2010, an annual competition invited developers to write code to correctly determine the labels of a 1,000-image subset of the dataset.3 In 2012, an entry named AlexNet did so much better than its competitors that it caused a surge of interest in its technology: convolutional neural networks (CNNs).
+Large Language Models
+In 2017, Google researchers wrote “Attention Is All You Need”, which described a new approach to recurrent neural networks (RNNs) called the transformer. Instead of completely independent recalculation of internal weights at each step to minimize the loss function, “attention” helped to correlate associated data, and to do it much faster through parallel computing.
+Although these large language models (LLMs) might have seemed like fancy autocomplete systems, it turns out …​ they display some surprising emergent properties.
+The ChatGPT Moment
+In 2022, OpenAI released ChatGPT, and the world had a “ChatGPT moment”: a simultaneous discovery of the unexpected power of deep learning AI systems. ChatGPT could write code or poetry, converse intelligently, and seem scarily close to a human. Its chat interface allowed users to type simple English prompts and get back detailed text responses.
+Since then, many people have used ChatGPT, for many purposes. Teachers will tell you when their students use ChatGPT to do their homework essays: the spelling and grammar are flawless, and the vocabulary is often a bit above the student’s grade.
+Retrieval Augmented Generation
+A model can generate responses based only on the data it was trained with. Retrieval augmented generation (RAG) is a way for an LLM to access external data that can improve the results, and possibly reduce AI hallucinations (incorrect results, delivered with great assurance; once likened by an acquaintance of mine to mansplaining).
+Agents
+Traditionally, many models accept a simple single input prompt and produce a single text output. Others are multimodal, accepting and producing data in other formats: audio, image, video, and others.
+More AI applications now want to connect models with external agents: tools and data sources to enrich the full AI workflow. Single-agent examples include the following:
+Vector stores
+    Databases for similarity searches
+Browser Use
+    Control a web browser
+A further step is to chain agents together to automate more complex workflows. Here are some examples:
+LangChain
+    A Python framework that connects an LLM model to one or more agents.
+MCP
+    The Model Context Protocol from Anthropic.
+A2A
+    The Google Agent2Agent protocol sounds like MCP. It connects agents but also helps discover them, which is ever more important as models cover the earth, and is something Google should be good at.
+Efficiency
+It turns out …​ that people figured out how to make many of these calculations much more efficient. It also helped that computer hardware and software were becoming much more scalable and less expensive. Notably, GPUs are much better than CPUs at parallel multiplication and addition, which is the heart of these calculations. Cloud computing also enabled more computers to be thrown at the problem than ever before.
+Create Models: Python Frameworks
+Python’s prominence in AI developed organically. The language was free, open source, and well suited for data manipulation. In particular, Python is used to both create and use AI models.
+First, let’s look at creating models with Python.
+Some early and essential components were NumPy and SciPy, which enabled a not-very-fast language to handle big computational problems.
+SciKit is a group of scientific packages built on SciPy. Among them, scikit-learn is a prominent ML package: it supports modeling, classification, clustering, and various algorithms. The pip install scikit-learn command installs it.
+For many years, scikit-learn was the main Python AI tool. But now, two main frameworks are used for developing deep learning models: TensorFlow and PyTorch.
+TensorFlow was released by Google in November 2015. Much of it is written in C++, but it includes Python support. Install TensorFlow with pip install tensorflow.
+PyTorch was released in September 2016 by Facebook (now Meta). As the name implies, it’s more Pythonic, and usually believed to be easier to use than TensorFlow. Install it with pip install torch.
+fastai is a higher-level library that runs on top of PyTorch and is installed with pip install fastai.
+Keras is a Python library that sits atop TensorFlow, PyTorch, and other frameworks. One of its aims is to be simpler for developers than the complex stuff underneath.
+If I were writing this edition a few years ago, I might have gone into much more detail here on how to create a model, using one or more of these frameworks. Links to such detailed resources are listed at the end of this chapter. Now I think it’s more useful, especially in an introductory book that’s already big enough, to show how to use the power of the newer models.
+Current Models
+Many of the current big AI platforms are based on a combination of Python frameworks, as well as other languages like C++. As this chapter was written in early 2025, the main AI models include the following:
+    ChatGPT (OpenAI)
+    Claude (Anthropic)
+    Gemini (Google)
+    Perplexity (Perplexity)
+    DeepSeek (DeepSeek)
+    Grok (xAI)
+    Llama (Meta)
+These are some interesting special-purpose models:
+AlphaFold (Google/DeepMind)
+    The protein folding problem, cracked 20 years earlier than anyone expected. Its developers received the 2024 Nobel Prize in Physiology and Medicine.
+Monty (Thousand Brains Project)
+    An intriguing Python model of the neocortex.
+These models can be used for many general purposes. You access them with prompts (an interactive text interface) or with APIs. These may be specific to the model.
+A Million Models: Hugging Face
+To give you an idea of just how much AI development has progressed lately, Hugging Face is an excellent one-stop source of over a million open source AI models and 250,000 datasets. Instead of downloading all the models and associated resources from the previous section, you can let Hugging Face do it.
+Its Transformers library lets you download and train any of these models. You’ll first need to install either PyTorch (pip install torch) or TensorFlow (pip install tensorflow). Then use pip install transformers. Then follow the tour to download, install, train, and use a model.
+After all that background, it’s time for a deep breath and relaxing thoughts (kittens are optional).
+OK, now shoo the kittens away, and let’s try some AI and Python. Given all the tools that I’ve discussed in this chapter, I’m choosing the Ollama utility for these reasons:
+    Free
+    Open source
+    Runs multiple LLM models on a typical home machine
+    Has a nice Python API
+The geeksforgeeks description “Ollama Explained: Transforming AI Accessibility and Language Processing” is helpful.
+Install Ollama
+The usual Harry Potter spell installs the Ollama components: pip install ollama. You’ll get the ollama command-line tool (for direct prompt commands) and the ollama Python module (for API access).
+The standalone Ollama program contains multiple subcommands, similar to how Git or uv operate.
+First, you need to start the ollama server on your machine:
+$ ollama serve
+Choose a Model
+Next, pick a model to run locally. Ollama will download it for you if needed, perform any setup steps, and finally offer a command-line prompt for you to type commands. To see which models are available for Ollama to run, visit the Ollama library website.
+How do you choose? AI is used for so many things, and some models are better than others. Some models will be too big to run on personal computers, so read the suggested limits.
+For no particular reason other than its name, I’m starting with a model called TinyLlama. Let’s install and run it:
+Most of that time involved downloading the encoded model data, which often runs into the gigabytes. Then it needs to load everything into local memory, grinding your machine to a halt if it needs too much RAM.
+That final prompt leaves us at the famed middle stage of the classic Underpants Gnomes episode of South Park—the big question mark—before the final stage, profit!
+I’m not including the rest of the poem that it generated, and you’re welcome. For one thing, it was not a villanelle, which has 19 lines and a specific rhyme structure. Examples include Dylan Thomas’s “Do Not Go Gentle Into That Good Night” and W.H. Auden’s “If I Could Tell You.” Also, it didn’t even rhyme at all.
+Maybe I was unfair. I hadn’t heard of a “villanelle” myself until a year or two ago. So, I next asked the model to write a limerick about a cat on the moon. This time, it cranked out 20 lines, again not rhymed. Does it know what a limerick is?
+How about writing some code? I asked the model to write some Python scripts to mimic those that I’ve included elsewhere in this book: query the Internet Archive for a particular movie, or its Wayback Machine for a particular website. It generated what looked like normal Python, including calls to modules like Requests and Beautiful Soup. But they didn’t work.
+Third strike. This llama may be tiny, but it’s not an appropriate beast of burden here.
+Choose Another Model
+Do we need to find a model that better understands poetry, or Python coding, or how to count letters in a word? One alternative is to go with one of the big guns, like ChatGPT. This may cost money, and runs on a separate server where you may not be comfortable sending your data.
+Let’s look again for a model that can run locally without cost, and focus on a particular task: writing Python code. Some googling suggests that the model Code Llama might be a good candidate, if it can run on a local machine. One version of it was trained on Python code and used the least resources, so let’s see what we get.
+My summary: based only on these two local models, they sometimes generate function-level code correctly but don’t test it correctly. I also wouldn’t use them to write poetry.
+The big commercial models undoubtedly work better, and I don’t want to leave you frustrated with the mixed results you’ve just read. Check the Appendix for the answers to the practice exercises at the end of this chapter. There, I throw the same questions that vexed these smaller models to one of the biggies, and you’ll see much better results—with one surprising exception.
+Ollama References
+These links offer more depth on Ollama:
+    Ollama
+    Ollama Python library
+    llama2.py
+    LLama2 in Mojo (250 times faster than Python)
+    “AI Agents from Scratch: Single Agents” by Mauro Di Pietro
+References
+AI is a huge and complex area, and as you know, changing almost daily. We humans can understand linear change, but exponential rates are tough for us to visualize. Here are some references that I’ve found helpful:
+    AI With Python Tutorial
+    AI Engineering by Chip Huyen (O’Reilly)
+    Designing Machine Learning Systems by Chip Huyen (O’Reilly)
+    Hands-On APIs for AI and Data Science (using FastAPI) by Ryan Day (O’Reilly)
+    Deep Learning at Scale by Suneeta Mall (O’Reilly)
+    Low-Code AI by Gwendolyn Stripling and Michael Abel (O’Reilly)
+    AI and Machine Learning for Coders by Laurence Moroney (O’Reilly)
+    Architecting Data and Machine Learning Platforms by Marco Tranquillin et al. (O’Reilly)
+I also want to mention the excellent visualization work of Grant Sanderson at his 3Blue1Brown website and YouTube channel. His diagrams and animations make the concepts of this chapter, such as backpropagation and gradient descent, much more intuitive.
+Python has become the main programming language for data science and AI development. As AI migrated from rule-driven expert systems to data-driven LLMs and other AI models, Python frameworks like PyTorch emerged. Now, whole multimodal models are accessible from the command line or Python code, and agents can be chained together to extend their reach.
+Rather than including all the details on how to build a model, using a particular API or a general one like Hugging Face, the chapter ends with code to use various models via a single framework: Ollama. This is free to use, and more importantly, can be run locally, on your own machine, avoiding uploading data to a cloud service.
+Computing may be entering a new phase, in which crafting code is less important than assembling services to discover patterns in data.
+Turning the page, we’ll consider many aspects of performance, from algorithms to specific tools.
