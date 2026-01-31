@@ -1,0 +1,2018 @@
+Symbols
+    # (comment) character, Comment with #
+    $ (anchor) character, Using Specifiers
+    % (modulus) operator, Integers and Variables
+    % (string formatting) operator, Old style: %-Old style: %
+    & (background process) operator, in Redis, Redis
+    & (intersection) operator
+        counters, Count Items with Counter()
+        sets, Use Combinations and Operators
+    ' and " (quotation marks)
+        creating bytes, Create with Quotes
+        creating strings, Create with Quotes-Create with Quotes
+    ( ) (parenthesis)
+        calling functions, Call a Function with Parentheses
+        creating tuples, Create with Commas and ()-Create with Commas and ()
+    * (asterisk)
+        keyword-only arguments, Keyword-Only (*) and Position-Only (/) Arguments-Keyword-Only (*) and Position-Only (/) Arguments
+        positional arguments, Pack/Unpack Positional Arguments with *-Pack/Unpack Positional Arguments with *
+    * (duplication) operator
+        duplicating lists, Duplicate with *
+        duplicating strings, Duplicate with *
+        duplicating tuples, Duplicate with *
+        repeating bytearrays, Repeat with *
+        repeating bytes, Repeat with *
+    * (multiplication) operator, Integer Operations
+    ** (dictionary unpacking) operator
+        combining or updating dictionaries, Use {**a, **b}
+        packing or unpacking keyword arguments, Pack/Unpack Keyword Arguments with **
+    ** (exponentiation) operator, Integers and Variables
+    + (addition) operator, Integer Operations
+    + (combination) operator
+        combining bytearrays, Combine with +
+        combining bytes, Combine with +
+        combining counters, Count Items with Counter()
+        combining lists, Combine with extend() or +
+        combining strings, Combine with +
+        combining tuples, Combine with +
+    , (comma), creating tuples with, Create with Commas and ()-Create with Commas and ()
+    - (hyphen), getting difference of sets with, Use Combinations and Operators
+    - (subtraction) operator
+        integer operations, Integer Operations
+        subtracting counters, Count Items with Counter()
+    / (floating-point division) operator, Integer Operations, Integers and Variables
+    / (single slash), defining position-only arguments with, Keyword-Only (*) and Position-Only (/) Arguments-Keyword-Only (*) and Position-Only (/) Arguments
+    // (integer division) operator, Integer Operations, Integers and Variables
+    := (walrus) operator, New: I Am the Walrus
+    <= operator, checking subsets of sets with, Use Combinations and Operators
+    = (assignment) operator
+        assigning dictionaries, Assign with =
+        assigning lists, Assign with =
+    > operator, checking for proper supersets with, Use Combinations and Operators
+    >= operator, checking for supersets with, Use Combinations and Operators
+    [ ] (square brackets)
+        creating lists, Create with []
+        getting elements from arrays, Get an Element with []
+    \ (backslash)
+        continuing lines, Continue Lines with \
+        escaping strings, Escape with \
+    ^ (anchor) character, Using Specifiers
+    ^ (exclusive or) character, Use Combinations and Operators
+    _ (underscore)
+        as digit separator, Literal Integers
+        in variable names, Follow Naming Conventions
+    __ (double underscores)
+        in magic methods, Magic Methods
+        naming internal variables, Docstrings, Dunder Names
+    { } (curly braces)
+        creating dictionaries, Create with {}
+        creating sets, Create with set() or {}
+        formatting strings, New style: {} and format()-New style: {} and format()
+    | (union) operator
+        combining or updating dictionaries, Use |
+        combining sets, Combine with |
+        getting items from counters, Count Items with Counter()
+        getting union of sets, Use Combinations and Operators
+    3Blue1Brown, References
+
+A
+
+    A2A (Agent-to-Agent) protocol, Agents
+    Abel, Michael, References
+    “The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets” (Spolsky), Normalization
+    abspath() function, Get a Pathname with abspath()
+    ActiveMQ, Request-Reply: Other Messaging Tools
+    add() function, Add an Item with add()
+    addition (+) operator, Integer Operations
+    Adrián Cañones, David, Hadoop
+    Agent-to-Agent (A2A) protocol, Agents
+    agents, Agents
+    aggregation, Aggregation and Composition
+    AI (artificial intelligence), AI-References
+        creating models, Create Models: Python Frameworks
+        current models, Current Models
+        defined, AI
+        hallucinations, Retrieval Augmented Generation
+        history of, It Turns Out…​-Efficiency
+        Hugging Face, A Million Models: Hugging Face
+        Ollama, Working Examples With Ollama-Ollama References
+        references, References
+    “AI Agents from Scratch” (Di Pietro), Ollama References
+    AI and Machine Learning for Coders (Moroney), References
+    AI Engineering (Huyen), References
+    AI With Python Tutorial, References
+    aiohttp, Async Frameworks and Servers, Other Web Clients
+    aiomysql, Async Frameworks and Servers
+    aioredis, Async Frameworks and Servers
+    aiosmtpd module, Python Email Modules
+    AlexNet, Image Recognition: ImageNet and AlexNet
+    algorithms, for performance improvement, Algorithms and Data Structures
+    AlphaFold, Current Models
+    AlphaGo and AlphaGo Zero, Expert Systems
+    Amazon Web Services (AWS), Amazon Web Services
+    American Standard Code for Information Interchange (ASCII), Bits and Bytes, Text Strings: Unicode
+    anchors (^ and $), Using Specifiers
+    anonymous functions, Anonymous Functions: Lambda
+    Ansible package, Remote Management
+    AnyIO package, Asyncio Alternatives
+    Apache ActiveMQ, Request-Reply: Other Messaging Tools
+    Apache Avro, Use Other Serialization Formats
+    Apache Cassandra, Other NoSQL
+    Apache Hadoop, Hadoop
+    Apache HBase, Other NoSQL
+    Apache HTTP Server, Apache-Apache
+    Apache Lucene, Full-Text Databases
+    Apache Solr, Full-Text Databases
+    Apache Spark, Spark
+    Apache Thrift, Use Other Serialization Formats
+    API-Hour, Async Frameworks and Servers
+    APIs (application programming interfaces), defined, Web APIs and REST
+        (see also web APIs)
+    append() function
+        adding items to lists, Add an Item to the End with append()
+        appending bytes, Append One Byte with append()
+    apwlib module, Alternative Modules
+    arange() function, Make an Array with arange()
+    ArangoDB, Graph Databases
+    Architecting Data and Machine Learning Platforms (Tranquillin et al.), References
+    args tuple parameter, Pack/Unpack Positional Arguments with *
+    arguments, Arguments and Parameters-Mutable and Immutable Arguments
+        defined, Arguments and Parameters
+        keyword, Keyword Arguments
+            keyword-only, Keyword-Only (*) and Position-Only (/) Arguments-Keyword-Only (*) and Position-Only (/) Arguments
+            packing or unpacking, Pack/Unpack Keyword Arguments with **
+        mutable and immutable, Mutable and Immutable Arguments
+        None, True, and False values, None, Truthiness, and Falsiness-None, Truthiness, and Falsiness
+        positional, Positional Arguments
+            packing or unpacking, Pack/Unpack Positional Arguments with *-Pack/Unpack Positional Arguments with *
+            position-only, Keyword-Only (*) and Position-Only (/) Arguments-Keyword-Only (*) and Position-Only (/) Arguments
+        tuples versus, Function Arguments Are Not a Tuple
+    array() function, Make an Array with array()
+    arrays, Arrays Versus Lists and Tuples
+        changing shape of, Change an Array’s Shape with reshape()
+        getting elements from, Get an Element with []
+        making, Make an Array with array()-Make an Array with zeros(), ones(), or random()
+        math, Array Math
+        packed sequences, Use Packed Sequences with array
+    Arrow module, Alternative Modules
+    artificial intelligence (see AI)
+    ASCII (American Standard Code for Information Interchange), Bits and Bytes, Text Strings: Unicode
+    AsciiDoc, Markup Text Files
+    ASGI (Asynchronous Server Gateway Interface), Async Frameworks and Servers, ASGI
+    asks framework, Async Frameworks and Servers
+    assert keyword, Assert
+    assertions, in testing, Unittest
+    assignment (=) operator
+        assigning dictionaries, Assign with =
+        assigning lists, Assign with =
+    associative arrays, Dictionaries
+    asterisk (*)
+        keyword-only arguments, Keyword-Only (*) and Position-Only (/) Arguments-Keyword-Only (*) and Position-Only (/) Arguments
+        positional arguments, Pack/Unpack Positional Arguments with *-Pack/Unpack Positional Arguments with *
+    Astropy module, Alternative Modules
+    async database interfaces, Async Frameworks and Servers
+    async frameworks and servers, Async Frameworks and Servers-Beyond Queues
+    async functions, Async Functions, Briefly
+    async keyword, Coroutines and Event Loops-Coroutines and Event Loops
+    Asynchronous Server Gateway Interface (ASGI), Async Frameworks and Servers, ASGI
+    asynchronous, defined, Concurrency
+    asyncio library
+        alternatives to, Asyncio Alternatives-Asyncio Alternatives
+        concurrency, asyncio
+    asyncpg, Async Frameworks and Servers
+    “Attention Is All You Need” (Google), Large Language Models
+    attrgetter() function, Standard Python
+    attributes
+        access, Attribute Access-Class and Object Attributes
+            class and object attributes, Class and Object Attributes
+            direct, Direct Access
+            getter and setter methods, Getters and Setters
+            name mangling, Name Mangling for Privacy
+            properties for, Properties for Attribute Access-Properties for Attribute Access
+            properties for computed values, Properties for Computed Values
+        assigning, Assign Attributes
+        defined, Assign Attributes
+    attrs package, Attrs
+    Avro, Use Other Serialization Formats
+    await keyword, Coroutines and Event Loops-Coroutines and Event Loops
+    AWS (Amazon Web Services), Amazon Web Services
+    Azure, Microsoft Azure
+
+B
+
+    back pressure technique, Beyond Queues
+    background process (&) operator, in Redis, Redis
+    backslash (\)
+        continuing lines, Continue Lines with \
+        escaping strings, Escape with \
+    bang-bang (**)
+        combining or updating dictionaries, Use {**a, **b}
+        packing or unpacking keyword arguments, Pack/Unpack Keyword Arguments with **
+    base classes (parent classes; superclasses), Inherit from a Parent Class, Get Help from Your Parent with super()
+    Basic Multilingual Plane, Text Strings: Unicode
+    Batchelder, Ned, Normalization, YAML
+    Beautiful Soup, Beautiful Soup
+    Belle computer, Expert Systems
+    Berners-Lee, Tim, The Web
+    Bicking, Ian, Use Pip
+    “Billion Laughs Attack” Wikipedia page, An XML Security Note
+    binary arithmetic, Bits and Bytes
+    binary base, Bases
+    binary data, Binary Data-Use Bit Operators, Binary Files
+        (see also files; persistent storage)
+        bit operators, Use Bit Operators
+        converting, Convert Binary Data with struct-Convert Binary Data with struct
+        converting bytes and strings to, Convert Bytes/Strings with binascii()
+        extracting, Extraction with Binary Data Tools
+    binascii() function, Convert Bytes/Strings with binascii()
+    bit operators, Use Bit Operators
+    bits, Bits and Bytes-Bits and Bytes
+    bitstring tool, Extraction with Binary Data Tools
+    BlackSheep, Async Frameworks and Servers
+    Bokeh package, Data Visualization
+    Boltzmann machines, The Breakthrough
+    bool() function, Booleans, Type Conversions-Type Conversions
+    Booleans, Booleans
+    Boto3 library, Amazon Web Services
+    Bottle, Bottle-Bottle
+    break statements
+        canceling for loops, Cancel with break
+        canceling while loops, Cancel with break
+        checking with else statements, Check break Use with else-Check break Use with else
+    breakpoint() function, Breakpoint()
+    breakpoints, Pdb
+    brokers, in ZeroMQ, Request-Reply: ZeroMQ
+    Browser Use agent, Agents
+    Buildbot, Continuous Integration
+    bytearray() function, Create with bytearray()
+    bytearrays, Bytearray-Review/Preview
+        appending bytes, Append One Byte with append()
+        appending multiple bytes, Append Multiple Bytes with extend()
+        combining, Combine with +
+        creating, Create with bytearray()
+        getting multiple bytes, Get Multiple Bytes with a Slice
+        getting single bytes, Get One Byte by [ offset ]
+        inserting bytes, Insert a Byte with insert()
+        modifying multiple bytes, Modify Multiple Bytes with replace()-Modify Multiple Bytes with a Slice
+        modifying single bytes, Modify One Byte by [ offset ]
+        repeating, Repeat with *
+    bytes, Bits and Bytes-Bits and Bytes, Bytes and Bytearray-Repeat with *
+        appending, Append One Byte with append()
+        appending multiple, Append Multiple Bytes with extend()
+        combining, Combine with +
+        converting to hex strings, Convert to a Hex String
+        converting with binascii(), Convert Bytes/Strings with binascii()
+        creating, Create with Quotes-Create from a Hex String
+        decoding and encoding, Decode and Encode Bytes and Strings
+        getting multiple bytes, Get Multiple Bytes with a Slice
+        getting single bytes, Get One Byte by [ offset ], Get One Byte by [ offset ]
+        getting slices, Get a Slice
+        inserting, Insert a Byte with insert()
+        modifying multiple bytes, Modify Multiple Bytes with replace()-Modify Multiple Bytes with a Slice
+        modifying single bytes, Modify One Byte by [ offset ]
+        multibyte types, Multibyte Types-Multibyte Types
+        repeating, Repeat with *
+    bytes() function, Create with bytes()
+    BytesIO class, BytesIO and StringIO-BytesIO and StringIO
+
+C
+
+    C extensions, C or Rust Extensions
+    cache memory, A Computer
+    cache servers, Memcached
+    caching, Cache
+    callbacks
+        async versus, Async Versus…​
+        callback-based code, Twisted
+    camel case, Follow Naming Conventions
+    “Canadian Charms” (McIntyre), YAML
+    Cassandra, Other NoSQL
+    Cavendish, Margaret, Search and Select
+    Celery package, Beyond Queues
+    central processing units (CPUs), A Computer, Computer Hardware
+    CERN (European Organization for Nuclear Research), The Web
+    CGI (Common Gateway Interface), Web Server Gateway Interface
+    Channels, Async Frameworks and Servers
+    characters, defined, Strings
+    ChatGPT, The ChatGPT Moment, Current Models
+    chdir() function, Change Current Directory with chdir()
+    Chef, Remote Management
+    CherryPy, Other Python Web Servers
+    Chester (cat), Bases
+    child classes (derived classes; subclasses), Inherit from a Parent Class
+    chips (CPUs), A Computer
+    chmod() function, Change Permissions with chmod()
+    chown() function, Change Ownership with chown()
+    chr() function, Bases
+    Chroma, Vector Databases
+    CircleCI, Continuous Integration
+    Clang, Background
+    class keyword, Define a Class with class
+    class methods, Class Methods
+    classes
+        attributes of, Class and Object Attributes
+        defined, Define a Class with class
+        defining, Define a Class with class
+        getting definition of parent classes, Get Help from Your Parent with super()
+        inheritance from parent classes, Inherit from a Parent Class
+        mixin, Include Mixins
+    @classmethod decorator, Class Methods
+    Claude, Current Models
+    clear() function
+        deleting all dictionary items, Delete All Items with clear()
+        deleting all list items, Delete All Items with clear()
+    Click package, Other Command Helpers
+    client-server (request-reply; request-response) pattern, The Request-Reply Pattern-Request-Reply: Other Messaging Tools
+    client-server exchange
+        with TCP, Sockets-Sockets
+        with UDP, Sockets-Sockets
+    closures, inner functions as, Closures
+    cloud computing, Clouds-OpenStack
+        AWS, Amazon Web Services
+        Google Cloud, Google Cloud
+        Microsoft Azure, Microsoft Azure
+        OpenStack, OpenStack
+    CNNs (convolutional neural networks), Image Recognition: ImageNet and AlexNet
+    code editors, Integrated Development Environments
+    Code Llama, Choose Another Model
+    Coding Gopher, Computer Hardware
+    Coghlan, Alyssa, Relative and Absolute Imports
+    Colvin, Samuel, C or Rust Extensions
+    combination (+) operator
+        combining bytearrays, Combine with +
+        combining bytes, Combine with +
+        combining counters, Count Items with Counter()
+        combining lists, Combine with extend() or +
+        combining strings, Combine with +
+        combining tuples, Combine with +
+    comma (,), creating tuples with, Create with Commas and ()-Create with Commas and ()
+    command automation, Command Automation-Other Command Helpers
+    comment (#) character, Comment with #
+    commenting, Comment with #, Comments
+    Common Gateway Interface (CGI), Web Server Gateway Interface
+    comparison operators, Compare with if, elif, and else
+    comparisons, Compare with if, elif, and else-Review/Preview
+        dictionaries, Compare Dictionaries
+        elif statements, Compare with if, elif, and else-Compare with if, elif, and else
+        else statements, Compare with if, elif, and else-Compare with if, elif, and else
+        if statements, Compare with if, elif, and else-Compare with if, elif, and else
+        lists, Compare Lists
+        magic methods for, Magic Methods
+        match statements, Match-Structural Matches
+        membership operator, Do Multiple Comparisons with in
+        True and False values, What Is True?
+        tuples, Compare
+        walrus operator, New: I Am the Walrus
+    complex numbers, Complex Numbers
+    composition, Aggregation and Composition
+    comprehensions
+        dictionary, Use Dictionary Comprehensions
+        generator, Generator Comprehensions
+        list, Create a List with a Comprehension-Create a List with a Comprehension, Algorithms and Data Structures
+        set, Create Set Comprehensions
+        tuple, There Are No Tuple Comprehensions
+    computer hardware, A Computer, Computer Hardware-Computer Hardware
+    concatenating
+        strings, Combine with +
+        tuples, Modify?
+    concurrency, Concurrency-asyncio
+        async versus, Async Versus…​
+        asyncio library, asyncio
+        concurrent.futures module, Concurrent.futures-Concurrent.futures
+        gevent library, Green Threads and gevent-Green Threads and gevent
+        GIL, The GIL
+        processes, Processes
+        queues, Queues
+        threads, Threads-Threads
+        Twisted, Twisted-Twisted
+    concurrent.futures module, Concurrent.futures-Concurrent.futures
+    Conda, Conda
+    configparser module, Configuration Files
+    configuration files, Configuration Files
+    Connexion, Database Frameworks
+    Construct tool, Extraction with Binary Data Tools
+    constructors, Initialization
+    context managers, Close Files Automatically by Using with
+    continuation character, Continue Lines with \
+    continue statements
+        skipping ahead in for loops, Skip with continue
+        skipping ahead in while loops, Skip Ahead with continue
+    continuous integration, Continuous Integration
+    convolutional neural networks (CNNs), Image Recognition: ImageNet and AlexNet
+    cookies, Web Basics
+    cooperative multitasking, Coroutines and Event Loops
+    Coordinated Universal Time (UTC), The time Module
+    copy() function
+        copying dictionary keys and values, Copy with copy()
+        copying files, Copy with copy()
+        copying lists, Copy with copy(), list(), or a Slice
+    coroutines, Coroutines and Event Loops-Coroutines and Event Loops
+        async versus, Async Versus…​
+        gevent library, Green Threads and gevent
+    CouchDB, Document Databases, Other NoSQL
+    count() function, Count Occurrences of a Value with count()
+    counter() function, Count Items with Counter()-Count Items with Counter()
+    cProfile module, Profile
+    CPU-bound processes, Concurrency
+    CPUs (central processing units), A Computer, Computer Hardware
+    crawlers, Crawl and Scrape
+    CRUD operations, SQL
+    CSV files, CSV-CSV
+    csv module, CSV-CSV
+    Curio package, Asyncio Alternatives
+    curl, curl
+    curly braces ({ })
+        creating dictionaries, Create with {}
+        creating sets, Create with set() or {}
+        formatting strings, New style: {} and format()-New style: {} and format()
+    Cython, Cython
+
+D
+
+    Dask, Dask
+    “Data Classes in Python 3.7+” (Arne), Dataclasses
+    data definition language (DDL), SQL
+    data in a box (see persistent storage)
+    data in space (see networks)
+    data in time (sequential and concurrent access), Data in Time: Concurrency-Beyond Queues
+        async frameworks and servers, Async Frameworks and Servers-Beyond Queues
+        command automation, Command Automation-Other Command Helpers
+        concurrency, Concurrency-asyncio
+        coroutines, Coroutines and Event Loops-Coroutines and Event Loops
+        event loops, Coroutines and Event Loops-Coroutines and Event Loops
+        processes, Programs and Processes-Get Process Info with psutil
+    data manipulation language (DML), SQL
+    data science, Data Science-Data Visualization
+        data visualization packages, Data Visualization
+        DuckDB, DuckDB
+        NumPy, NumPy-Linear Algebra
+        pandas library, pandas-pandas
+        Polars, Polars
+        SciPy, SciPy
+        standard Python features, Standard Python-Matrix Multiplication
+            calculating accurate floating-point values, Calculate Accurate Floating Point Values with decimal
+            complex numbers, Complex Numbers
+            format conversions, Format Conversions
+            math functions, Math-Math
+            matrix multiplication, Matrix Multiplication
+            packed sequences, Use Packed Sequences with array
+            rational arithmetic with fractions, Perform Rational Arithmetic with fractions
+            statistics, Statistics
+    data serialization, Data Serialization-Use Other Serialization Formats
+    data structure servers, Redis
+    data structures, Algorithms and Data Structures
+    data types (see types)
+    data visualization packages, Data Visualization
+    database frameworks, Database Frameworks
+    dataclasses, Dataclasses-Dataclasses
+    DataFrames, in pandas, pandas
+    dataset package, Other Database Access Packages
+    Datasette, Database Frameworks
+    date object, The datetime Module
+    dateinfer module, Alternative Modules
+    dates and times, Dates and Times-Alternative Modules
+        challenges regarding, Dates and Times
+        converting, All the Conversions
+        datetime module, The datetime Module-The datetime Module
+        in JSON files, JSON-JSON
+        leap years, Leap Year
+        reading and writing, Read and Write Dates and Times-Read and Write Dates and Times
+        third-party modules, Alternative Modules
+        time module, The time Module-The time Module
+    datetime module, The datetime Module-The datetime Module
+    dateutil module, Alternative Modules
+    Davis, Jesse, Coroutines and Event Loops
+    Day, Ryan, References
+    daylight saving time, The time Module
+    DB-API, DB-API
+    dbm databases, The dbm Family
+    DDL (data definition language), SQL
+    debugging techniques, Debugging-Breakpoint()
+        assert keyword, Assert
+        breakpoint() function, Breakpoint()
+        decorators, Decorators
+        f-strings, F-strings
+        IceCream, IceCream
+        logging, Logging-Logging
+        pdb, Pdb-Pdb
+        pprint() function, Pprint()
+        printing strings, Print
+        stepping through code, Pdb
+    decimal module, Calculate Accurate Floating Point Values with decimal
+    decimals, Floats-Decimals, Calculate Accurate Floating Point Values with decimal
+    decorators, Decorators-Decorators, Decorators
+    Deep Blue, Expert Systems
+    deep learning (DL), AI
+    Deep Learning at Scale (Mall), References
+    deepcopy() function
+        copying everything in dictionaries, Copy Everything with deepcopy()
+        copying everything in lists, Copy Everything with deepcopy()
+    DeepSeek, Current Models
+    def keyword, Define a Function with def
+    defaultdict() function, Handle Missing Keys with setdefault() and defaultdict()-Handle Missing Keys with setdefault() and defaultdict()
+    defused XML, An XML Security Note
+    del statements
+        deleting dictionary items, Delete an Item by Key with del
+        deleting list items, Delete an Item by Offset with del
+    Delegator.py package, Other Command Helpers
+    delimiters, A Bigger Example
+    deques, Stack + Queue == deque
+    derived classes (child classes; subclasses), Inherit from a Parent Class
+    Designing Machine Learning Systems (Huyen), References
+    Deutsch, Peter, Clouds
+    development environment, Development Environment-Git
+        finding code, Find Python Code
+        IDEs, Integrated Development Environments-JupyterLab
+        installing packages, Install Packages-Install from Source
+        source-control systems, Source Control-Git
+        virtual environments, Virtual Environments-uv
+    Di Pietro, Mauro, Ollama References
+    dict() function
+        converting dictionaries, Convert with dict()
+        creating dictionaries, Create with dict()
+    dictionaries, Dictionaries-Use Dictionary Comprehensions
+        adding or changing items, Add or Change an Item by [ key ]-Add or Change an Item by [ key ]
+        assigning, Assign with =
+        combining, Combine/update dicts-Use |
+        comparing, Compare Dictionaries
+        comprehensions, Use Dictionary Comprehensions
+        converting, Convert with dict()
+        copying everything in, Copy Everything with deepcopy()
+        copying keys and values, Copy with copy()
+        creating, Create with {}
+        defined, Little Python Programs, Dictionaries
+        deleting all items, Delete All Items with clear()
+        deleting items, Delete an Item by Key with del
+        getting and deleting items, Get an Item by Key and Delete It with pop( key )
+        getting items, Get an Item by [ key ] or with get()
+        getting length of, Get Length with len()
+        iterating, Iterate with for and in
+        key restrictions, Add or Change an Item by [ key ]
+        missing keys, Handle Missing Keys with setdefault() and defaultdict()-Handle Missing Keys with setdefault() and defaultdict()
+        ordering by key, Order by Key with OrderedDict()
+        testing for keys, Test for a Key with in
+        unpacking, Use {**a, **b}
+        updating, Combine/update dicts-Use |
+    dictionary unpacking (**) operator
+        combining or updating dictionaries, Use {**a, **b}
+        packing or unpacking keyword arguments, Pack/Unpack Keyword Arguments with **
+    difference() function, Use Combinations and Operators
+    dill package, Serialize with pickle
+    directories, Directory Operations-List Matching Files with glob()
+        (see also files)
+        changing current, Change Current Directory with chdir()
+        creating, Create with mkdir()
+        defined, Files
+        deleting, Delete with rmdir()
+        listing contents of, List Contents with listdir()
+        listing matching files, List Matching Files with glob()
+    Disco, Disco
+    disk drives, Data in a Box: Persistent Storage
+    disks, A Computer
+    distributed computing (see networks)
+    distributed task management, Queues
+    distributed version control systems, Source Control
+    division, Integer Operations
+    Django, Django
+    DL (deep learning), AI
+    DML (data manipulation language), SQL
+    DNS (Domain Name System), Domain Name System
+    Docker, Docker
+    docstrings, Docstrings, Docstrings
+    doctest package, Doctest
+    document databases, Document Databases
+    documentation, Documentation-Markup Text Files
+    Doit package, Other Command Helpers
+    Domain Name System (DNS), Domain Name System
+    double underscores (__)
+        in magic methods, Magic Methods
+        naming internal variables, Docstrings, Dunder Names
+    Doxygen, Comments
+    duck typing, Duck Typing-Duck Typing
+    DuckDB, DuckDB, DuckDB
+    DuckDB in Action (Needham et al.), DuckDB
+    dunders, Docstrings, Dunder Names
+    duplication (*) operator
+        duplicating lists, Duplicate with *
+        duplicating strings, Duplicate with *
+        duplicating tuples, Duplicate with *
+        repeating bytearrays, Repeat with *
+        repeating bytes, Repeat with *
+    dynamically-typed computer languages, Assign a Value to a Variable
+    DynamoDB, Document Databases
+
+E
+
+    An easy introduction to Mojo for Python programmers (Prasanna), Examples
+    Elasticsearch, Full-Text Databases
+    ElementTree module, XML
+    elif statements, Compare with if, elif, and else-Compare with if, elif, and else
+    else statements, Compare with if, elif, and else-Compare with if, elif, and else, Check break Use with else-Check break Use with else
+    email modules, Python Email Modules
+    empty strings, Create with Quotes
+    encode() function, Encode-Encode
+    encodings, Encode
+    endianness, Binary Data
+    environment variables, Virtual Environments
+    epoch value, The time Module
+    equality testing, Compare with if, elif, and else
+    escaping characters, Escape with \
+    European Organization for Nuclear Research (CERN), The Web
+    event loops, coroutines and, Coroutines and Event Loops-Coroutines and Event Loops
+    event-based programming, Green Threads and gevent
+    event-based servers, Other Python Web Servers
+    Everything Curl (Stenberg), curl
+    except statements, Handle Errors with try and except-Handle Errors with try and except
+    exceptions, Exceptions-Make Your Own Exceptions
+        defined, Literal Integers
+        defining, Make Your Own Exceptions
+        finally statements, Use Finally
+        try and except statements, Handle Errors with try and except-Handle Errors with try and except
+    exclusive or (^) character, Use Combinations and Operators
+    exists() function, Check Existence with exists()
+    expert systems, Expert Systems
+    exponentiation (**) operator, Integers and Variables
+    extend() function
+        appending multiple bytes, Append Multiple Bytes with extend()
+        combining lists, Combine with extend() or +
+    Extensible Markup Language (XML) files, XML-An XML Security Note
+
+F
+
+    f-strings
+        creating, Newest Style: f-strings
+        debugging with, F-strings
+        defined, Create with Quotes
+        Python example program, A Bigger Example
+    Facebook service API, Web Services and APIs
+    False values, What Is True?, None, Truthiness, and Falsiness-None, Truthiness, and Falsiness
+    fanin networking pattern, Networking Patterns
+    fanout networking pattern, Networking Patterns
+    fastai library, Create Models: Python Frameworks
+    FastAPI, Async Frameworks and Servers, FastAPI
+    FastHTML, FastHTML
+    fetching, defined, A Computer
+    Fielding, Roy, Web APIs and REST
+    FIFO (first in, first out) queues, Get an Item by Offset and Delete It with pop()
+    File Transfer Protocol (FTP), Other Protocols
+    file-like objects, BytesIO and StringIO
+    files, Files-File Formats: Determination
+        defined, Files
+        determining format of, File Formats: Determination
+        file operations, File Operations-Delete a File with remove()
+            changing ownership, Change Ownership with chown()
+            changing permissions, Change Permissions with chmod()
+            checking existence of files, Check Existence with exists()
+            checking file type, Check Type with isfile()
+            copying files, Copy with copy()
+            deleting files, Delete a File with remove()
+            linking files, Link with link() or symlink()
+            renaming files, Change Name with rename()
+        in-memory data, BytesIO and StringIO-BytesIO and StringIO
+        input and output, File Input and Output-Change Position with seek()
+            changing position within files, Change Position with seek()-Change Position with seek()
+            closing files automatically, Close Files Automatically by Using with
+            creating files, Create or Open with open()
+            opening files, Create or Open with open()
+            reading binary files, Read a Binary File with read()
+            reading text files, Read a Text File with read(), readline(), or readlines()-Read a Text File with read(), readline(), or readlines()
+            writing binary files, Write a Binary File with write()
+            writing text files, Write a Text File with print()-Write a Text File with write()
+        memory mapping, Memory Mapping
+        pathnames, Pathnames-Use pathlib
+            building, Build a Pathname with os.path.join()
+            getting, Get a Pathname with abspath()
+            getting symlink pathnames, Get a symlink Pathname with realpath()
+    filesystems, defined, Directory Operations
+    finally statements, Use Finally
+    find() method, Search and Select
+    findall() function, Find All Matches with findall()
+    fire and forget technique, Beyond Queues
+    first in, first out (FIFO) queues, Get an Item by Offset and Delete It with pop()
+    Flask, Flask-Flask
+    Flask-Restless, Database Frameworks
+    flat files, File Input and Output, Text Files
+    Fleming module, Alternative Modules
+    floating-point division (/) operator, Integer Operations, Integers and Variables
+    floats, Specify Values, Floats-Decimals, Calculate Accurate Floating Point Values with decimal
+    fonts, Decode
+    for loops, Iterate with for and in-Check break Use with else
+        canceling, Cancel with break
+        checking break statements, Check break Use with else
+        iterating over dictionaries, Iterate with for and in
+        iterating over lists, Iterate with for and in
+        iterating over sets, Iterate with for and in
+        iterating over tuples, Iterate with for and in
+        skipping ahead, Skip with continue
+    format() function, New style: {} and format()-New style: {} and format()
+    fractions, Fractions, Perform Rational Arithmetic with fractions
+    fractions module, Perform Rational Arithmetic with fractions
+    frameworks, defined, Web Servers
+    fromhex() function, Create from a Hex String
+    frozenset() function, Create an Immutable Set with frozenset()
+    FTP (File Transfer Protocol), Other Protocols
+    full-text databases, Full-Text Databases
+    functions, Functions-Review/Preview
+        anonymous, Anonymous Functions: Lambda
+        arguments and parameters, Arguments and Parameters-Mutable and Immutable Arguments
+            default parameter values, Default Parameter Values
+            keyword arguments, Keyword Arguments, Pack/Unpack Keyword Arguments with **
+            keyword-only arguments, Keyword-Only (*) and Position-Only (/) Arguments-Keyword-Only (*) and Position-Only (/) Arguments
+            mutable and immutable arguments, Mutable and Immutable Arguments
+            None, True, and False values, None, Truthiness, and Falsiness-None, Truthiness, and Falsiness
+            position-only arguments, Keyword-Only (*) and Position-Only (/) Arguments-Keyword-Only (*) and Position-Only (/) Arguments
+            positional arguments, Positional Arguments, Pack/Unpack Positional Arguments with *-Pack/Unpack Positional Arguments with *
+            tuples versus, Function Arguments Are Not a Tuple
+        async, Async Functions, Briefly
+        calling, Call a Function with Parentheses
+        decorators, Decorators-Decorators
+        defined, Mysteries, Booleans, Functions
+        defining, Define a Function with def
+        docstrings, Docstrings
+        dunder names, Dunder Names
+        exceptions, Exceptions-Make Your Own Exceptions
+            defining, Make Your Own Exceptions
+            finally statements, Use Finally
+            try and except statements, Handle Errors with try and except-Handle Errors with try and except
+        as first-class citizens, Functions Are First-Class Citizens-Functions Are First-Class Citizens
+        generators, Generators-Generator Comprehensions
+        inner, Inner Functions
+        lambda, Anonymous Functions: Lambda
+        namespaces, Namespaces and Scope-Namespaces and Scope
+        recursion, Recursion
+        scope, Namespaces and Scope-Namespaces and Scope
+        type hints for, Function Hints
+    functools module, Cache
+
+G
+
+    garbage collection, Assign a Value to a Variable, Change the Value of a Variable
+    Gemini, Current Models
+    generators, Generators-Generator Comprehensions
+    GeoPandas, Geospatial Databases
+    geospatial databases, Geospatial Databases
+    get() function, Get an Item by [ key ] or with get()
+    getter methods, Getters and Setters
+    “gevent for the Working Python Developer” tutorial, Green Threads and gevent
+    gevent library, Green Threads and gevent-Green Threads and gevent, Other Python Web Servers
+    GIL (Global Interpreter Lock), The GIL
+    Git, Git-Git
+    GitHub, More Batteries: Get Other Python Code, Find Python Code, Git
+    GitHub Actions, Continuous Integration
+    glob() function, List Matching Files with glob()
+    global keyword, Namespaces and Scope
+    global namespace, Namespaces and Scope
+    global variables, Namespaces and Scope
+    globals() function, Namespaces and Scope
+    Google Cloud, Google Cloud
+    googolplexes, How Big Is an int?
+    googols, How Big Is an int?
+    graph databases, Graph Databases
+    greenlets (green threads; microthreads), Green Threads and gevent-Green Threads and gevent, Async Versus…​
+    Grok, Current Models
+    gRPC package, gRPC
+    GUIs (graphical user interfaces), Setup
+    Gunicorn, Green Threads and gevent, Other Python Web Servers
+
+H
+
+    h5py module, HDF5
+    Hachoir tool, Extraction with Binary Data Tools
+    Hadoop, Hadoop
+    “Hadoop with Python” (Adrián Cañones), Hadoop
+    Haidar, Georges, Other Web Clients
+    Hands-On APIs for AI and Data Science (Day), References
+    hashes, Dictionaries
+    hashmaps, Dictionaries
+    HBase, Other NoSQL
+    HDF5 files, HDF5
+    Hellmann, Doug, Goodies in the Python Standard Library
+    “Hello, ASGI” (encode.io), Async Frameworks and Servers
+    help() function, Docstrings
+    hex strings
+        converting bytes to, Convert to a Hex String
+        creating bytes, Create from a Hex String
+    hexadecimal base, Bases
+    Hinton, Geoffrey, The Breakthrough
+    Hjelle, Geir Arne, Dataclasses
+    Hogg, Dylan, Coroutines and Event Loops
+    Hopfield networks, The Breakthrough
+    “How Variables Works in Python” (Sreekanth), Assign a Value to a Variable
+    HTML (Hypertext Markup Language), Markup Text Files, HTML Entities, HTML, The Web
+    htmx library, htmx
+    HTTP (Hypertext Transfer Protocol)
+        data interchange, Web Basics
+        development of the web, The Web
+        TCP and UDP, Sockets
+        testing, HTTP Testing-httpbin
+            curl, curl
+            httpbin, httpbin
+            HTTPie, HTTPie
+            Telnet, Telnet
+    http package, The Standard Library
+    httpbin, httpbin
+    HTTPie, HTTPie
+    HTTPX, Other Web Clients
+    Hugging Face, A Million Models: Hugging Face
+    Huyen, Chip, References
+    Hypercorn, Async Frameworks and Servers
+    Hypertext Markup Language (HTML), Markup Text Files, HTML Entities, HTML, The Web
+    Hypertext Transfer Protocol (see HTTP)
+    hyphen (-), getting difference of sets with, Use Combinations and Operators
+    Hypothesis, Hypothesis
+
+I
+
+    I/O-bound processes, Concurrency
+    iamovie example program, Let’s Watch a Movie-Review/Preview
+    IceCream package, IceCream
+    id() function, Assign a Value to a Variable
+    IDEs (integrated development environments), Setup, Integrated Development Environments-JupyterLab
+        IPython, IPython-IPython
+        Jupyter Notebook, Jupyter Notebook
+        JupyterLab, JupyterLab
+    if statements, Compare with if, elif, and else-Compare with if, elif, and else
+    image recognition, Image Recognition: ImageNet and AlexNet
+    ImageNet, Image Recognition: ImageNet and AlexNet
+    Imankulov, Roman, Profile
+    imaplib module, Python Email Modules
+    immutable arguments, Mutable and Immutable Arguments
+    import aliases, The engine layer
+    import statements, A Bigger Example, Modules and the import Statement
+    in (membership) operator, Do Multiple Comparisons with in
+    in statements
+        iterating over dictionaries, Iterate with for and in
+        iterating over lists, Iterate with for and in
+        iterating over sets, Iterate with for and in
+        iterating over tuples, Iterate with for and in
+        testing for keys in dictionaries, Test for a Key with in
+        testing for values, Test for a Value with in
+        testing for values in sets, Test for a Value with in
+    indentation, A Bigger Example, Compare with if, elif, and else
+    index() function, Search and Select, Find an Item’s Offset by Value with index()
+    IndexError exception, Handle Errors with try and except
+    infinite loops, Cancel with break
+    InfluxDB, Time-Series Databases
+    inhale-args, Pack/Unpack Positional Arguments with *
+    inheritance, Inheritance-Include Mixins
+        adding methods, Add a Method
+        getting definition of parent classes, Get Help from Your Parent with super()
+        mixin classes, Include Mixins
+        multiple, Use Multiple Inheritance-Use Multiple Inheritance
+        overriding methods, Override a Method
+        from parent classes, Inherit from a Parent Class
+    __init__() method, Initialization-Initialization, Override a Method-Get Help from Your Parent with super()
+    inner functions, Inner Functions
+    input devices, A Computer
+    insert() function
+        adding items to lists, Add an Item by Offset with insert()
+        inserting bytes, Insert a Byte with insert()
+    instance methods, Instance Methods
+    int() function, Type Conversions-Type Conversions
+    integer division (//) operator, Integer Operations, Integers and Variables
+    integer overflow, How Big Is an int?
+    integers, Integers-How Big Is an int?
+        bases, Bases-Bases
+        conversions to and from, Type Conversions-Type Conversions
+        literal integers, Literal Integers-Literal Integers
+        operators, Integer Operations-Integer Operations
+        precedence, Precedence
+        size of, How Big Is an int?
+        variables and, Integers and Variables-Integers and Variables
+    integrated development environments (see IDEs)
+    internationalization settings, Read and Write Dates and Times
+    Internet Archive, A Bigger Example, Let’s Watch a Movie
+    internet services, Internet Services-Other Protocols
+    interpolating into strings, Apply Formatting
+    intersection (&) operator
+        counters, Count Items with Counter()
+        sets, Use Combinations and Operators
+    intersection() function, Use Combinations and Operators
+    invoke package, Invoke
+    IPython, IPython-IPython
+    is operator, None, Truthiness, and Falsiness
+    isabs() function, Check Type with isfile()
+    isfile() function, Check Type with isfile()
+    islink() function, Link with link() or symlink()
+    iso8601 module, Alternative Modules
+    isoformat() method, The datetime Module
+    issubset() function, Use Combinations and Operators
+    issuperset() function, Use Combinations and Operators
+    itemgetter() function, Standard Python
+    items() function, Iterate with for and in
+    itertools module, Iterate over Code Structures with itertools-Iterate over Code Structures with itertools
+
+J
+
+    Java, PyPy
+    JavaScript Object Notation (JSON) files, Data Serialization, JSON-JSON
+    Jenkins continuous integration tool, Continuous Integration
+    JIT (just in time) feature, Standard Python JIT
+    “The JIT Compiler”, Standard Python JIT
+    job queues, Queues
+    join() function
+        combining strings, Combine with join()
+        converting lists to strings, Convert a List to a String with join()
+    JSON (JavaScript Object Notation) files, Data Serialization, JSON-JSON
+    json module, JSON-JSON
+    JSON-RPC, JSON RPC
+    Jupyter Notebook, Jupyter Notebook
+    JupyterLab, JupyterLab
+    just in time (JIT) feature, Standard Python JIT
+
+K
+
+    Kaitai Struct tool, Extraction with Binary Data Tools
+    kdb+, Time-Series Databases
+    Keras library, Create Models: Python Frameworks
+    kernel defined, Programs and Processes
+    [ key ]
+        adding or changing dictionary items, Add or Change an Item by [ key ]-Add or Change an Item by [ key ]
+        getting dictionary items, Get an Item by [ key ] or with get()
+    keys() method, Iterate with for and in
+    keyword arguments
+        keyword-only arguments, Keyword-Only (*) and Position-Only (/) Arguments-Keyword-Only (*) and Position-Only (/) Arguments
+        named tuples, Named Tuples
+        overview of, Keyword Arguments
+        packing or unpacking, Pack/Unpack Keyword Arguments with **
+    keywords, Name Variables
+    knitting pattern, Mysteries
+    Kubernetes, Kubernetes
+    Kumar, Pankaj, Breakpoint()
+    kwargs variable name, Pack/Unpack Keyword Arguments with **
+    Kyoto Cabinet, Other NoSQL
+
+L
+
+    lambda functions, Anonymous Functions: Lambda
+    LangChain framework, Agents
+    large language models (LLMs), Large Language Models
+    last in, first out (LIFO) queues, Get an Item by Offset and Delete It with pop()
+    Last Resort Font, Decode
+    Lattner, Chris, Background
+    leap years, Leap Year
+    Lefkowitz, Glyph, Attrs
+    lefse, Mysteries
+    len() function
+        getting length of dictionaries, Get Length with len()
+        getting length of lists, Get Length with len()
+        getting length of sets, Get Length with len()
+        getting length of strings, Get Length with len()
+    library, Python standard, The Python Standard Library, Goodies in the Python Standard Library-Get Random
+        counting items, Count Items with Counter()-Count Items with Counter()
+        data science, Standard Python-Matrix Multiplication
+        deques, Stack + Queue == deque
+        iterating over structures, Iterate over Code Structures with itertools-Iterate over Code Structures with itertools
+        missing keys, Handle Missing Keys with setdefault() and defaultdict()-Handle Missing Keys with setdefault() and defaultdict()
+        ordering by key, Order by Key with OrderedDict()
+        random values, Get Random
+        web clients, The Standard Library-The Standard Library
+    LIFO (last in, first out) queues, Get an Item by Offset and Delete It with pop()
+    lima format, Use Other Serialization Formats
+    linear algebra, Linear Algebra
+    link() function, Link with link() or symlink()
+    Linux package managers, Install with a Native Package Manager
+    list() function
+        copying lists, Copy with copy(), list(), or a Slice
+        creating or converting lists, Create or Convert with list()
+    listdir() function, List Contents with listdir()
+    lists, Lists-There Are No Tuple Comprehensions
+        adding items, Add an Item to the End with append()
+        assigning, Assign with =
+        changing items, Change an Item with [ offset ]-Change Items with a Slice
+        combining, Combine with extend() or +
+        comparing, Compare Lists
+        converting to strings, Convert a List to a String with join()
+        converting types to, Create or Convert with list()
+        copying, Copy with copy(), list(), or a Slice
+        copying everything in, Copy Everything with deepcopy()
+        counting occurrences of values, Count Occurrences of a Value with count()
+        creating
+            with list(), Create or Convert with list()
+            with square brackets, Create with []
+            from strings with split(), Create from a String with split()
+            with comprehensions, Create a List with a Comprehension-Create a List with a Comprehension
+        creating lists of lists, Create Lists of Lists
+        deleting items
+            all, Delete All Items with clear()
+            with del statements, Delete an Item by Offset with del
+            with remove() function, Delete an Item by Value with remove()
+        duplicating, Duplicate with *
+        finding item offsets, Find an Item’s Offset by Value with index()
+        getting and deleting items, Get an Item by Offset and Delete It with pop()
+        getting items
+            with [ offset ], Get an Item by [ offset ]
+            with slices, Get Items with a Slice
+        getting length of, Get Length with len()
+        iterating over, Iterate with for and in
+        iterating over multiple sequences, Iterate Multiple Sequences with zip()-Iterate Multiple Sequences with zip_longest()
+        mutability of, Tuples and Lists
+        reordering items, Reorder Items with sort() or sorted()
+        testing for values, Test for a Value with in
+        tuples versus, Tuples Versus Lists
+    literal integers, Literal Integers-Literal Integers
+    literal strings, Combine with +
+    literal values, Specify Values
+    Litestar, Litestar
+    Llama, Current Models
+    LLMs (large language models), Large Language Models
+    LLVM, Background
+    locals() function, Namespaces and Scope
+    logging
+        debugging with, Logging-Logging
+        defined, Logging
+    logical operators, Compare with if, elif, and else
+    long type, How Big Is an int?
+    loopback interface, TCP/IP
+    loops, defined, Mysteries
+        (see also for loops; while loops)
+    Low-Code AI (Stripling & Abel), References
+    Lucene, Full-Text Databases
+    Luigi package, Hadoop
+
+M
+
+    machine learning (ML), defined, AI
+    macOS package managers, Install with a Native Package Manager
+    magic (special) methods, Magic Methods-Magic Methods
+    Magika tool, File Formats: Determination
+    Mall, Suneeta, References
+    MapReduce, Big Fat Data
+    Markdown, Markup Text Files
+    markup text files, Markup Text Files
+    marshaling (serialization), Data Serialization
+    marshmallow library, Use Other Serialization Formats
+    Marvel Comics service API, Web Services and APIs
+    massively distributed data, Big Fat Data-Dask
+        Dask, Dask
+        Disco, Disco
+        Hadoop, Hadoop
+        Spark, Spark
+    match statements, Match-Structural Matches
+    match() function
+        finding exact beginning match, Find Exact Beginning Match with match()-Find Exact Beginning Match with match()
+        specifying output, Specifying match() Output
+    math functions, Math Functions, Math-Math
+    Matplotlib package, Data Visualization
+    matrix multiplication, Matrix Multiplication
+    Maya module, Alternative Modules
+    McIntyre, James, YAML
+    McMillan, Gordon, Sockets
+    MCP (Model Context Protocol), Agents
+    membership (in) operator, Do Multiple Comparisons with in
+    Memcached, Memcached
+    memory locations, Multibyte Types
+    memory mapping, Memory Mapping, Padded Binary Files and Memory Mapping
+    memory safety bugs, Debugging
+    Mercurial, Mercurial
+    MessagePack (MsgPack), Use Other Serialization Formats, MessagePack RPC
+    method resolution order, Use Multiple Inheritance
+    methods, Methods, Method Types-Static Methods
+        adding, Add a Method
+        class, Class Methods
+        getter and setter, Getters and Setters
+        instance, Instance Methods
+        magic, Magic Methods-Magic Methods
+        overriding, Override a Method
+        static, Static Methods
+    Microsoft Azure, Microsoft Azure
+    Microsoft Windows package managers, Install with a Native Package Manager
+    microthreads (greenlets; green threads), Green Threads and gevent-Green Threads and gevent, Async Versus…​
+    Million Song dataset, HDF5
+    mixin classes, Include Mixins
+    mkdir() function, Create with mkdir()
+    ML (machine learning), defined, AI
+    MLIR (Multi-Level Intermediate Representation), Background
+    mmap module, Memory Mapping
+    Modular, Mojo
+    modules, Modules and Packages-Import Only What You Want from a Module
+        defined, Modules and the import Statement
+        importing, Import a Module-Import a Module
+            using aliases, Import a Module with Another Name
+            parts of modules, Import Only What You Want from a Module
+            relative and absolute imports, Relative and Absolute Imports
+        objects versus, Modules Versus Objects
+        qualifying contents of, Import a Module
+        search path, The Module Search Path
+    modulus (%) operator, Integers and Variables
+    Mojo, Mojo-Conclusion
+        async versus, Async Versus…​
+        background of, Background
+        design of, Design
+        examples using, Examples
+        limitations of, Limitations
+    MongoDB, Document Databases, Other NoSQL
+    monkey-patching functions, Green Threads and gevent
+    Monty model, Current Models
+    Moroney, Laurence, References
+    Mosaic web browser, The Web
+    most_common() function, Count Items with Counter()
+    “Motto” (McIntyre), YAML
+    MsgPack (MessagePack), Use Other Serialization Formats, MessagePack RPC
+    msgspec format, Use Other Serialization Formats
+    Multi-Level Intermediate Representation (MLIR), Background
+    multibyte types, Multibyte Types-Multibyte Types
+    multilayer perceptron, The Breakthrough
+    multiplication (*) operator, Integer Operations
+    multiprocessing module, Create a Process with multiprocessing, Processes
+    mutable arguments, Mutable and Immutable Arguments
+    Mypy tool, Mypy
+    MySQL, MySQL
+    MySQL Connector, MySQL
+    MySQLdb, MySQL
+
+N
+
+    name mangling, Name Mangling for Privacy
+    name property, Properties for Attribute Access
+    named tuples, Modify?
+    namespace packages, Namespace Packages
+    namespaces, Namespaces and Scope-Namespaces and Scope
+    NATS messaging system, Request-Reply: Other Messaging Tools, Pub-Sub: Other Tools
+    Needham, Mark, DuckDB
+    Neo4j, Graph Databases
+    Netcat, Netcat
+    Netscape, The Web
+    networks, Data in Space: Networks-Kubernetes
+        cloud computing, Clouds-OpenStack
+        data serialization, Data Serialization-Use Other Serialization Formats
+        defined, A Computer
+        Docker, Docker
+        fallacies of distributed computing, Clouds
+        internet services, Internet Services-Other Protocols
+        massively distributed data, Big Fat Data-Dask
+        networking patterns, Networking Patterns-Pub-Sub: Other Tools
+            publish-subscribe pattern, The Publish-Subscribe Pattern-Pub-Sub: Other Tools
+            request-reply pattern, The Request-Reply Pattern-Request-Reply: Other Messaging Tools
+        remote management, Remote Management
+        RPCs, Remote Procedure Calls-gRPC
+        TCP/IP, TCP/IP-Netcat
+        web services and APIs, Web Services and APIs
+    New York Times service API, Web Services and APIs
+    nginx, NGINX
+    None values, None, Truthiness, and Falsiness-None, Truthiness, and Falsiness
+    nonvolatile defined, A Computer
+    NoSQL data stores, NoSQL Data Stores-Other NoSQL
+        dbm databases, The dbm Family
+        document databases, Document Databases
+        graph databases, Graph Databases
+        Memcached, Memcached
+        Redis, Redis-Caches and expiration
+        time-series databases, Time-Series Databases
+        Valkey, Redis Alternative: Valkey?
+    Nox, Nox
+    Numba, Numba
+    numbers
+        complex, Complex Numbers
+        floats, Floats-Decimals, Calculate Accurate Floating Point Values with decimal
+        fractions, Fractions, Perform Rational Arithmetic with fractions
+        generating number sequences, Generate Number Sequences with range()
+        integers, Integers-How Big Is an int?
+        math functions, Math Functions, Math-Math
+        matrix multiplication, Matrix Multiplication
+        packed sequences, Use Packed Sequences with array
+        signed and unsigned, Bits and Bytes
+    NumPy, NumPy-Linear Algebra, NumPy and SciPy
+        array math, Array Math
+        changing array shape, Change an Array’s Shape with reshape()
+        getting elements from arrays, Get an Element with []
+        linear algebra, Linear Algebra
+        making arrays, Make an Array with array()-Make an Array with zeros(), ones(), or random()
+
+O
+
+    object document mapper (ODM; object data manager), Document Databases
+    object-relational mapper (ORM), The Object-Relational Mapper-The Object-Relational Mapper
+    objects, Objects-Attrs
+        aggregation, Aggregation and Composition
+        attribute access, Attribute Access-Class and Object Attributes
+            class and object attributes, Class and Object Attributes
+            direct, Direct Access
+            getter and setter methods, Getters and Setters
+            name mangling, Name Mangling for Privacy
+            properties for, Properties for Attribute Access-Properties for Attribute Access
+            properties for computed values, Properties for Computed Values
+        attribute assignment, Assign Attributes
+        attrs package, Attrs
+        composition, Aggregation and Composition
+        dataclasses, Dataclasses-Dataclasses
+        defined, What Are Objects?
+        defining classes, Define a Class with class
+        duck typing, Duck Typing-Duck Typing
+        inheritance, Inheritance-Include Mixins
+            adding methods, Add a Method
+            getting definition of parent classes, Get Help from Your Parent with super()
+            mixin classes, Include Mixins
+            multiple, Use Multiple Inheritance-Use Multiple Inheritance
+            overriding methods, Override a Method
+            from parent classes, Inherit from a Parent Class
+        initialization, Initialization-Initialization
+        metaphor of plastic boxes on memory shelf, Objects as Plastic Boxes in Memory
+        methods, Methods, Method Types-Static Methods
+            class, Class Methods
+            instance, Instance Methods
+            magic, Magic Methods-Magic Methods
+            static, Static Methods
+        modules versus, Modules Versus Objects
+        named tuples, Named Tuples
+        self argument, In self Defense
+        when to use, When to Use Objects or Something Else
+    octal base, Bases
+    ODM (object data manager; object document mapper), Document Databases
+    [ offset ]
+        changing list items, Change an Item with [ offset ]
+        getting bytes, Get One Byte by [ offset ], Get One Byte by [ offset ]
+        getting characters from strings, Get a Character by [ offset ]
+        getting items from lists, Get an Item by [ offset ]
+        getting items from tuples, Get an Item by [ offset ]
+        modifying single bytes, Modify One Byte by [ offset ]
+    offsets, Little Python Programs, Get a Character by [ offset ]
+    OLAP (online analytical processing), DuckDB
+    Oliphant, Travis, NumPy
+    Ollama, Working Examples With Ollama-Ollama References
+        choosing models, Choose a Model-Choose Another Model
+        installing, Install Ollama
+        references, Ollama References
+    “Ollama Explained” (geeksforgeeks), Working Examples With Ollama
+    OLTP (online transaction processing), DuckDB
+    “The One Python Library Everyone Needs” (Lefkowitz), Attrs
+    ones() function, Make an Array with zeros(), ones(), or random()
+    online analytic processing (OLAP), DuckDB
+    open() function, Create or Open with open()
+    OpenStack, OpenStack
+    OpenTSDB, Time-Series Databases
+    operator module, Standard Python
+    operators
+        comparison, Compare with if, elif, and else
+        integer, Integer Operations
+        logical, Compare with if, elif, and else
+    ord() function, Bases
+    OrderedDict() function, Order by Key with OrderedDict()
+    OrientDB, Graph Databases
+    ORM (object-relational mapper), The Object-Relational Mapper-The Object-Relational Mapper
+    os package, Get System Info with os
+    os.path module, Check Existence with exists()-Check Type with isfile()
+    os.path.join() function, Build a Pathname with os.path.join()
+    oursql, MySQL
+    output devices, A Computer
+
+P
+
+    packages, Packages-Modules Versus Objects
+        data visualization, Data Visualization
+        defined, Packages
+        installing, Install Packages-Install from Source
+        modules versus objects, Modules Versus Objects
+        namespace, Namespace Packages
+        relative and absolute imports, Relative and Absolute Imports
+        search path, The Module Search Path
+        third-party, Third-Party Python Packages, More Batteries: Get Other Python Code
+    padded binary files, Padded Binary Files and Memory Mapping
+    padded text files, Text Files
+    pandas library, pandas-pandas
+    parameters, Arguments and Parameters-Mutable and Immutable Arguments
+        default values, Default Parameter Values
+        defined, Arguments and Parameters
+    parent classes (base classes; superclasses), Inherit from a Parent Class, Get Help from Your Parent with super()
+    parenthesis ( )
+        calling functions, Call a Function with Parentheses
+        creating tuples, Create with Commas and ()-Create with Commas and ()
+    Pascal case, Follow Naming Conventions
+    pass statement, Define a Function with def
+    pathlib module, Use pathlib
+    pathnames, Pathnames-Use pathlib
+        building, Build a Pathname with os.path.join()
+        getting, Get a Pathname with abspath()
+        getting symlink pathnames, Get a symlink Pathname with realpath()
+    paths, for applications, Virtual Environments
+    pattern recognition, AI
+    pattern specifiers, Using Specifiers
+    pdb tool, Pdb-Pdb
+    PEP-8 indentation style, Compare with if, elif, and else
+    pep8 style checker, Pylint
+    “PEP 703–Making the Global Interpreter Lock Optional in CPython”, The GIL
+    perceptrons, Perceptrons
+    performance, Performance-Conclusion
+        algorithms and data structures, Algorithms and Data Structures
+        arrays, Arrays Versus Lists and Tuples
+        C extensions, C or Rust Extensions
+        caching, Cache
+        computer hardware, Computer Hardware-Computer Hardware
+        Cython, Cython
+        JIT feature, Standard Python JIT
+        Mojo, Mojo-Conclusion
+        Numba, Numba
+        NumPy, NumPy and SciPy
+        profilers, Profile
+        PyPy, PyPy
+        Rust extensions, C or Rust Extensions
+        SciPy, NumPy and SciPy
+        Taichi, Taichi
+        timers, Measure Timing-Measure Timing
+    Perplexity, Current Models
+    persistence defined, Data in a Box: Persistent Storage
+    persistent storage, Data in a Box: Persistent Storage-Geospatial Databases
+        binary files, Binary Files-TileDB
+        full-text databases, Full-Text Databases
+        geospatial databases, Geospatial Databases
+        NoSQL data stores, NoSQL Data Stores-Other NoSQL
+            dbm databases, The dbm Family
+            document databases, Document Databases
+            graph databases, Graph Databases
+            Memcached, Memcached
+            Redis, Redis-Caches and expiration
+            time-series databases, Time-Series Databases
+            Valkey, Redis Alternative: Valkey?
+        relational databases, Relational Databases-Other Database Access Packages
+            DB-API, DB-API
+            DuckDB, DuckDB
+            MySQL, MySQL
+            PostgreSQL, PostgreSQL
+            SQL, SQL
+            SQLAlchemy, SQLAlchemy-The Object-Relational Mapper
+            SQLite, SQLite-SQLite
+        text files, Text Files-Configuration Files
+            configuration files, Configuration Files
+            CSV files, CSV-CSV
+            HTML files, HTML
+            JSON files, JSON-JSON
+            Tablib package, Tablib
+            TOML files, TOML
+            XML files, XML-An XML Security Note
+            YAML files, YAML
+        vector databases, Vector Databases
+    pgvector, Vector Databases
+    pickle module, Serialize with pickle
+    Pika API, Pub-Sub: Other Tools
+    Pike, Rob, UTF-8
+    Pilosa, Other NoSQL
+    pip tool, Use Pip
+    Pipenv package, Pipenv
+    Plotly package, Data Visualization
+    Poetry package, Poetry
+    “Poetry versus uv”, uv
+    Polars, Polars
+    polymorphism, Duck Typing
+    pop() function, Stack + Queue == deque
+        getting and deleting dictionary items, Get an Item by Key and Delete It with pop( key )
+        getting and deleting list items, Get an Item by Offset and Delete It with pop()
+    popleft() function, Stack + Queue == deque
+    poplib module, Python Email Modules
+    “Popular Python Recipes”, Find Python Code
+    positional arguments, Positional Arguments
+        packing or unpacking, Pack/Unpack Positional Arguments with *-Pack/Unpack Positional Arguments with *
+        position-only arguments, Keyword-Only (*) and Position-Only (/) Arguments-Keyword-Only (*) and Position-Only (/) Arguments
+    positional systems, Bits and Bytes
+    PostGIS, Geospatial Databases
+    PostgreSQL, PostgreSQL, Document Databases
+    pprint() function, Pprint()
+    “Pragmatic Unicode” (Batchelder), Normalization
+    Prasanna, Hashank, Examples
+    print() function
+        interactive interpreter versus, Create with Quotes
+        writing text files, Write a Text File with print()
+        writing text strings, The Python Interactive Interpreter
+    processes, Programs and Processes-Get Process Info with psutil
+        async versus, Async Versus…​
+        concurrency, Processes
+        creating, Create a Process with subprocess-Create a Process with multiprocessing
+        getting process information, Get Process Info with psutil
+        getting system information, Get System Info with os
+        killing, Kill a Process with terminate()
+    profile module, Profile
+    profilers, Profile
+    Prometheus, Time-Series Databases
+    prompts, Upgrade Python-The Python Interactive Interpreter
+    proper subsets and supersets, Use Combinations and Operators
+    property-based testing, Hypothesis
+    Protocol Buffers, Use Other Serialization Formats
+    protocols, defined, TCP/IP
+    pseudocode, Pdb
+    psutil package, Get Process Info with psutil
+    Psycopg2 driver, PostgreSQL
+    publish-subscribe (pub-sub) pattern, Networking Patterns, The Publish-Subscribe Pattern-Pub-Sub: Other Tools
+        Redis, Pub-Sub: Redis-Pub-Sub: Redis
+        ZeroMQ, Pub-Sub: ZeroMQ
+    PubSubHubbub tool, Pub-Sub: Other Tools
+    puff-args, Pack/Unpack Positional Arguments with *
+    pull networking pattern, Networking Patterns
+    Puppet, Remote Management
+    push networking pattern, Networking Patterns
+    py-postgresql driver, PostgreSQL
+    Pydantic library, Use Other Serialization Formats, C or Rust Extensions
+    Pyflakes, Pylint
+    Pylint, Pylint-Pylint
+    Pylons, Other Python Web Servers
+    PyMySQL, MySQL
+    Pypeln package, Other Command Helpers
+    PyPI (Python Package Index), More Batteries: Get Other Python Code, Find Python Code
+    PyPy, PyPy
+    PyStore, Time-Series Databases
+    PyTables module, HDF5
+    pytest, Pytest-Parametrization
+        examples using, Examples
+        fixtures, Fixtures-Fixtures
+        parametrization, Parametrization
+    Python, Introduction-Review/Preview, Types and Variables-Practice
+        AI, AI-References
+        binary data, Binary Data-Use Bit Operators
+        bits and bytes, Bits and Bytes-Bits and Bytes
+        built-in features, Built-In Python Features
+        bytearrays, Bytearray-Review/Preview
+        bytes, Bytes and Bytearray-Repeat with *
+        commenting, Comment with #
+        comparisons, Compare with if, elif, and else-Review/Preview
+        computer hardware, A Computer, Computer Hardware-Computer Hardware
+        continuing lines, Continue Lines with \
+        data in time, Data in Time: Concurrency-Beyond Queues
+        data science, Data Science-Data Visualization
+        dates and times, Dates and Times-Alternative Modules
+        debugging techniques, Debugging-Breakpoint()
+        development environment, Development Environment-Git
+        dictionaries, Dictionaries-Use Dictionary Comprehensions
+        documentation, Documentation-Markup Text Files
+        example programs, Little Python Programs-Little Python Programs, A Bigger Example-A Bigger Example
+        files, Files-File Formats: Determination
+        functions, Functions-Review/Preview
+        installing, Install Python
+        iteration, Iterate with for and in-Generate Number Sequences with range()
+        lists, Lists-There Are No Tuple Comprehensions
+        modules, Modules and Packages-Import Only What You Want from a Module
+        multibyte types, Multibyte Types-Multibyte Types
+        networks, Data in Space: Networks-Kubernetes
+        objects, Objects as Plastic Boxes in Memory, Objects-Attrs
+        overview of, Mysteries-Little Python Programs
+        packages, Packages-Modules Versus Objects
+        performance, Performance-Conclusion
+        persistent storage, Data in a Box: Persistent Storage-Geospatial Databases
+        releases, Upgrade Python
+        repeating, Repeat with while-Check break Use with else
+        running by executing files, Python Files
+        running interactively, The Python Interactive Interpreter
+        sets, Sets-Create an Immutable Set with frozenset()
+        setting up, Setup
+        shell, The Python Interactive Interpreter
+        specifying values, Specify Values
+        standard library, The Python Standard Library, Goodies in the Python Standard Library-Get Random
+        strings, Strings-Practice
+        testing tools, Testing-Continuous Integration
+        text data, Text Strings: Unicode-Specifying match() Output
+        third-party packages, Third-Party Python Packages, More Batteries: Get Other Python Code
+        tuples, Tuples and Lists-Modify?
+        type hints, Type Hints-Mypy
+        types, Python Types, Numbers-Floats Are Not Exact
+        upgrading, Upgrade Python
+        variables, Variables-Follow Naming Conventions
+        versions of, Python Versions
+        web, The Web-Let’s Watch a Movie
+    “Python 3.7’s Built-in Breakpoint” (Shaw), Breakpoint()
+    “Python breakpoint()” (Kumar), Breakpoint()
+    Python Module of the Week website, Goodies in the Python Standard Library
+    Python Package Index (PyPI), More Batteries: Get Other Python Code, Find Python Code
+    “Python Performance Profiling” (Imankulov), Profile
+    Python socket programming HOWTO (McMillan), Sockets
+    “The Python Standard Library by Example” (O'Reilly), Goodies in the Python Standard Library
+    “Python UV”, uv
+    python3-memcached driver, Memcached
+    PyTorch, Create Models: Python Frameworks
+    PyYAML library, YAML-YAML
+
+Q
+
+    Quart, Async Frameworks and Servers
+    queues
+        async versus, Async Versus…​
+        concurrency, Queues
+        defined, Stack + Queue == deque
+    quotation marks (' and ")
+        creating bytes, Create with Quotes
+        creating strings, Create with Quotes-Create with Quotes
+
+R
+
+    RabbitMQ, Request-Reply: Other Messaging Tools, Pub-Sub: Other Tools
+    RAG (retrieval augmented generation), Retrieval Augmented Generation
+    RAM (random access memory), A Computer, Data in a Box: Persistent Storage
+    random module, Get Random
+    random() function, Make an Array with zeros(), ones(), or random()
+    range() function, Generate Number Sequences with range()
+    rational arithmetic, Perform Rational Arithmetic with fractions
+    raw strings, Create with Quotes, Escape with \, Using Specifiers
+    re module, Text Strings: Regular Expressions
+    Read the Docs, More Batteries: Get Other Python Code
+    read() function
+        reading binary files, Read a Binary File with read()
+        reading text files, Read a Text File with read(), readline(), or readlines()
+    Read-Evaluate-Print Loop (REPL), Testing
+    readline() function, Read a Text File with read(), readline(), or readlines()
+    readlines() function, Read a Text File with read(), readline(), or readlines()
+    realpath() function, Get a symlink Pathname with realpath()
+    Records package, Other Database Access Packages
+    recursion, Recursion
+    Redis, Redis-Redis
+        persistent storage, Redis-Caches and expiration
+            caches and expiration, Caches and expiration
+            hashes, Hashes
+            lists, Lists
+            sets, Sets
+            sorted sets, Sorted sets
+            strings, Strings-Strings
+        publish-subscribe pattern, Pub-Sub: Redis-Pub-Sub: Redis
+    redis-py driver, Redis
+    reference count, Assign a Value to a Variable
+    regressions, defined, Unittest
+    regular expressions, Text Strings: Regular Expressions-Replace at Matches with sub()
+        finding all matches, Find All Matches with findall()
+        finding exact beginning match, Find Exact Beginning Match with match()-Find Exact Beginning Match with match()
+        finding first match, Find First Match with search()
+        replacing at matches, Replace at Matches with sub()
+        splitting at matches, Split at Matches with split()
+    Reitz, Kenneth, Requests-HTML
+    relational databases, Relational Databases-Other Database Access Packages
+        DB-API, DB-API
+        DuckDB, DuckDB
+        MySQL, MySQL
+        PostgreSQL, PostgreSQL
+        SQL, SQL
+        SQLAlchemy, SQLAlchemy-The Object-Relational Mapper
+        SQLite, SQLite-SQLite
+    remote management, Remote Management
+    remote procedure calls (see RPCs)
+    remove() function
+        deleting files, Delete a File with remove()
+        deleting items from sets, Delete an Item with remove()
+        deleting list items, Delete an Item by Value with remove()
+    removeprefix() function, Work with Prefixes and Suffixes
+    removesuffix() function, Work with Prefixes and Suffixes
+    rename() function, Change Name with rename()
+    REPL (Read-Evaluate-Print Loop), Testing
+    replace() function, Get a Character by [ offset ]
+        modifying multiple bytes, Modify Multiple Bytes with replace()
+        substituting strings, Substitute with replace()
+    Representational State Transfer (REST), Web APIs and REST
+    request-reply (request-response; client-server) pattern, The Request-Reply Pattern-Request-Reply: Other Messaging Tools
+    request-reply technique, Beyond Queues
+    Requests, Requests
+    Requests-HTML, Requests-HTML
+    reserved words, Name Variables
+    reshape() function, Change an Array’s Shape with reshape()
+    Responder, Async Frameworks and Servers
+    REST (Representational State Transfer), Web APIs and REST
+    RESTful services, Web APIs and REST
+    retrieval augmented generation (RAG), Retrieval Augmented Generation
+    reverse() function, Get Items with a Slice
+    “Revisiting uv”, uv
+    Riak, Other NoSQL
+    rmdir() function, Delete with rmdir()
+    Ronacher, Armin, Flask
+    Rossum, Guido van, Little Python Programs, When to Use Objects or Something Else, Coroutines and Event Loops
+    round() function, Floats
+    RPCs (remote procedure calls), Remote Procedure Calls-gRPC
+        gRPC, gRPC
+        JSON-RPC, JSON RPC
+        MessagePack RPC, MessagePack RPC
+        XML-RPC, XML-RPC
+        zerorpc, zerorpc
+    RQ library, Beyond Queues
+    Ruff, Ruff
+    Rumelhart, David, The Breakthrough
+    Rust extensions, C or Rust Extensions
+
+S
+
+    Salt, Remote Management
+    Sanderson, Grant, References
+    sandman2, Database Frameworks
+    Sanic, Async Frameworks and Servers
+    Scapy library, Scapy
+    Schemathesis extension, Hypothesis
+    SciKit, Create Models: Python Frameworks
+    SciPy, SciPy, NumPy and SciPy
+    scrapers, Crawl and Scrape
+    Scrapy, Scrapy
+    seaborn package, Data Visualization
+    search() function, Find First Match with search()
+    seek() function, Change Position with seek()-Change Position with seek()
+    self argument, Initialization, In self Defense, Instance Methods
+    sentinel value, Pdb
+    separators, Split with split()
+    sequences, Strings
+    sequential and concurrent access (see data in time)
+    serialization (marshaling), Data Serialization
+    Serialize API, Use Other Serialization Formats
+    Series, pandas
+    set() function, Create with set() or {}
+    setdefault() function, Handle Missing Keys with setdefault() and defaultdict()-Handle Missing Keys with setdefault() and defaultdict()
+    setlocale() function, Read and Write Dates and Times-Read and Write Dates and Times
+    sets, Sets-Create an Immutable Set with frozenset()
+        adding items, Add an Item with add()
+        combinations and operators, Use Combinations and Operators-Use Combinations and Operators
+        combining sets, Combine with |
+        comprehensions, Create Set Comprehensions
+        creating, Create with set() or {}
+        defined, Sets
+        deleting items, Delete an Item with remove()
+        getting length of, Get Length with len()
+        immutable, Create an Immutable Set with frozenset()
+        iterating, Iterate with for and in
+        testing for values, Test for a Value with in
+        unions and intersections, Use Combinations and Operators
+    setter methods, Getters and Setters
+    setUp() method, Unittest
+    sh package, Other Command Helpers
+    Shaw, Anthony, Breakpoint()
+    shell program, Upgrade Python
+    shutil module, Copy with copy()
+    sign bits, Binary Data
+    signed numbers, Bits and Bytes
+    Simple Text Oriented Messaging Protocol (STOMP), Request-Reply: Other Messaging Tools
+    single slash (/), defining position-only arguments with, Keyword-Only (*) and Position-Only (/) Arguments-Keyword-Only (*) and Position-Only (/) Arguments
+    slices
+        changing list items, Change Items with a Slice
+        copying lists, Copy with copy(), list(), or a Slice
+        getting, Get a Slice
+        getting items from lists, Get Items with a Slice
+        getting multiple bytes, Get Multiple Bytes with a Slice
+        getting substrings from strings, Get a Substring with a Slice-Get a Substring with a Slice
+        modifying multiple bytes, Modify Multiple Bytes with a Slice
+    Smith, Nathaniel, Asyncio Alternatives
+    smtplib module, Python Email Modules
+    snake case, Follow Naming Conventions
+    socket module, Domain Name System
+    sockets, Sockets-Sockets
+    Solr, Full-Text Databases
+    “Some thoughts on asynchronous API design in a post-async/await world” (Smith), Asyncio Alternatives
+    sort() function, Reorder Items with sort() or sorted()
+    sorted() function, Reorder Items with sort() or sorted()
+    source-control systems, Source Control-Git
+        Git, Git-Git
+        Mercurial, Mercurial
+    Spark, Spark
+    SpatiaLite, Geospatial Databases
+    special (magic) methods, Magic Methods-Magic Methods
+    special characters, Using Special Characters-Using Special Characters
+    specifiers, Using Specifiers-Using Specifiers
+    Sphinx, Comments, Full-Text Databases
+    split() function
+        creating lists from strings, Create from a String with split()
+        splitting at matches, Split at Matches with split()
+        splitting at separators, Split with split()
+    Spolsky, Joel, Normalization
+    spreadsheets, Spreadsheets
+    SQL, SQL
+    SQL Expression Language, The SQL Expression Language
+    SQL injection, SQLite
+    SQLAlchemy, SQLAlchemy-The Object-Relational Mapper
+        dialects and drivers, SQLAlchemy
+        engine layer, The engine layer
+        object-relational mapper, The Object-Relational Mapper-The Object-Relational Mapper
+        SQL Expression Language, The SQL Expression Language
+    SQLite, SQLite-SQLite
+    square brackets ([ ])
+        creating lists, Create with []
+        getting elements from arrays, Get an Element with []
+    Sreekanth, Assign a Value to a Variable
+    stacks, defined, Get an Item by Offset and Delete It with pop(), Stack + Queue == deque
+    Starlette, Async Frameworks and Servers
+    static methods, Static Methods
+    statically-typed computer languages, Assign a Value to a Variable
+    @staticmethod decorator, Static Methods
+    statistics module, Statistics
+    Stenberg, Dan, curl
+    STOMP (Simple Text Oriented Messaging Protocol), Request-Reply: Other Messaging Tools
+    storing, defined, A Computer
+    str() function, Create with str()
+    Streamlit package, Data Visualization
+    strftime() function, Read and Write Dates and Times-Read and Write Dates and Times
+    string formatting (%) operator, Old style: %-Old style: %
+    string module, Using Special Characters
+    StringIO class, BytesIO and StringIO-BytesIO and StringIO
+    strings, Strings-Practice, Text Strings: Unicode
+        (see also text data)
+        changing case of, Change Case
+        combining, Combine with +, Combine with join()
+        converting lists to, Convert a List to a String with join()
+        converting with binascii(), Convert Bytes/Strings with binascii()
+        creating
+            with quotes, Create with Quotes-Create with Quotes
+            with str() function, Create with str()
+        creating lists from, Create from a String with split()
+        decoding and encoding, Decode and Encode Bytes and Strings
+        defined, Little Python Programs
+        duplicating, Duplicate with *
+        escaping, Escape with \
+        f-strings, A Bigger Example, Create with Quotes, Newest Style: f-strings, F-strings
+        formatting, Apply Formatting-Newest Style: f-strings
+            new style, New style: {} and format()-New style: {} and format()
+            newest style, Newest Style: f-strings
+            old style, Old style: %-Old style: %
+        getting characters from, Get a Character by [ offset ]
+        getting length of, Get Length with len()
+        getting substrings from, Get a Substring with a Slice-Get a Substring with a Slice
+        hex, Create from a Hex String-Convert to a Hex String
+        prefixes and suffixes, Work with Prefixes and Suffixes
+        printing, Print
+        searching, Search and Select
+        selecting, Search and Select
+        setting alignment of, Set Alignment
+        splitting, Split with split()
+        stripping, Strip with strip()
+        substituting, Substitute with replace()
+    strip() function, Strip with strip()
+    Stripling, Gwendolyn, References
+    strptime() function, Read and Write Dates and Times
+    struct module
+        converting binary data, Convert Binary Data with struct-Convert Binary Data with struct
+        endian specifiers, Convert Binary Data with struct
+        format specifiers, Convert Binary Data with struct
+    structured comments, Comments
+    sub() function, Replace at Matches with sub()
+    subclasses (derived classes; child classes), Inherit from a Parent Class
+    subprocess module, Create a Process with subprocess
+    substrings, extracting, Get a Substring with a Slice
+    subtraction (-) operator
+        integer operations, Integer Operations
+        subtracting counters, Count Items with Counter()
+    sum() function, Functions Are First-Class Citizens
+    super() function, Get Help from Your Parent with super()-Get Help from Your Parent with super()
+    superclasses (base classes; parent classes), Inherit from a Parent Class, Get Help from Your Parent with super()
+    supersets, Use Combinations and Operators
+    Swift language, Background
+    symbolic links, Link with link() or symlink()
+    symlink() function, Link with link() or symlink()
+    symmetric_difference() function, Use Combinations and Operators
+    synchronous, defined, Concurrency
+    syntax defined, Mysteries, Little Python Programs
+    SyntaxError, Literal Integers
+    sys module, The Module Search Path
+
+T
+
+    tables, in relational databases, Relational Databases
+    Tablib package, Tablib
+    TAI64 module, Alternative Modules
+    Taichi, Taichi
+    task queues, Queues
+    TCP (Transmission Control Protocol), Sockets-Sockets
+    TCP/IP (Transmission Control Protocol/Internet Protocol), TCP/IP-Netcat
+        Netcat, Netcat
+        Scapy, Scapy
+        sockets, Sockets-Sockets
+    tearDown() method, Unittest
+    tell() function, Change Position with seek()
+    Telnet, Telnet
+    TensorFlow, Create Models: Python Frameworks
+    terminal, Setup
+    terminate() function, Kill a Process with terminate()
+    testing tools, Testing-Continuous Integration
+        continuous integration, Continuous Integration
+        doctest, Doctest
+        Hypothesis, Hypothesis
+        Nox, Nox
+        Pylint, Pylint-Pylint
+        pytest, Pytest
+        Ruff, Ruff
+        unittest, Unittest-Unittest
+    text data, Text Strings: Unicode-Specifying match() Output, Text Files
+        (see also files; persistent storage)
+        patterns, Using Special Characters-Specifying match() Output
+            special characters, Using Special Characters
+            specifiers, Using Specifiers-Using Specifiers
+            specifying match() output, Specifying match() Output
+        regular expressions, Text Strings: Regular Expressions-Replace at Matches with sub()
+            finding all matches, Find All Matches with findall()
+            finding exact beginning match, Find Exact Beginning Match with match()-Find Exact Beginning Match with match()
+            finding first match, Find First Match with search()
+            replacing at matches, Replace at Matches with sub()
+            splitting at matches, Split at Matches with split()
+        Unicode, Text Strings: Unicode-Normalization
+            decoding, Decode
+            encoding, Encode
+            HTML entities, HTML Entities
+            normalization, Normalization
+            Python Unicode strings, Python Unicode Strings-Python Unicode Strings
+            UTF-8, UTF-8
+    text editors, Setup
+    text-based development tools, Integrated Development Environments
+    Thompson, Ken, UTF-8
+    threading module, Threads
+    threads
+        async versus, Async Versus…​
+        concurrency, Threads-Threads
+    3Blue1Brown, References
+    Thrift, Use Other Serialization Formats
+    throttling technique, Beyond Queues
+    TigerData, Time-Series Databases
+    TileDB files, TileDB
+    time module, The time Module-The time Module
+        measuring performance, Measure Timing
+        struct_time values, The time Module
+    time object, The datetime Module
+    time-series databases, Time-Series Databases
+    timedelta object, The datetime Module
+    timeit module, Measure Timing
+    timers, Measure Timing-Measure Timing
+    TinyLlama model, Choose a Model
+    today() method, The datetime Module
+    TOML (Tom’s Obvious Minimal Language) files, TOML
+    tomllib module, TOML
+    Tornado, Green Threads and gevent, Async Frameworks and Servers, MessagePack RPC, Other Python Web Servers
+    Torvalds, Linus, Git
+    Tranquillin, Marco, References
+    transformer approach, Large Language Models
+    Transmission Control Protocol (TCP), Sockets-Sockets
+    Transmission Control Protocol/Internet Protocol (see TCP/IP)
+    “Traps for the Unwary in Python’s Import System” (Coghlan), Relative and Absolute Imports
+    Travis CI, Continuous Integration
+    Trio package, Asyncio Alternatives-Asyncio Alternatives
+    True values, What Is True?, None, Truthiness, and Falsiness-None, Truthiness, and Falsiness
+    try statements, Handle Errors with try and except-Handle Errors with try and except
+    tuple() function, Create with tuple()
+    tuples, Tuples and Lists-Modify?
+        arguments versus, Function Arguments Are Not a Tuple
+        combining, Combine with +
+        comparing, Compare
+        comprehensions, There Are No Tuple Comprehensions
+        creating, Create with Commas and ()-Create with tuple()
+        duplicating, Duplicate with *
+        getting items, Get an Item by [ offset ]
+        iterating, Iterate with for and in
+        lists versus, Tuples Versus Lists
+        modifying, Modify?
+        mutability of, Tuples and Lists
+        named, Named Tuples
+        pronunciation of, Tuples
+        unpacking, Create with Commas and ()
+    Twisted, Twisted-Twisted
+    Twitter service API, Web Services and APIs
+    type hints (type annotations), Type Hints-Mypy
+        function hints, Function Hints
+        Mypy, Mypy
+        variable hints, Variable Hints
+    types, Python Types, Numbers-Floats Are Not Exact
+        Booleans, Booleans
+        floats, Floats-Floats Are Not Exact
+        integers, Integers-How Big Is an int?
+    TypeSystem library, Use Other Serialization Formats
+
+U
+
+    UDP (User Datagram Protocol), TCP/IP-Sockets
+        client-server exchange with, Sockets-Sockets
+        use cases, Sockets
+    underscore (_)
+        as digit separator, Literal Integers
+        in variable names, Follow Naming Conventions
+    Unicode, Text Strings: Unicode-Normalization
+        decoding, Decode
+        encoding, Encode
+        HTML entities, HTML Entities
+        normalization, Normalization
+        Python Unicode strings, Python Unicode Strings-Python Unicode Strings
+        strings, Create with Quotes
+        UTF-8, UTF-8
+    Unicode HOWTO, Normalization
+    unicodedata module, Python Unicode Strings
+    unicorn glitter (**)
+        combining or updating dictionaries, Use {**a, **b}
+        packing or unpacking keyword arguments, Pack/Unpack Keyword Arguments with **
+    Unifont, Decode
+    uniform resource locator (URL), The Web
+    union (|) operator
+        combining or updating dictionaries, Use |
+        combining sets, Combine with |
+        getting items from counters, Count Items with Counter()
+        getting union of sets, Use Combinations and Operators
+    union() function, Use Combinations and Operators
+    unittest package, Unittest-Unittest
+    Unix time, The time Module
+    unsigned numbers, Bits and Bytes
+    update() function, Use update()
+    upper camel case, Follow Naming Conventions
+    URL (uniform resource locator), The Web
+    urllib package, The Standard Library
+    User Datagram Protocol (see UDP)
+    UTC (Coordinated Universal Time), The time Module
+    UTF-8, UTF-8
+    Uvicorn, Async Frameworks and Servers
+
+V
+
+    Valkey, Redis Alternative: Valkey?
+    values
+        assigning to variables, Assign a Value to a Variable-Assign a Value to a Variable
+        changing, Change the Value of a Variable
+        counting occurrences of in lists, Count Occurrences of a Value with count()
+        specifying, Specify Values
+        testing for in lists, Test for a Value with in
+        testing for in sets, Test for a Value with in
+    values() function, Iterate with for and in
+    variables, Variables-Follow Naming Conventions
+        assigning values to, Assign a Value to a Variable-Assign a Value to a Variable
+        changing values of, Change the Value of a Variable
+        defined, Variables
+        deleting, Delete a Variable
+        integers and, Integers and Variables-Integers and Variables
+        naming rules and conventions, Name Variables-Follow Naming Conventions
+        type hints for, Variable Hints
+    vector databases, Vector Databases
+    vector stores agent, Agents
+    VectorDB, Vector Databases
+    ventilator networking pattern, Request-Reply: ZeroMQ
+    venv module, Virtualenv and Venv
+    Vibora, Async Frameworks and Servers
+    virtual environments, Virtual Environments-uv
+        Conda package manager, Conda
+        Pipenv package, Pipenv
+        Poetry package, Poetry
+        uv package manager, uv
+        venv module, Virtualenv and Venv
+        virtualenv package, Virtualenv and Venv
+    virtual memory, Computer Hardware
+    virtualenv package, Virtualenv and Venv
+    vocabulary, Mysteries
+    VoIP (voice over IP), Sockets
+    volatile, defined, A Computer
+
+W
+
+    Waitress, Other Python Web Servers
+    walrus (:=) operator, New: I Am the Walrus
+    “War Is Peace” (Batchelder), YAML
+    Wayback Machine, A Bigger Example, A Bigger Example
+    Weather Underground service API, Web Services and APIs
+    web APIs, Web Services and APIs, Web APIs and REST
+    web clients, Web Clients-Other Web Clients
+        Python standard library, The Standard Library-The Standard Library
+        Requests, Requests
+    web crawlers, Crawl and Scrape
+    web frontends, Web Frontends
+    web scrapers, Crawl and Scrape
+    Web Server Gateway Interface (WSGI), Web Server Gateway Interface
+    web servers, Web Servers-Litestar
+        Apache HTTP Server, Apache-Apache
+        ASGI, ASGI
+        CGI, Web Server Gateway Interface
+        frameworks for, Web Server Frameworks-Litestar
+            Bottle, Bottle-Bottle
+            Django, Django
+            FastAPI, FastAPI
+            Flask, Flask-Flask
+            Litestar, Litestar
+        nginx, NGINX
+        simple, The Simplest Python Web Server-The Simplest Python Web Server
+    web services
+        APIs and, Web Services and APIs
+        automation and, Web Services and Automation
+    web, overview of, The Web-Web Basics
+        (see also internet services; web APIs; web clients; web servers; web services)
+    Web-PDB, Breakpoint()
+    webbrowser module, webbrowser
+    Webhooks, Webhooks
+    WebSockets, WebSockets
+    webview module, webview
+    “What Is Liquid?” (Cavendish), Search and Select
+    Whenever module, Alternative Modules
+    while loops, Repeat with while-Check break Use with else
+        canceling, Cancel with break
+        checking break statements, Check break Use with else
+        skipping ahead, Skip Ahead with continue
+    whitespace defining program structure, If and Match
+    Whoosh, Full-Text Databases
+    Williams, Ronald, The Breakthrough
+    Windows package managers, Install with a Native Package Manager
+    with keyword, Close Files Automatically by Using with
+    work queues, Queues
+    World Wide Web, The Web
+    wraps decorator, Decorators
+    write() function
+        writing binary files, Write a Binary File with write()
+        writing text files, Write a Text File with write()
+    WSGI (Web Server Gateway Interface), Web Server Gateway Interface
+
+X
+
+    Xapian, Full-Text Databases
+    XML (Extensible Markup Language) files, XML-An XML Security Note
+    XML-RPC, XML-RPC
+    xml.dom library, XML
+    xml.sax library, XML
+
+Y
+
+    YAML files, YAML
+    yield from expression, Recursion
+    yield statements, Generator Functions
+
+Z
+
+    Zen of Python, Combine/update dicts, Docstrings, Algorithms and Data Structures
+    ZeroMQ library
+        publish-subscribe pattern, Pub-Sub: ZeroMQ
+        request-reply pattern, Request-Reply: ZeroMQ-Request-Reply: ZeroMQ
+        using brokers, Request-Reply: ZeroMQ
+    zerorpc package, zerorpc
+    zeros() function, Make an Array with zeros(), ones(), or random()
+    zip() function, Iterate Multiple Sequences with zip()
+    zip_longest() function, Iterate Multiple Sequences with zip_longest()
+
