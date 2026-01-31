@@ -1,0 +1,152 @@
+Chapter 27. Performance
+Ever wonder what the speed of lightning would be if it didn’t zigzag?
+    - Steven Wright
+Python is usually fast enough—until it isn’t. In many cases, you can gain speed by using a better algorithm or data structure. The trick is knowing where to do this. Even experienced programmers guess wrong surprisingly often. You need to be like the careful quiltmaker and measure before you cut. And this leads us initially to timers.
+After that, we’ll sample many techniques for speeding up code: algorithms, data structures, and helper tools written in faster languages like C and Rust.
+We’ll even look at an intriguing new language that’s aims to be a Python++—as friendly as Python, faster than C (!), and useful for AI development as well as general programming.
+Computer Hardware
+In Chapter 2, I gave a simplified description of a computer’s internal structures. Let’s get more details now.
+Inside your computer are various boards with multiple electronic components, connected by wires, some visible and some tiny. At the computing core is …​ a core, or central processing unit (CPU). You used to get just one, but now you get many. Each has the following:
+Registers
+    Hold input data and output results
+Arithmetic-logic unit (ALU)
+    Processes instructions
+Control unit
+    Fetches instructions and data
+Clock
+    Synchronizes everything
+Spreading out from each core are these elements:
+    Multiple memory caches
+    Random access memory (RAM)
+    Solid state drive (SSD), or flash memory
+    One or more magnetic hard drives
+The first two types are volatile: trip over the power cord, and you lose the data in them. The latter two retain their data when their power is lost.
+As you go down the rows, storage becomes larger, cheaper, and slower. To improve performance, we want to do as much as possible in the top rows. Long-term storage of programs and data lives in the bottom rows.
+The operating system handles much of the movement between rows, such as virtual memory (paging from SSD or hard drive to RAM). We’ve all seen how performance falls off a cliff when our computer gets busy and starts swapping data between disk and RAM, because the disk is thousands of times slower.
+Although the computer hardware and operating system try to keep the bytes flowing around happily, we can improve performance at the software level by doing the following:
+Data
+    Contiguous data can be cached and accessed together. Independently created data may be scattered all over RAM and may not take advantage of fast caches. An array may be faster than a list of separate items.
+Parallelism
+    CPUs used to handle only one operation at a time, but can process many at once with single instruction, multiple data (SIMD) support.
+Concurrency
+    As you learned in Chapter 21, using concurrency can especially avoid “busy waiting” for disk and network I/O that doesn’t involve the CPU.
+Let’s start with how to measure timing in Python, and then visit many approaches to improving performance.
+Measure Timing
+You’ve seen that the time() function in the time module returns the current epoch time as a floating-point number of seconds. A quick way of timing something is to get the current time, perform the task, get the new time, and then subtract the original time from the new time. Let’s write this up, as presented in Example 27-1, and call it (what else?) time1.py.
+In this example, we’re measuring the time it takes to assign the value 5 to the name num and multiply it by 2. This is not a realistic benchmark, just an example of how to measure arbitrary Python code. Try running the code a few times, just to see how much it can vary:
+That was about two or three millionths of a second. Let’s try something slower, such as sleep().1 If we sleep for a second, our timer should take a tiny bit more than a second. Example 27-2 shows the code; save this as time2.py.
+As expected, this code takes about a second to run. If it didn’t, either our timer or sleep() should be embarrassed.
+There’s a handier way to measure code snippets like this: using the standard module timeit. It has a function called (you guessed it) timeit(), which will do count runs of your test code and print results. The syntax is timeit.timeit(code, number=count).
+In the examples in this section, the code needs to be within quotes so that it is not executed after you press the Return key but is executed inside timeit(). (In the next section, you’ll see how to time a function by passing its name to timeit().) Let’s run our previous example just once and time it. Call this file timeit1.py (Example 27-3).
+Again, these two code lines ran in about two millionths of a second. We can use the repeat argument of the timeit module’s repeat() function to run more sets. Save this as timeit2.py (Example 27-4).
+Example 27-4. timeit2.py
+from timeit import repeat
+print(repeat('num = 5; num *= 2', number=1, repeat=3))
+Try running the code to see what transpires:
+The first run took two millionths of a second, and the second and third runs were faster. Why? There could be many reasons. For one thing, we’re testing a very small piece of code, and its speed could depend on other tasks the computer was doing in those instants, the way the Python system optimizes calculations, and many other factors.
+Using timeit() meant wrapping the code you’re trying to measure as a string. What if you have multiple lines of code? You could pass it a triple-quoted multiline string, but that might be hard to read.
+Let’s define a lazy snooze() function that nods off for a second, as we all do occasionally.
+First, we can wrap the snooze() function itself. We need to include the arguments globals=globals() (this helps Python to find snooze()) and number=1 (run it only once; the default is 1000000, and we don’t have that much time):
+The __exit()__ method takes three extra arguments that we don’t use here; we could have used *args in their place.
+OK, we’ve seen many ways to do timing. Now, let’s time some code to compare the efficiency of various algorithms (program logic) and data structures (storage mechanisms).
+Profile
+The previous sections measured only the amount of time that elapsed. To dig a little deeper and see what the internal code is doing and how fast, look into Python’s builtin profile and cProfile modules.
+Here’s a brief example of their use, much simpler than a real-world application, instead of filling pages here. Let’s adapt Example 27-1 and see what a profiler reveals. As you might expect, cProfile, which is written in C, is faster than the Python profile module. You can use either module, but their output looks a little different:
+All the code in func() called built-in Python, and it all ran in sub-millisecond time, as you saw in “Measure Timing”.
+If you included lines like this in func(), you would get hundreds of lines of profile output:
+For deeper discussion of these profilers and related tools, see “Python Performance Profiling” by Roman Imankulov.
+Algorithms and Data Structures
+The Zen of Python declares that There should be one—and preferably only one—obvious way to do it. Unfortunately, sometimes it isn’t obvious, and you need to compare alternatives. For example, is the way better to use a for loop or a list comprehension to build a list? And what do we mean by better? Is it faster, easier to understand, using less memory, or more “Pythonic”?
+In this next exercise, we build a list in multiple ways, comparing speed, readability, and Python style. Here’s time_lists.py (Example 27-5).
+In each function, we add one thousand items to a list, and we call each function one thousand times. Notice that in this test we called timeit() with the function name as the first argument rather than code as a string. Let’s run it:
+The list comprehension is at least twice as fast as adding items to the list by using append(). In general, comprehensions are faster than manual construction with a for loop.
+Use these ideas to make your own code faster.
+Arrays Versus Lists and Tuples
+I’ve mentioned that contiguous data works well with caches. Although we tend to use the familiar tuples and lists in Python, it also has arrays, which I mentioned briefly in “Use Packed Sequences with array”. These are similar to arrays in other languages: tightly packed sequences of data of the same type. Besides the standard Python array, NumPy also has an array type (see “Make an Array with array()”).
+Cache
+    Insanity is doing the same thing over and over again and expecting different results.
+    - misattributed to Albert Einstein
+On the other hand, if you are expecting the same thing over and over again, using a cache can help. You can save a hard-earned but unchanging result in a variable, or apply lru_cache or cache() from functools if a function call is needed to get that result. The first time the function is called, it works normally, but the result is saved. On later calls, if the arguments are the same, the last result is returned rather than executing the function. Let’s try two approaches to make a cached version of the built-in sum() function and then time them. First, let’s use cache():
+Cython is a hybrid of Python and C, designed to translate Python with some performance annotations to compiled C code. These annotations are fairly small, like declaring the types of some variables, function arguments, or function returns. For scientific-style loops of numeric calculations, adding these hints will make them much faster—as much as a thousand times faster. See the Cython wiki for documentation and examples.
+NumPy and SciPy
+I’ve mentioned these in more detail in Chapter 25:
+NumPy
+    Efficiently manages numeric data structures like vectors and matrices. It’s one of the reasons that Python became so popular in the data science community.
+SciPy
+    Extends NumPy with algorithms and data structures for scientific computing—things like fast fourier transforms, optimization, and statistics.
+C or Rust Extensions
+If you’re pushing Python as hard as you can and still can’t get the performance you want, you have yet more options. Many parts of Python and its standard library are written in C for speed and wrapped in Python for convenience. These hooks are available to you for your applications. If you know C and Python and really want to make your code fly, writing a C extension is harder, but the improvements can be worth the trouble.
+A recent trend is the development of extensions in Rust instead of C, because Rust is more modern, fast, and—importantly—more memory-safe. Samuel Colvin, the developer of the Python data validation library Pydantic, expressed why he chose Rust over Cython or other alternatives for one component.
+Another example of a Rust tool for Python, discussed in “uv”, is the Python package manager uv. This is much faster than the standard Python pip utility and includes virtual environment support.
+Taichi
+Taichi uses a just-in-time compiler to convert Python code to machine language. Some of its benchmarks show it outclassing Numba and NumPy.
+PyPy
+When Java first appeared about 20 years ago, it was as slow as an arthritic schnauzer. When it started to mean real money to Sun and other companies, though, they put millions into optimizing the Java interpreter and the underlying Java virtual machine (JVM), borrowing techniques from earlier languages like Smalltalk and LISP. Microsoft likewise put great effort into optimizing its rival C# language and .NET VM.
+No one owns Python, so no one has pushed that hard to make it faster. You’re probably using the standard Python implementation. It’s written in C and often called CPython (not the same as Cython).
+Like PHP, Perl, and even Java, Python is not compiled to machine language, but translated to an intermediate language (with names such as bytecode or p-code), which is then interpreted in a virtual machine.
+PyPy is a new Python interpreter that applies some of the tricks that sped up Java. Its benchmarks show that PyPy is faster than CPython in every test—more than 6 times faster on average, and up to 20 times faster in some cases. You can download it and use it instead of CPython. PyPy is constantly being improved. Read the latest release notes on the site to see whether it could work for your purposes.
+Numba
+You can use Numba to compile your Python code on the fly to machine code and speed it up.
+Install with the usual:
+pip install numba
+Let’s time a normal Python function that calculates a hypotenuse:
+Use the @jit (just in time) decorator to speed up calls after the first:
+Use @jit(nopython=True) to avoid the overhead of the normal Python interpreter:
+Numba is especially useful with NumPy and other mathematically demanding packages.
+Standard Python JIT
+Not to be outdone by some of the JIT speedups mentioned earlier in this chapter, Python 3.13 introduces its own experimental JIT feature. But to get it, you’d need to recompile the CPython source. If you want to venture into the high weeds, read “The JIT Compiler”.
+Mojo
+    Welcome to my mojo dojo casa house!
+    Ken, the Barbie movie
+Mojo is a new language (sort of a Python++) announced in March 2023 by the startup company Modular. To see how Modular explains Mojo, read the following from the documentation:
+    “Why Mojo?”
+    “Mojo Language Basics”
+Mojo was designed to handle difficult problems, faster. To catch your interest, we’re not talking about speedups of a few percent. In one example on YouTube, a simple Mojo program to create the Mandelbrot set (a CPU-heavy number-crunching application) was 35,000 times faster than an initial Python program.
+The program is still short and very readable—no C, CUDA, assembler, or other hacks.
+Besides these impressive numbers, Mojo can also be used as an everyday general-purpose programming language. You don’t need to learn or use all the speedy features if you don’t need them.
+Mojo borrows good ideas from languages like Rust and Zig.
+Finally, Mojo can run existing Python programs without change. It includes the standard CPython interpreter, as well as the new Mojo machinery.
+Background
+Why develop a new language? One reason for Mojo is that AI is such a big *-ing deal today and promises to be for years to come. Modern AI frameworks have evolved from pieces of disparate tech families and are usually an odd sandwich:
+    Python or another high-level language at the top, to deal with general programming tasks: files, I/O, and such.
+    C, C++, or CUDA in the middle: great for number-crunching speed, but notably harder to program.
+    New hardware at the very bottom, going beyond the old familiar CPU design, and even GPUs. Who will generate the code to target these new architectures?
+You can make a pickle and honey fondue if you want, or a ham sandwich that floats (although helium ham is quite expensive), but you might want something that’s simple, easy, and tasty.
+Compiler expertise bridges many of these issues:
+    Programming language speed
+    Interlanguage compatibility
+    Code generation for new hardware
+Modular’s cofounder, Chris Lattner, has a uniquely fitting background to tackle questions like these. He has produced many seriously useful tools, including these, roughly in order:
+LLVM
+    A compiler toolchain (and not an acronym)
+Clang
+    A C/C++ compiler built on LLVM
+Swift
+    The language at Apple, also built on LLVM
+MLIR (Multi-Level Intermediate Representation)
+    A more modern compiler toolchain than LLVM, especially targeting AI and new hardware
+Lattner and his collaborators knew that Python is now the most popular language in data science (see Chapter 25) and AI. He wanted to “meet developers where they are” rather than invent a brand new language. At Apple, he spent years helping developers switch to Swift from the previous preferred language, Objective-C.
+Design
+I mentioned many approaches to speed earlier in this chapter (JITs, C/C++/Rust extensions, GIL removal, and so on). As you know, Python is interpreted and not especially fast. Python source code is compiled to bytecode (an intermediate representation), and that bytecode is interpreted (stepped through by the Python interpreter). Java also works this way.
+Some other languages (C, C++, Rust, and Go) compile directly to machine language and tend to be faster. Mojo also compiles to machine language. How can it, when Python doesn’t? Mojo made some decisions:
+    Type hints are mandatory. The CPython interpreter accepts but ignores them, treating them as documentation, although tools like Mypy (“Mypy”) and FastAPI (“FastAPI”) use them seriously.
+    A new data structure called a struct (similar to one of the same name in C) groups data without all the Python class details.
+    A new function definition begins with fn instead of def, and strictly type checks its arguments and contents.
+The Modular team started at the end, writing MLIR code to generate machine code, then worked backward to design a human-usable language to generate that MLIR. This approach is sometimes called designing a language as “syntactic sugar” for the backend. The team is also working to integrate all of Python’s features and quirks.
+Examples
+An easy introduction to Mojo for Python programmers by Hashank Prasanna takes a Python program that calculates the “Euclidean distance between two vectors” (a number-crunching function of use in scientific computing and machine learning) and converts it to Mojo. TLDR: the result is 60 times faster than the pure Python version, and about twice as fast as using NumPy.
+Mojo developers use the label “mojicians” and have been busy building things.
+If you want to dig into the details, read the Mojo manual.
+Limitations
+Mojo is new and does not yet completely interface with Python. As this book was written, more of the holes are being filled. Because Modular started at the end (with MLIR and the compiler chain) instead of designing a new frontend language first, there should not be any “oops, didn’t think of that” moments, but more of a steady grind for its developers.
+Conclusion
+If Mojo meets its goals, I’ll stick my neck out (vampire joke) and opine that it could accomplish the following:
+    Replace C and Rust extensions to Python.
+    Replace C, C++, and Rust in general? That should spark a few arguments.
+    Redo C-based tools like NumPy.
+    Make new tools: database servers, web frameworks, and so on.
+    Create new AI frameworks in a single language, rather than sandwiches like PyTorch and TensorFlow.
+What would happen to Python? Lattner has talked with Guido van Rossum and is very careful about fragmenting the Python community, and hopeful that Python could now extend to areas that were remote before. 
+Review/Preview
+We talked about performance, along many axes. Some approaches used more appropriate algorithms and data structures. Others involved various tools, often written in compiled languages like C or Rust, to get closer to machine speeds for some areas, like numeric calculations.
+I spent some time musing about Mojo, a new language that extends Python (hopefully, not stretching it too far) to make it thousands of times faster, and appropriate for projects like machine learning stacks. Could it also replace the use of C and Rust as Python speeder-uppers? We’ll see.
