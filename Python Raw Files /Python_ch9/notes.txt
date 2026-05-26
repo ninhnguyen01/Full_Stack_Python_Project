@@ -1,0 +1,26 @@
+# Using the 'for' Loop to Iterate over a Dictionary
+# General Format:
+# for var in dictionary:
+#   statement 
+#   statement 
+#   etc.
+
+# clear
+# get (value)
+# items (return key and value as tuples)
+# keys
+# pop (return value from a key and remove key-value pair)
+# popitem (return last key-value pair as tuples, remove from dict)
+# values 
+
+# set - an object that stores a collection of data
+# all elements must be unique
+# sets are unordered
+# elements can be different data types.
+
+# Using the 'for' Loop to Iterate over a Set (section)
+# General Format:
+#   for var in set:
+#       statement
+#       statement
+#       etc.

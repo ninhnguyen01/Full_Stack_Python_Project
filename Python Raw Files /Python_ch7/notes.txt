@@ -1,0 +1,43 @@
+# 2 types of sequences
+# List and Tuples
+
+# List is mutable []
+# Tuples is immutable. ()
+
+# iterable - an object that holds a series of values that can be
+# iterated over.
+
+# array ([similar to a list] other lang) <-> list 
+
+# Reiterating over a List with the 'for' Loop (section)
+# General Format with 'for' loop
+# for variable in list:
+    # statement
+    # statement
+    # etc.
+
+# slices - selecting subsections of a sequence 
+#  
+# List Slice general format
+# list_name [start : end]
+
+# list methods
+# ------------
+# append(item)
+# index(item)
+# insert(index,item)
+# sort()
+# remove(item)
+# reverse()
+
+# Tuples support:
+
+# Subscripting index (retrieving element values only)
+# Methods such as Index
+# Built-in functions such as len, min, and max
+# Slicing expressions
+# The 'in' operator 
+# The + and * operators
+
+# DO NOT SUPPORT
+# append, remove, insert, reverse, and sort.

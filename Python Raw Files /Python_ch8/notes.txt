@@ -1,0 +1,30 @@
+# Iterating over a String with the 'for' Loop (section)
+# General Format:
+#   for variable in string:
+#       statement
+#       statement
+#       etc.
+
+# string test methods
+# isalnum()
+# isalpha()
+# isdigit()
+# islower()
+# isspace()
+# issupper()
+
+# string mod methods
+# lower()
+# lstrip()
+# lstrip(char)
+# rstrip()
+# rstrip(char)
+# strip()
+# strip(char)
+# upper()
+
+# search and replace methods
+# endswith(substring)
+# find(substring)
+# replace(old,new)
+# startswith(substring) 

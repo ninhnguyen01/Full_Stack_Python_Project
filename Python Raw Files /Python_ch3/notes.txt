@@ -1,0 +1,44 @@
+# General format of if statement (section)
+# if condition:
+#       statement
+#       statement
+#       etc.
+
+
+# General format of if-else statement: (section)
+
+# if condition:
+#       statement
+#       statement
+#       etc.
+# else:
+#     statement
+#     statement
+#     etc.
+
+# Guidlines for indetation:
+# if clause and the else clause are aligned.
+# Both clause are each followed by a block of statements. Statements
+# in the block are consistently indented.
+
+# WARNING
+# String comparisons are case sensitive.
+
+# The if-elif-else statement
+
+# if condition_1:
+#   statement
+#   statement
+#   etc.
+
+# elif condition_2:
+#   statement
+#   statement
+#   etc.
+
+# Insert as many elif clauses as necessary...
+
+# else:
+#       statement
+#       statement
+#       etc.

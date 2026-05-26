@@ -1,0 +1,13 @@
+#  General format of the 'while loop'(section)
+
+# while condition:
+#   statement
+#   statement
+#   etc.
+
+# General format for 'for loop (section)
+
+# for variable in [value1, value2, etc.]:
+# statement
+# statement
+# etc.

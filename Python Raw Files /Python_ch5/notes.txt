@@ -1,0 +1,14 @@
+# General Format of a Function Definiton:
+
+# def function_name():
+#     statement
+#     statement
+#     etc.
+
+# Value-returning function format 
+
+# def function_name():
+#   statement
+#   statement
+#   etc.
+#   return expression

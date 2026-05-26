@@ -1,0 +1,22 @@
+# Variable Naming Rules (section)
+
+# 1 Python keywords (no)
+# 2 Variable name (no spaces)
+# 3 1st character only a to z, A to Z, or underscore (_)
+# 4 AFTER FIRST CHARACTER a to z, A to Z, 0 to 9, or underscore (_)
+# Uppercase and lowercase characters are distinct.
+
+# Operator Precedence (section)
+
+# Order of Precedence 
+# 1. Exponentiation **
+# 2. Multiplication, division, and remainder * / // %   
+# 3. Addition and Subtraction + -
+# Note: There are exceptions.
+
+
+# Formatting Values (section)
+# {placeholder:format-specifier}
+
+# Order of Designators (section)
+# [alignment][width][,][.precision][type]
