@@ -20,7 +20,7 @@
 <p>Transport cost is zero (My comment: There's always a cost to someone).</p>
 <p>The network is homogeneous (My comment: The Internet disagree).</p>
 
-<h2>Buy me a Boba</h2>
+<h2>Buy me a Kopiko</h2>
 <img src="asset/qr-code.png" width=200 height=200>
 <hr>
 
@@ -36,8 +36,6 @@
 <p><b>logging -> loguru</b></p>
 <p><b>jupyter notebooks -> marimo</b></p>
 <p>Info source: Internet</p>
-<img src="asset/octoverse-2025-code-ai-projects.webp" width=1000 height=1000>
-<p>Image source: Internet</p>
 
 <h2>Enterprise Example</h2>
 <h3>Government agencies</h3>
