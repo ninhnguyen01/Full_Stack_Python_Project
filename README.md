@@ -20,10 +20,6 @@
 <p>Transport cost is zero (My comment: There's always a cost to someone).</p>
 <p>The network is homogeneous (My comment: The Internet disagree).</p>
 
-<h2>Buy me a Kopiko</h2>
-<img src="asset/qr-code.png" width=200 height=200>
-<hr>
-
 <img src="asset/lib2025.WEBP" width=700 height=700>
 <p>Image source: Internet</p>
 <h2>Python Tools Replacement (Competition):</h2>
@@ -35,7 +31,6 @@
 <p><b>Sql alchemy -> sql model</b></p>
 <p><b>logging -> loguru</b></p>
 <p><b>jupyter notebooks -> marimo</b></p>
-<p>Info source: Internet</p>
 
 <h2>Enterprise Example</h2>
 <h3>Government agencies</h3>
@@ -67,3 +62,7 @@ many many years. All their prototype were written in Python and survived for a s
 amount of time.</b></p>
 <p>Source: High Scalability</p>
 </h2>
+
+<h2>Buy me a Kopiko</h2>
+<img src="asset/qr-code.png" width=200 height=200>
+<hr>
