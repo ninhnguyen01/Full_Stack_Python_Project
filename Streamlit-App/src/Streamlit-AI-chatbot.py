@@ -1,0 +1,30 @@
+# Listing 1.3 A working AI chatbot in less than 30 lines of code
+
+import os
+import streamlit as st
+from openai import OpenAI
+
+os.environ["OPENAI_API_KEY"]="sk-..." # Replace with your own API key
+open_ai = OpenAI()
+
+human_message = lambda m: {"role": "user", "content": m}
+ai_message = lambda m: {"role": "assistant", "content": m}
+
+def talk_to_ai(question, history):
+    return open_ai.chat.completions.create(
+        model="gpt-5.4-mini",
+        messages=history + [human_message(question)],
+    ).choices[0].message.content
+
+st.session_state.history = st.session_state.get("history", [])
+history = st.session_state.history
+
+for message in history:
+    st.chat_message(message["role"]).markdown(message["content"])
+
+prompt= st.chat_input("Chat with me, your ancilla!")
+if prompt:
+    st.chat_message("human").markdown(prompt)
+    response = talk_to_ai(prompt, history)
+    history.extend([human_message(prompt), ai_message(response)])
+    st.chat_message("ai").markdown(response)

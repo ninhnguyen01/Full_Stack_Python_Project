@@ -1,0 +1,5 @@
+Troubleshooting streamlit run
+In some cases, your browser window does not open automatically when you enter streamlit run, or the browser window opens, but the page is blank. If this is true for you, here are some things to try:
+1.	In your browser, manually type in the address listed against Local URL in the terminal output, e.g., http://localhost:8501
+2.	Make sure you’re running the latest version of your browser.
+3.	Navigate to http://localhost:8501 in a different browser. I’ve found that Google Chrome tends to have the fewest problems.
