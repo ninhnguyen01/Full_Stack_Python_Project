@@ -1,0 +1,9 @@
+2.5.1 A password checker
+You’ve probably seen websites with a long list of password rules—for example, requiring at least one lowercase letter, a special character, an even number of underscores, the names of up to two dwarves from Snow White, and so forth. In this app, the user enters a password and sees which rules pass and which fail.
+
+2.5.2 Logic flow
+In figure 2.5, we lay out the flow of our app’s logic. It begins when the user enters a password in a text input box and starts the checking process by clicking a button.
+
+2.5.6 Killing and restarting the server
+Remember that you’ve kept your terminal window (where you typed streamlit run ...) open throughout all of this. This window is where the Streamlit server that “serves’’ your app runs. Once you’re done playing with the app, you may want to shut down the server so it doesn’t consume resources. To do so, go to the terminal window and either close it or press Ctrl-C.
+If you return to the open browser window, you’ll find that you can no longer interact with the app. The button is disabled and the app shows “CONNECTING” in the top-right corner as well as a connection error (figure 2.9).

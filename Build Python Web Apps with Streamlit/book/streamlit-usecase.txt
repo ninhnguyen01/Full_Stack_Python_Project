@@ -1,0 +1,51 @@
+1.4 What can you build with Streamlit?
+Streamlit is a versatile platform for building a wide range of interactive applications. I’ve used Streamlit to build both work projects, such as a tool that lets my colleagues export internal spreadsheets to a data warehouse, and non-work projects, like a simulator that helps me make real estate investment decisions. In this section, we’ll explore the variety of projects you can build with Streamlit, showcasing its adaptability and utility.
+1.4.1 Data applications
+Streamlit’s creators originally designed it for data scientists, and its value in creating data applications remains one of its greatest strengths. The types of data-related applications you can build with Streamlit include:
+•	Dashboards that display metrics important to company decision makers.
+•	Data exploration apps that let you dive into and better understand datasets.
+•	Interactive visualizations that help users explore data.
+•	Machine learning model deployments that allow users to upload inputs and receive predictions.
+
+1.4.2 Apps that use Generative AI like LLMs
+Building generative AI apps often involves adding a thin layer of business logic to API calls to services like OpenAI’s GPT or Anthropic’s Claude. Streamlit is well-suited for these tools, allowing you to quickly roll out AI functionality with a UI, thanks to built-in support for common AI form factors, such as chatbots. Python’s libraries for interacting with generative AI (LangChain, for example) are second to none, and Streamlit is ideally positioned to take advantage of them.
+1.4.3 Internal tools for your workplace
+While data apps are the most well-known use case for Streamlit, you can use it just as effectively to develop internal tools for employees. These might include applications such as:
+•	Project management dashboards
+•	Time tracking apps
+•	Shift scheduling tools
+•	Inventory management systems
+•	File converter utilities
+Several factors make these tools ideal candidates for Streamlit apps:
+•	They generally only need to support a limited number of concurrent users.
+•	They are scrappy in nature and may be required within a short timeframe.
+•	Most companies don’t have the budget to hire full-time engineers to build their systems.
+Streamlit is simple enough that even semi-technical users with basic Python knowledge can use it to build what they need.
+
+1.4.4 Prototypes for large apps
+Streamlit can even help dedicated software engineering teams tasked with building large, ambitious applications. These projects tend to be expensive in terms of developer time and effort, often spanning months or years. Even with an iterative approach to development, it can take a long time to see results, at which point many incorrect and costly assumptions may have been made.
+Early design mockups help, but prototypes are even more effective. With Streamlit, you can quickly create lightweight prototypes that mimic the functionality of the larger app. This approach shows stakeholders what to expect and helps you validate basic assumptions about functionality early in the process.
+If you’re a software engineer, this approach saves the company time and money, generates excitement among your stakeholders, and builds support for your work because people appreciate something they can experience firsthand more than design documents or static mocks.
+
+1.6.2 HTML, CSS, and JavaScript
+As we discussed earlier, HTML, CSS, and JavaScript are the web’s three core languages. HTML provides the structure and content of a web page, defining elements such as headings, lists, divisions, and links through a tree of “tags” that can contain other tags. CSS manages the appearance, layout, and formatting of multiple web pages in a centralized location. It sets colors, spacing, fonts, borders, and more. JavaScript is a programming language that primarily defines a web page’s dynamic behavior. It can also create animations, validate forms, connect to other web pages, and do pretty much anything else a website needs.
+Together, these languages enable you to build any web experience you want. Although they aren’t difficult per se to learn, it takes a lot of work to use them effectively to create complex apps—so much so that frontend development is its own discipline in software engineering.
+Streamlit abstracts away the complexity of using these languages in their raw form. It lets you use a simpler, more concise syntax to write web pages and generates, in the background, the equivalent code that a web browser can understand.
+
+1.6.3 React
+React is a popular JavaScript framework for building fast and responsive web pages. Like Streamlit, you can use it instead of writing raw HTML, JavaScript, and CSS to create web applications.
+React follows a reusable component-based design. You build up parts of a web page using smaller parts and then combine those parts to build larger parts, working all the way up to a full application. Each such part you create is called a component and can be reused in your app or even shared with other people so they can use it in their own.
+React uses a declarative programming approach. You describe the UI you want, and React updates the DOM (the tree of HTML elements that lies under your web page) to match it. While React is incredibly powerful and used by frontend developers to create complex UIs, its architecture and approach can be challenging to understand. It is also not Python-based.
+Though Streamlit actually uses React under the hood, from the programmer’s perspective Streamlit trades some of React’s power and flexibility for simpler semantics, pre-built elements with some customizability, and the ability to use Python to write web pages.
+
+1.6.4 Flask, Django, and FastAPI
+Flask, Django, and FastAPI are three of the most popular Python web frameworks.
+Flask is lightweight and minimalistic. It is straightforward and flexible, allowing developers to choose their preferred libraries and tools. Flask provides essentials like routing and HTTP request handling, leaving most of the design choices to the developer. It’s popular with those who want a modular approach or a high degree of control.
+Django is a feature-rich, sophisticated framework. It’s more opinionated than Flask and follows specific design patterns, such as the MVT (Model-View-Template) architecture. It includes built-in modules for common tasks, such as an admin panel for managing data models. Django is a popular choice for building powerful, enterprise-grade applications.
+FastAPI is a newer tool for building fast, efficient web APIs. It simplifies data and request handling and automatically creates helpful documentation for your app.
+While Flask, Django, and FastAPI can all be used to build web applications, they are primarily backend frameworks to be used in conjunction with your frontend, which still consists of HTML/CSS/JavaScript that you have to write or embed within your Python code. Not so with Streamlit, which lets you write frontend code in pure Python.
+
+1.6.5 Tkinter and PyQt
+Tkinter (pronounced tee-kinter) and PyQt (pie-cute) are Python libraries for creating graphical user interfaces (GUIs). Tkinter comes bundled with Python and provides a set of widgets you can use to create a desktop application. It is popular with beginners and suitable for creating simple apps.
+PyQt is similar to Tkinter but more powerful, mature, and complex. It’s actually a wrapper around the C++ Qt application framework. With PyQt, you can create sophisticated GUIs and use many built-in features.
+The key difference between Tkinter/PyQt and Streamlit is that you use Streamlit to create web applications, not desktop applications. As users have become increasingly comfortable with web-based software that requires no installation or updates, Streamlit is arguably more useful than the other two for most use cases.

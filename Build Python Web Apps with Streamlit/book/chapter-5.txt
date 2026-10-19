@@ -1,0 +1,414 @@
+5 Sharing your apps with the world
+
+This chapter covers
+•	Options to share your app with users
+•	Deploying an app to Streamlit Community Cloud for free
+•	Connecting an app to an external service like an API
+•	Safeguarding your API keys and other secrets in production
+•	Managing your app’s dependencies
+
+The moment you first successfully run an app built from scratch is magical—it’s when all the hours spent designing, developing, and refining finally pay off. After multiple iterations, bug fixes, and feature tweaks, the work comes together.
+But what’s next? Do you keep it hidden away on a local machine? Unless you’ve built something solely for personal use, the answer is probably no. To make the app truly useful, you need to get it into the hands of its intended audience.
+This chapter is about making the leap from local development to global deployment. We’ll briefly discuss the various paths available for sharing apps. We’ll then settle on one of them and walk through putting an app into production for the world to experience. Along the way, we’ll cover key considerations in making an app public, such as safeguarding confidential information like API keys and managing code dependencies. As always, we’ll take a practical approach, with direct, hands-on experience for everything we discuss.
+
+5.1 Deploying apps
+We’ve come a long way since we began using Streamlit. Over the last three chapters, you’ve created three fully functional—dare I even say, useful—applications. But the light has been hidden under the proverbial bushel. No one else has experienced the craft. It’s time to change that!
+
+5.1.1 What is deployment?
+Deploying an app loosely means making it available for other people to use. More specifically, it means hosting the application at a place intended users can readily access.
+Recall from chapter 4 that a Streamlit app consists of a backend server and a front¬end that runs in a web browser. The frontend makes requests to the server and displays the results, but the server ultimately runs the show.
+To set up the connection between the frontend and the server and thus load an app, the user navigates to the URL and port where the server is running. You may have seen this before: when you start an app with the streamlit run command, the command opens a web browser and navigates to a URL like https://localhost:8501.
+You could have done this manually, too. In fact, as long as the Streamlit server is running, opening the URL in a new browser tab or window creates a new connection to the server and a new instance of the app.
+Deploying an app involves starting and keeping a Streamlit server running, ready to accept new connections. Instead of accessing the app through the localhost URL, other people will access it through a different URL. There are several approaches for deploying an app.
+
+5.1.2 Options for deployment
+Depending on the requirements, budget, and effort involved, you can choose from multiple deployment options. Let’s look at a few.
+Running a server over your local network
+The simplest way to deploy an app is something you’ve already done each time you’ve run Streamlit. Recall that, when you run the streamlit run command, Streamlit starts a server, and you’ll see output similar to the following in the terminal:
+You can now view your Streamlit app in your browser.
+
+  Local URL: http://localhost:8501
+  Network URL: http://192.168.50.68:8501
+As we’ve seen several times by now, the local URL lets you access the app from the computer running it. But if the computer is connected to a local network or even a home Wi-Fi network, other devices on the network can access it through the network URL.
+Go ahead and try it out! If you’re on Wi-Fi (or a LAN) and have another device—like a smartphone or another computer—connected to the same Wi-Fi/LAN, run one of the apps you’ve created, note the network URL, and open it in the second device’s web browser.
+For instance, figure 5.1 shows the to-do list app running on my phone, connected to the same Wi-Fi network as the laptop where I ran the streamlit run command:
+
+Note Getting this sharing approach to work depends on how the network is set up. For instance, a firewall may block incoming traffic from other devices, preventing it from reaching the Streamlit server, or other similar rules may be in place. This book doesn’t cover fixing these problems, but you can often resolve them with online research or help from a network administrator.
+One advantage of this deployment method is that you can make changes in the app, and users will see them as soon as you edit the code—no extra steps are needed!
+•	It only works while the computer running the Streamlit server is on and connected to the network.
+•	It allows devices connected to your local network to access the app, not the general public.
+Still, it can come in handy in a bunch of places. For example, you could create apps for a household and share the link with family. You could even use this type of deployment for basic, non-business-critical apps at work, depending on how lenient the networking and security policies are.
+
+Setting up a dedicated server
+If you’re looking to make a Streamlit app available to a broader audience, setting up a dedicated server may be a logical step beyond local deployment. This involves using a separate physical or virtual machine that runs independently of a personal computer. This setup helps ensure the app is available around the clock and accessible to users outside the local network.
+In this setup, start by selecting a suitable server—either a repurposed extra computer or a new machine set up specifically for this purpose. After selecting a server computer and installing Python and Streamlit, launch the Streamlit server for the app and expose the correct port to external traffic. Also configure the network to allow access, such as setting up port forwarding on the router if the server sits behind a firewall.
+Operating a dedicated server can be a daunting undertaking that comes with many responsibilities, especially around security. You’ll need to configure firewalls and regularly maintain and update the server’s operating system and software.
+The advantage of this route is that it gives you complete control over deployment. On the other hand, it requires significant technical expertise and, more importantly, a substantial time commitment. If you want the general public to use the app you’ve developed, I recommend one of the remaining options discussed next.
+
+Deploying to the cloud
+If you need better scalability, reliability, and ease of access, deploy the app on a cloud-based platform. This approach uses the infrastructure of public cloud service providers—-such as Amazon Web Services (AWS), Microsoft Azure, or Google Cloud—and lets you host the app without physical hardware. It offers benefits such as automatic scaling to handle varying traffic levels, robust security measures to protect data, and high availability to keep the app accessible at all times.
+A key benefit of cloud deployment is that the cloud provider handles many infrastructure responsibilities involved in maintaining an application. This includes server maintenance and security updates, so you can focus on developing and improving the app.
+Many companies have already migrated, or are in the process of migrating, internal applications to the cloud. If you’re considering making an app available to users within an organization or to a broader audience, cloud deployment can be an efficient and effective solution. Work with the cloud administrator or IT team to ensure a smooth setup and integration process.
+But it’s important to note that using a cloud provider can become expensive as an app gains popularity. Cloud providers usually base costs on the resources the app uses, which increase as more users access it. Chapter 12 discusses how to deploy an app to public cloud platforms such as AWS.
+
+Streamlit Community Cloud
+That leaves us with the option we’ll use for most of this book—Streamlit Community Cloud, a way to publish apps completely free of charge.
+Snowflake, the company that owns Streamlit, runs Streamlit Community Cloud. It prioritizes ease of use and, as the name suggests, is custom-built for Streamlit apps.
+Community Cloud comes with resource limitations, such as how much computational power, memory, and storage an app can use. If the app exceeds those limits—say, if it suddenly gains popularity—it may make sense to consider a different option, such as deploying to a paid cloud provider (see chapter 12).
+But since we’re learning Streamlit, Community Cloud is ideal for this purpose. In the rest of this chapter, we’ll deploy an app to it.
+
+5.2 Deploying the to-do list app to Streamlit Community Cloud
+As discussed in the previous section, Streamlit Community Cloud serves deployment needs well. It’s free, custom-built for Streamlit, and easy to use. In this section, we’ll deploy one of the apps built earlier—the to-do list app from chapter 4—to Community Cloud so anyone with an internet connection can access it.
+5.2.1 Prerequisites
+Besides Python and Streamlit itself, you’ll need the following to deploy an app to Streamlit Community Cloud:
+•	git, the popular version control tool we briefly discussed in chapter 2
+•	A GitHub account
+•	A Streamlit Community Cloud account
+•	Connecting your GitHub account to Community Cloud
+
+Creating a GitHub account and setting it up
+GitHub is a web-based platform for version control and collaborative software development. It relies on git, a distributed version control system, to help developers track code changes, collaborate on projects, and manage software versions.
+Note Don’t confuse GitHub with Git. Git is the version control system, and GitHub is the most popular platform for hosting Git repositories. You can also host Git repositories on other platforms, such as Bitbucket, but Streamlit Community Cloud requires GitHub.
+A link to a GitHub account is a standard fixture on most developers’ resumes these days. Streamlit Community Cloud expects you to store the app’s code in a GitHub repository, which is a collection of files and directories along with their revision history.
+Start by visiting github.com and signing up for a new account. The sign-up process is similar to most websites: enter an email address and verify it, create a username, and choose a strong password.
+After creating an account, configure your command line to authenticate and push code to any repositories you create. There are several ways to do this, but here we’ll use personal access tokens (PATs), which are password alternatives for accessing GitHub from the command line or an API.
+
+At the time of writing, follow these steps to get to the PAT creation screen:
+1.	Click the profile picture, then select Settings
+2.	Find Developer Settings in the side panel and click it
+3.	Select Personal Access Tokens > Tokens (Classic)
+4.	Select Generate New Token
+Figure 5.2 illustrates this path, although, of course, GitHub may change its configuration
+
+Figure 5.2 Getting to the personal access token generation page on GitHub
+On the screen that opens select the Repo scope to grant full control over repositories. Then enter a note describing the token’s purpose (for example, “Token to push Streamlit code”) and set an expiration date.
+When a PAT expires, it can no longer be used, and you’ll need to create a new one, so choose the expiration date accordingly. A shorter expiry is more secure—if someone compromises the token, it remains valid for less time—but it also means you’ll need to rotate it more frequently.
+
+Figure 5.3 The PAT creation screen on GitHub. Make sure you select the Repo scope.
+Click Generate Token to create it. GitHub will now show you the token you created. Copy it and store it somewhere safe, because you’ll never be able to see it again. You’ll use the PAT later when pushing code.
+
+Creating a Streamlit Community Cloud account
+To create a Community Cloud account, go to https://streamlit.io/cloud and sign up with the GitHub account you just created. After signing up, Streamlit opens the My Apps page, which lists any apps you create.
+If you haven’t signed up with GitHub credentials, connect the GitHub account to Community Cloud separately. At the time of writing, you can do this by selecting Workspaces and then Connect GitHub Account.
+If you’re already logged into GitHub, you don’t need to do anything else. Otherwise, enter your GitHub account credentials.
+
+5.2.2 Deployment steps
+Now that you’ve set up your accounts, deploying the app is a three-step process:
+1.	Creating a GitHub repo
+2.	Pushing code to GitHub
+3.	Telling Community Cloud where to find the code
+If an app needs to connect to an external service or requires specialized libraries, we’ll explore a couple of additional steps later in this chapter. But the preceding steps work for the to-do list app built in the previous chapter.
+If git is already part of your regular development workflow (as recommended in chapter 2), you may have created a repo and pushed code to it. If so, skip ahead to the section “Telling Community Cloud where to find your app.” If not, continue with the following sections.
+
+Creating a GitHub repo
+To start, sign in to your GitHub account. The button to create a new repo should be fairly obvious. If you’ve never created one in this account, you should see a Create Repository button on the left (figure 5.4.) If the account already has repositories, GitHub displays a list of top repositories. Click New to create a new one.
+
+This should direct you to a page for entering details about the new repository (figure 5.5). You can ignore most settings here. Give the repository a memorable name and select Public for visibility. When you’re done, click Create Repository. GitHub then shows a screen with instructions and, importantly, the URL of the repo, as shown in figure 5.6. Make a note of this URL—you’ll need it in the next section. If needed, you can find it again later by navigating to the repo. The repo is now ready for code!
+
+Pushing the code to GitHub
+At this point, you have a remote GitHub repo, but the Streamlit app code is stored locally on your computer. Next, push the code to the remote repo.
+Open a terminal window and navigate to the directory that contains the to-do list app from chapter 4. You’ll see two files: todo_list.py and task.py.
+Enter the following command to initialize this directory as a local Git repository (as opposed to the remote one on GitHub):
+git init
+The git init command creates an empty Git repo and sets up all the required files in a hidden subdirectory called .git.
+Next, type:
+git add .
+This command adds the contents of the current directory to Git’s staging area, a temporary holding place for changes to the code. Use the staging area to prepare an exact snapshot of the code to save.
+It’s time to commit the changes, so type:
+git commit -m "Commit Streamlit to-do list app"
+This command captures a snapshot of the code’s current state and saves it in the local repository with a descriptive message about the changes.
+The final step is to copy the code to GitHub. First, make the local Git repo aware of the remote repo on GitHub:
+https://<Your PAT>@<Repo URL without the https://>
+For example, if the PAT is ghp_fLbbSwjMlw3gUs7fgRux8Ha3PIlG9w3ZY3zY (not a real one) and the repo is https://github.com/omnom-code2/streamlit-todo-list-app.git, the PAT-embedded URL is:
+https://ghp_fLbbSwjMlw3gUs7fgRux8Ha3PIlG9w3ZY3zY@github.com/omnom-code2/streamlit-todo-list-app.git
+You can now add this URL as a remote to the local repo by typing:
+git remote add origin <PAT-embedded URL>
+Or in our example:
+git remote add origin https://ghp_fLbbSwjMlw3gUs7fgRux8Ha3PIlG9w3ZY3zY@github.com/omnom-code2/streamlit-todo-list-app.git
+This command tells Git to add a remote repository with the alias “origin” to the local Git configuration and associate it with the specified PAT-embedded URL. This lets you interact with the remote repository using that alias in Git commands, and the PAT for authentication.
+Finally, run the following command to push the code:
+git push -u origin master
+This command does two things:
+•	Pushes the local branch you’re currently in (called “master” by default) to the remote repo you designated as “origin,” thus making your code available in the “master” branch of the remote repo.
+•	Sets the default upstream branch (-u is shorthand for --set-upstream) of the local repo to the remote master branch, so in the future you can push code with just git push, without -u origin master.
+Note Here, we assume the default branch Git creates in the repo is called “master.” Some versions of Git use “main” instead. If you get an error using “master,” try replacing it with “main.” The command then becomes git push -u origin main. Alternatively, type git branch (Git highlights the current branch) and use that branch name.
+
+Figure 5.7 Repo in GitHub after pushing the code
+Note Git can be a complex tool to work with. This section covers only the bare minimum you need to deploy code to Streamlit Community Cloud. But ideally, you should use Git as part of a regular development workflow, committing code whenever you complete a meaningful piece of work.
+Telling Community Cloud where to find your code
+We’ve set up the Streamlit code on GitHub. Next, tell Streamlit Community Cloud where to find it.
+Log in to a Community Cloud account at https:// streamlit.io and click the Create an App button in the upper-right corner. If prompted to confirm that you already have an app, select the option that says you do. This link opens the Deploy an App page shown in figure 5.8.
+
+Figure 5.8 The app deployment screen on Streamlit Community Cloud
+Enter the details of where you pushed the code, including:
+•	The GitHub repository you created
+•	The branch you pushed your code to (e.g., master from git push -u origin master)
+•	The path to the app (this would be todo_list.py, since that’s the file used in the streamlit run command, and it’s located in the repo’s root directory)
+In the App URL field, choose the address people will use to access the app. Streamlit suggests a default URL, but you can override it with a more meaningful one. In figure 5.8, I chose stmlit-todo-list-app-1.streamlit.app.
+Some advanced settings are available that we’ll look at later in the chapter. Ignore them for now. That’s it! Click the Deploy! button.
+
+Note Streamlit Community Cloud shuts down apps that no one has accessed in approximately 12 hours. If you visit the URL above, you might see a message saying the app is waking up and will take some time to load. This is one of the caveats of using a free hosting service. In chapter 12, we explore alternatives to Streamlit Community Cloud if this is a deal-breaker.
+
+5.3 Deploying an app that uses an external service
+In the last section, we saw that deploying a simple app to Streamlit Community Cloud follows a straightforward logical path. The to-do list app is simple in the sense that it’s fairly self-contained.
+For one thing, apart from Streamlit and Python itself, the app relies on no other libraries or software. For another, it does not interact with any external service or API. That won’t be true for most practical apps. In the real world, developers build software on top of software built by other people. Therefore, business logic will likely need third-party libraries that don’t come pre-installed with Python.
+You will also find that, often, an app needs to connect to internet services to perform a useful task. In fact, it’s almost inevitable. At some point, an app will need access to an English dictionary to check whether a user-entered word is valid, currency exchange rates to show a price in a different currency, or news headlines from around the globe. In these cases, you typically sign up for and connect to an application programming interface (API) that provides the specific service you need.
+In this section, we’ll add some of this complexity to the existing to-do list app and deploy the changes correctly.
+
+APIs and how to call them
+An API is just a fancy term for a set of instructions that lets different pieces of software talk to each other. You might remember that in chapter 3, we defined an API for the backend of the unit conversion app—a contract that defined how the frontend could interact with it.
+In general parlance, API means much the same thing, except that instead of a contract between two parts of the same application, it refers to the contract which defines how software can interact with a particular external service.
+An API can be structured however its developer wants, and the only reliable way to understand how to use it is to read its documentation. Still, APIs often follow common conventional patterns. In general, you can call this type of API by sending an HTTP (or web) request to a URL in the following form:
+https://<base address>/<endpoint>
+The base address is a common address that every request to the API includes, whereas the endpoint is specific to the type of request you make. For instance, a weather-¬related API might have api.weathersite.com (not a real website) as its base address, with forecast and history as endpoints for weather predictions and past weather data, respectively.
+Often, you can customize an API request by passing key-value parameters either in the URL (for a GET request) or as a request payload (for a POST request). You might also need to include additional information, such as an API key, in HTTP headers. See the next sidebar to learn more about how HTTP works.
+
+How HTTP requests work
+HTTP, which stands for Hypertext Transfer Protocol, is the set of rules that define how messages travel across the web. Think of it as the grammatical structure computers use to communicate over the web.
+To communicate using HTTP (for example, when a web browser talks to a web server to retrieve a web page), an HTTP client—such as a browser—sends well-formed HTTP requests to a web server. The server then returns an HTTP response, which may consist of an HTML file, an image, text, or almost anything else.
+HTTP requests consist of:
+•	A request line (for our purposes, think of it as a URL)
+•	Some HTTP headers are key-value pairs that provide additional information about how to handle the request
+•	An optional body that contains data the client sends to the server
+There are several types of HTTP requests, but the two most common are GET and POST.
+Loosely speaking, GET requests are lightweight requests that don’t have a body. The URL contains all the request information. To send data to the server, encode it as key-value pairs and append it to the end of the URL like this:
+?param1=value1&param2=value2...
+Entering a query in a search engine usually sends a GET request. For example, typing a URL in the browser address bar and pressing return sends a GET request to that URL.
+POST requests can include a body with additional information. This body is often called a payload and might include data from a web form or an uploaded file.
+
+The API Ninjas Dad Jokes API
+We’ll use an API from the API Ninjas website (https://api-ninjas.com/). API Ninjas offers free APIs for various services, including real-time commodity prices, exchange rates, URL information lookups, face detection in images, and more.
+They make money from the paid version of their APIs. As of the time of writing, if an app issues more than 10,000 calls a month, it needs the paid version. For learning, the free version is enough. Specifically, this chapter uses their Dad Jokes API, which, according to their documentation, “provides thousands of hilarious dad jokes for your entertainment apps.”
+To access it, you’ll need to create an account. Go to https://api-ninjas.com/ and sign up. As usual, you’ll need to provide and verify an email address and create a password.Once signed in, find the API key (one key can access all of their APIs). This key is a set of characters that identifies you when you connect to the API. As I write this, a Show API Key button appears under My Account. Make a note of the key.
+Check the documentation at https://api-ninjas.com/api/dadjokes to get a sense of how to connect to the Dad Jokes API. The base URL is api.api-ninjas.com, which all of their APIs share. The endpoint for the Dad Jokes API is /v1/dadjokes, which returns one (or more) random jokes.
+The documentation also mentions a limit parameter for setting the number of jokes returned, but it’s a paid feature, so this book doesn’t use it. By default, the API returns one joke, which is all this example needs. To get a random joke, send a GET request to the following URL:
+https://api.api-ninjas.com/v1/dadjokes
+As an experiment, try going to this URL in a browser (which, as the sidebar on HTTP requests mentions, sends a GET request). If everything works as intended, you should get an authentication error message:
+{"error": "Missing API Key."}
+That’s because the request also needs the API key noted earlier. The documentation says to pass this value as an HTTP header named X-Api-Key. To do this, we’ll use a Python library called requests.
+5.3.2 Using the requests library to connect to an API
+As we’ve seen, the API used to generate jokes is web-based, which requires the code to send and receive messages via HTTP. This is possible with vanilla Python, but this book uses requests, the Python world’s go-to library for HTTP communication. requests provides built-in functionality for handling HTTP requests and offers a more user-friendly set of tools than the alternatives.
+First, install requests by running the following command in a terminal:
+pip install requests
+Once that’s done, verify that it’s installed by running pip show requests. This command should display the version of the requests library, along with some other information.
+Sending an HTTP request with the requests module is quite easy using simple get and post methods. To try this, open a Python shell (type python or python3 at the command line) and run the following:
+>>> import requests
+>>> response = requests.get("https://api.api-ninjas.com/v1/dadjokes")
+>>> response
+<Response [400]>
+>>> response.text
+'{"error": "Missing API Key."}'
+Here, we use the requests.get method to send the same request sent through the browser earlier. The method returns an instance of the Response class, which encapsulates the HTTP server’s response to the request.
+Then, we access the text property of response, which gets the response body as a string. As you can see, the string is exactly what we got before in the browser.
+As we learned from the documentation, we can pass an API key using the X-Api-Key header. The requests.get method accepts an argument called headers in the form of a regular Python dictionary, so set that up:
+>>> headers={"X-Api-Key": "+4VJR..."}   #1
+>>> response = requests.get("https://api.api-ninjas.com/v1/dadjokes", headers=headers)
+>>> response.text
+'[{"joke": "I want to name my puppies Rolex and Timex so I can have watch dogs."}]'
+#1 Replace the “+4VJR…” with the API key you noted down earlier.
+Looks like it’s working now! Include the API key from API Ninjas in the X-Api-Key header, and the API returns an actual joke!
+There’s a lot more to the requests library than this. This book uses the module several times later on, but for more details, see the documentation at https://requests.readthedocs.io/.
+5.3.3 Incorporating jokes in the app
+We now have everything we need to add a joke of the day feature to the to-do list app. Since this is quite different from the core functionality of managing to-dos, it makes sense to create a new file, jokes.py, for it.
+Specifically, we need a function, such as generate_joke, that takes an API key and pulls a joke from the Dad Jokes API. Listing 5.1 shows what jokes.py might look like (chapter_05/jokes.py in the GitHub repo).
+Listing 5.1 The jokes.py file
+import requests
+
+API_URL = "https://api.api-ninjas.com/v1/dadjokes"
+
+def generate_joke(api_key):
+    headers = {"X-Api-Key": api_key}
+    response = requests.get(API_URL, headers=headers)
+    if response.status_code == requests.codes.ok:
+        joke_obj = response.json()[0]
+        return joke_obj['joke']
+    # Fall back to a default joke if the API fails
+    return f"Time flies like an arrow. Fruit flies like a banana."
+We put API_URL at the top of the file as an easily configurable constant so later changes don’t require modifying the function itself.
+In the function, the first couple of lines prepare the headers dictionary, as we did in the Python shell, and call requests.get.
+The next section checks whether the request went through:
+if response.status_code == requests.codes.ok:
+Every HTTP response comes with a status code that classifies the result of the request. These codes may be familiar—a status code of 200 means OK, code 404 means Not Found, and so on.
+In the preceding snippet, the if statement checks whether the status code indicates success—in this case, whether the request returned a joke. requests.codes provides a more readable way to refer to specific HTTP status codes. requests.codes.ok means status code 200.
+If everything is fine, we can move on to parsing the response:
+joke_obj = response.json()[0]
+Here, instead of using response.text as before, we use response.json(). From an earlier experiment in shell we know that the API response is in JSON format:
+>>> response.text
+'[{"joke": "I want to name my puppies Rolex and Timex so I can have watch dogs."}]'
+JSON is a format that lets you create arbitrary hierarchies of data using text. Python developers can usually read a blob of JSON data easily, because the way you store data in JSON is almost identical to the way you encode the same data in a Python literal.
+From the response.text value above, you can see that the data is encoded as a list (square brackets) with one element: a dictionary with a single key, “joke”. response.text is a string, but parsing it into a Python object makes the data easier to work with. The response.json() method does that by parsing the response body into a Python object, assuming the text is JSON.
+After calling response.json(), treat the result as a normal Python object. Here, the data is a single-element list, so use response.json()[0] to get its only element—a single-key dictionary:
+return joke_obj['joke']
+Then, we return the joke text by extracting it from the joke_obj dictionary with joke_obj['joke'], which we parsed from the JSON result:
+return f"Time flies like an arrow. Fruit flies like a banana."
+Finally, if the API call goes wrong and returns a status code other than 200, the function responds gracefully by returning an evergreen dad joke about the nature of time and the dietary preferences of insects.
+Once jokes.py is complete, creating a joke to display in the main app is simple. In todo_list.py, import the generate_joke function at the top:
+from jokes import generate_joke
+To display the joke, call generate_joke with an API key right above where you show the task completion metric, and put the result in an st.info box:
+st.info(generate_joke("+4VJR..."))
+As before, don’t forget to replace the argument to generate_joke with the actual API key.
+If you run streamlit run now, you should see the joke of the day (figure 5.9.)
+
+Figure 5.9 Joke of the day in the to-do list app
+Great! That seems like the API call is working exactly as intended. We can rest assured that if a user feels like giving up in the middle of organizing their day, they’ll get a daily joke to inspire them to stay strong.
+But wait! Recall that Streamlit reruns the entire script whenever an interaction takes place. That includes calling the API through generate_joke. Basically, each time a user adds a task, marks something done, or does anything in the app, the app makes an API call and generates a new joke. Forget joke of the day—we’re dealing with joke of the click here.
+Normally, you might be forgiven for wanting to chalk that up as a feature, not a bug. But remember: the plan includes only 10,000 free API calls per month. If the app pulls a joke every time a user clicks anything, it will burn through even that hefty quota pretty quickly.
+Instead, let’s use st.session_state from chapter 4. Just as we saved the task list so it doesn’t get reset with every run, we’ll also save the joke to avoid unnecessary API calls:
+if "joke" not in st.session_state:
+    st.session_state.joke = generate_joke("+4VJR...")    #1
+#1 Again, replace the “+4VJR…” with the API key you noted down earlier.
+Now replace the earlier st.info line with this:
+st.info(st.session_state.joke)
+Try the app now and you’ll see that the joke doesn’t change when you add a task or do anything else in the app. It changes only when you refresh the page. So, is that it? Not quite...
+5.3.4 Accessing an API key safely with st.secrets
+The app works just fine now, but it has a glaring security flaw: the code embeds the API key directly. If we commit this code to a public GitHub repository, anyone can see it and find the API key. With a free API, the stakes are low, but could be high if you pay for the API. Anyone who accesses a GitHub repo might—unwittingly or with malicious intent—set themselves loose on an API account, costing hundreds or even thousands of dollars.
+Note It’s worth internalizing this rule right now: never store any secret information—an API key, password, or other credential—in code, especially if the code will be publicly accessible.
+What’s the alternative, then? How do we grant an app access to the API key if we can’t include it in the code? Generally speaking, there are a few ways to do this: put the key in an environment variable and store it securely on the server where the app runs. Another option is to use a secrets management service, such as AWS Secrets Manager or HashiCorp Vault, which lets the app retrieve confidential information securely.
+Streamlit provides an easy way to keep secrets safe: st.secrets. Like st.session_state, it is a dictionary-like structure for storing secret information.
+To make a value available to st.secrets, store it in a special file called secrets.toml. During local development, Streamlit will read the values from it. When pushing code, be careful not to commit secrets.toml. Later in the chapter we’ll discuss the .gitignore file which helps prevent that.
+Instead, configure the information directly in Streamlit Community Cloud so the deployed app can access it in production.
+The secrets.toml file
+In the root folder of the local repository (where you ran git init earlier), create an empty directory called .streamlit, and inside it, create an empty text file called secrets.toml. Next, enter the API key in the file as shown in listing 5.2.
+Listing 5.2 The secrets.toml file
+[jokes_api]
+api_key = "+4VJR..."
+As before, use the actual API key here.
+The .toml format may be new to you. TOML stands for Tom’s Obvious Minimal Language. It’s a format for configuration files designed to be concise and easily readable by humans, and was initially created by a guy named—Tom.
+.toml files mostly consist of key-value pairs and support a range of simple and complex data types, including arrays and tables. Square brackets denote sections that divide the file.
+The file shown in listing 5.2 has a single section, jokes_api, with a single key-value pair, where the key is api_key. Reading it in Python (outside Streamlit, you would usually use the toml module) maps it to the following nested dictionary:
+{'jokes_api': {'api_key': '+4VJR...'}}
+In Streamlit, st.secrets contains something similar. Now replace the call to generate_joke in todo_list.py with the following:
+if "joke" not in st.session_state:
+    api_key = st.secrets["jokes_api"]["api_key"]
+    st.session_state.joke = generate_joke(api_key)
+At runtime, Streamlit reads the secrets.toml file to populate st.secrets, as shown above. The code uses st.secrets["jokes_api"]["api_key"] to refer to the API key. Try it out—you’ll see that the app can still fetch a joke from the API.
+Note Technically, the .streamlit directory should be located in the directory from which you run streamlit run <file_path>. For instance, if you’re currently in a directory called apps, the code is located in a folder called todo_list_app, and the command to run the app is streamlit run todo_list_app/todo_list.py, then the .streamlit folder should be located in the apps folder, not in the todo_list_app folder. When you deploy the code to Streamlit Community Cloud, Streamlit effectively runs streamlit run from the repo root, which is why I suggested placing .streamlit there. While developing locally, if the local repo root is different from the folder you usually run streamlit run from, you’ll probably need to change the directory to the repo root to get this to work.
+
+Listing 5.3 The final state of todo_list.py
+import streamlit as st
+from task import Task
+from jokes import generate_joke
+
+if "task_list" not in st.session_state:
+    st.session_state.task_list = []
+task_list = st.session_state.task_list
+
+if "joke" not in st.session_state:
+    api_key = st.secrets["jokes_api"]["api_key"]
+    st.session_state.joke = generate_joke(api_key)
+
+def add_task(task_name: str):
+    task_list.append(Task(task_name))
+
+def delete_task(idx: int):
+    del task_list[idx]
+
+def mark_done(task: Task):
+    task.is_done = True
+
+def mark_not_done(task: Task):
+    task.is_done = False
+
+with st.sidebar:
+    task = st.text_input("Enter a task")
+    if st.button("Add task", type="primary"):
+        add_task(task)
+
+st.info(st.session_state.joke)
+
+total_tasks = len(task_list)
+completed_tasks = sum(1 for task in task_list if task.is_done)
+metric_display = f"{completed_tasks}/{total_tasks} done"
+st.metric("Task completion", metric_display, delta=None)
+
+st.header("Today's to-dos:", divider="gray")
+for idx, task in enumerate(task_list):
+    task_col, delete_col = st.columns([0.8, 0.2])
+    label = f"~~{task.name}~~" if task.is_done else task.name
+    checked = task_col.checkbox(label, task.is_done, key=f"task_{idx}")
+    if checked and not task.is_done:
+        mark_done(task)
+        st.rerun()
+    elif not checked and task.is_done:
+        mark_not_done(task)
+        st.rerun()
+    if delete_col.button("Delete", key=f"delete_{idx}"):
+        delete_task(idx)
+        st.rerun()
+
+5.4 Deploying changes to Streamlit Community Cloud
+Generally speaking, making changes to an already deployed Streamlit app is simple. Commit the changes and run git push to update the GitHub repo. Streamlit Community Cloud picks them up automatically.
+However, recent changes to the app make this process slightly more complicated. Three factors complicate it:
+•	The project now uses an additional third-party library, requests, so you must ensure the correct version is installed in production
+•	We should never push secrets.toml to GitHub, even by accident
+•	Because the API key won’t be stored in the GitHub repo, we should configure it directly in Community Cloud
+5.4.1 Using a requirements.txt file to manage Python dependencies
+When you first publish apps, you must manage two environments: a development environment (often simply called dev) on a laptop or other computer used to code the app, and a production environment (called prod) in Streamlit Community Cloud. To ensure the app you coded in dev works as expected in prod, configure the two environments the same way, or verify that any differences between dev and prod don’t affect the app.
+This means the Python code that runs in prod should match what runs on a development machine. But the code may rely on third-party software such as the requests module (as in the to-do list app) or Streamlit itself. Keep these dependencies consistent between prod and dev, or at least ensure any differences don’t affect the app’s functionality.
+For instance, if a feature in the requests library was introduced in version 2.1.1 but prod uses requests version 2.0.5, the app will run into an error in prod. To avoid breakage, install requests version 2.1.1 or higher in prod. To be completely sure the code won’t break, install exactly version 2.1.1, because a future release could deprecate or remove the feature in use.
+In the Python world, it’s conventional to use a file called requirements.txt to prevent discrepancies between prod and dev environments. The premise of requirements.txt is simple: each line represents a Python module and a string that specifies a version or a range of versions of that module that is compatible with the codebase.
+Pass the file to the pip install command (for example, pip install -r requirements.txt), and pip will automatically read it and install the specified version of each module. Streamlit Community Cloud recognizes a requirements.txt file, so adding one to a GitHub repository triggers automatic installation of the libraries needed to run the app.
+
+Creating a requirements.txt file
+The app has only two external dependencies—streamlit and requests (you can confirm this by examining the import statements across the .py files). Therefore, the requirements.txt file can be quite simple, as shown in listing 5.4.
+Listing 5.4 A simple requirements.txt file
+requests
+streamlit
+While this is a valid requirements.txt file, it doesn’t say anything about which versions to install. A safe approach is to identify the versions of these libraries installed in dev and list those exact versions in requirements.txt. This can be done in a couple of ways:
+•	To see (among other information) the installed versions of each library, type pip show streamlit and pip show requests
+•	Another option is to run pip freeze > requirements.txt to generate a requirements.txt file from the packages installed in the dev environment. This command includes every installed package, even ones the code doesn’t import. If you choose this approach, delete all lines except those for streamlit or requests.
+Either way, after determining the correct versions with pip show or creating the file with pip freeze, the requirements.txt file should look like listing 5.5.
+Listing 5.5 A strict requirements.txt file
+requests==2.31.0
+streamlit==1.34.0
+We don’t have to be this strict with versions. Instead, allow any version of these libraries that matches or exceeds the versions installed. This approach lets the app benefit from future under-the-hood improvements in these libraries while still being reasonably sure it won’t break. In that case, the file may look like listing 5.6.
+
+Listing 5.6 A this-version-or-higher requirements.txt
+requests>=2.31.0
+streamlit>=1.34.0
+Once the file is ready, save it to the root of the local Git repo.
+Note An app can still work in production even if you don’t create a requirements.txt file. Streamlit Community Cloud preinstalls the two libraries used here: streamlit and requests. The streamlit library is required for any Streamlit app to run. Because Streamlit depends on requests internally, Community Cloud preinstalls requests as well. In most projects, additional libraries are needed, and requirements.txt tells the platform what to install. Even in this example, include the file to pin the exact module versions used in production.
+5.4.2 Using .gitignore to protect secrets.toml
+You may wonder how a secrets.toml file protects an API key from prying eyes—the key may no longer appear in the Python code, but it still sits in a file next to the code. The solution is to keep secrets.toml locally and never commit it to the Git repo.
+To avoid accidentally committing secrets.toml, use a .gitignore file. A .gitignore file in the repository root tells Git which files to ignore and keep out of commits. If the file doesn’t already exist, create an empty text file called .gitignore in the repo root. Then append the path to the .streamlit folder. Since the .streamlit folder should also be in the repo root, add the following to .gitignore:
+.streamlit/
+If you now run git add or git commit, Git won’t commit secrets.toml (or any file in the .streamlit directory).
+Note Git may already be tracking the .streamlit folder from before it was added to .gitignore. If so, remove it from Git’s index with this command: git rm -r --cached .streamlit/
+At this point, the directory structure should look like the following:
+Root of your Git repo
+├── .streamlit (folder)
+│   └── secrets.toml
+├── .gitignore
+├── requirements.txt
+├── jokes.py
+├── task.py
+└── todo_list.py
+Add changes to Git, commit them with a message, and then push them to GitHub. Run the following commands:
+git add .
+git commit -m "Add joke-of-the-day functionality"
+git push
+Use the simple git push command above because git push -u set the branch upstream to the remote repo earlier. You should now see the changes in the production Streamlit app. Or should you? Open the public URL for the app to see what’s shown in figure 5.10.
+
+5.4.3 Configuring secrets in Community Cloud
+We keep the API key secret, but the app still needs it in production. Configure the key in Streamlit Community Cloud, which hosts the deployed app.
+You can configure the key on the App Settings screen in Community Cloud. Access this screen in one of the following two ways:
+•	On the deployed app’s public URL, click Manage App at the bottom right. Then click the three vertical dots and choose Settings.
+•	Log in to Community Cloud on streamlit.io, click the three vertical dots next to the app in the app list, then select Settings.
+Either way, after you open the App Settings page, click Secrets on the side panel to see the screen shown in figure 5.11.
+
+Figure 5.11 The secrets configuration screen on Streamlit Community Cloud
+In the Secrets textbox, copy the contents of secrets.toml from the development machine, and then click Save.
+That’s it! Return to the app’s public URL. The app should now be fully functional (figure 5.12).
+
+Figure 5.12 Fully functional app deployed to production
+By now, you can build and share useful Streamlit apps with a public audience. In the next chapter, we explore a more advanced app focused on working with data.
+Summary
+•	Deployment is the process of hosting and setting up an app so intended users can access it.
+•	There are multiple ways to deploy an app—you could simply run a server over your local network, set up a dedicated server, or use a cloud provider.
+•	Streamlit Community Cloud lets developers deploy an unlimited number of apps for free, subject to resource usage limits.
+•	Deploying to Community Cloud involves creating a GitHub account, pushing local code to a remote GitHub repo, and telling Community Cloud where to find the code.
+•	You can connect to external services over HTTP using a library called requests.
+•	Use st.secrets with a secrets.toml file in the .streamlit folder to keep credentials safe.
+•	Never commit the secrets.toml file—prevent accidents by adding it to .gitignore. Instead, use the App Settings page on Streamlit Community Cloud to store in production the information you keep in secrets.toml locally.
+•	You can use a requirements.txt file to specify the versions of various Python libraries the app depends on.
+•	To deploy changes to an app already running on Community Cloud, push the updates to the remote GitHub repo.

@@ -1,0 +1,515 @@
+4 Streamlit’s execution model
+
+In the last two chapters, you got your feet wet with Streamlit by building two fully functional apps: a password checker and a unit converter. You learned the basics of Streamlit syntax and how to create interactive elements. But what happens behind the scenes when a Streamlit app runs? Understanding this is key to building more complex applications. In this chapter, we explore Streamlit’s execution model and how to manage an app’s state.
+This chapter also takes a slightly different approach than the previous ones. While we’ll still build a practical application—a daily to-do list app—the primary focus is on building troubleshooting skills. We’ll intentionally introduce bugs into the app to simulate real-world situations where things don’t go according to plan. By following along and fixing these problems, you’ll gain a deeper understanding of Streamlit’s inner workings and how to debug your apps effectively.
+
+4.1 A more complex app: Daily to-dos
+Ever juggled multiple deadlines at work while mentally planning a family vacation, while also trying to remember to buy bread on the way home? Regardless of the specifics, the frenzy of modern life can get you in its grip, pulling you into a whirlwind of endless activity and demands. Hopefully, this chapter’s Streamlit app helps manage the chaos even if it can’t actually deliver the bread to the doorstep.
+In this chapter, we’ll create a to-do list app that lets users track the tasks they need to complete in a day. The primary goal is to familiarize readers with Streamlit’s execution model, so we won’t walk through the entire six-step development process in detail as we did in the last chapter. Instead, we’ll breeze through the concept, requirements, and a mock design, and then jump straight to implementation.
+
+4.1.1 Stating the concept
+As we discussed in the last chapter, the concept is a succinct statement of what the app is. Here it is:
+A Streamlit app for adding tasks to a daily to-do list and tracking their status.
+That seems pretty crisp and clear, so let’s dive into the detailed requirements.
+
+4.1.2 Defining the requirements and what is out of scope
+To recap from chapter 3, while the concept provides a general idea of the app, requirements make it concrete by outlining what users need from it. What follows are the requirements for the to-do list app we’re building. The user should be able to:
+•	View their daily to-do list, made up of tasks
+•	Add a task to their to-do list
+•	Remove a task from their list
+•	Mark a task as done
+•	Undo marking a task as done
+•	See their overall task-completion status (that is, the total number of tasks and the number they’ve completed)
+It’s just as important—if not more so—to clarify what the app won’t do, so we’ll also specify what’s out of scope:
+•	Retrieving a to-do list when users refresh or reopen the page
+•	Exporting a to-do list to an external file or format
+•	Saving the history of added and completed to-dos
+
+The two lists above give a sense of what we’re building in this chapter: a fairly basic daily to-do list that lives entirely within a single browser session. Essentially, we expect the user to interact with the app by opening it in a browser window at the beginning of the day, adding tasks, and marking them as done or not done as the day progresses. The user keeps the window open until the end of the day and never refreshes it. Rinse and repeat the next day.
+NOTE We won’t add support for persisting (saving) tasks outside the browser session. Refreshing the page clears the data.
+“Doesn’t that limit the usefulness of the app somewhat?” you might ask. Absolutely. We don’t want to introduce the complexity of external storage just yet. We’ll explore that later in the book, especially in part two.
+However, one could argue that giving users a blank slate at the start of each day makes them more productive. So you see, being unable to save your tasks is a feature, not a bug!
+It’s mostly about the complexity. Still, spinning the limitations of your product into positives is practically a survival skill in the industry! I bet your other frontend tech manuals don’t also give you free life advice.
+
+4.1.3 Visualizing the user experience
+We now have a clear understanding of what the app needs to do. Following the principle from the last chapter of putting the user experience front and center, let’s turn to the mock UI design shown in figure 4.1.
+
+Figure 4.1 The mock UI design for the daily to-do list app
+Our design has two sections: a sidebar where you can enter new tasks, and a “main” area where you can view the tasks you’ve added and update their status. Once you add a task by entering the task text and clicking the button on the left, it appears on the right. Each task is rendered as a checkbox. You mark a task as “done” by checking the box, which also satisfyingly strikes through the task. You can delete a task entirely by clicking the button to its right. A tracker at the top also tells you how many tasks you’ve completed out of the total.
+
+4.1.4 Brainstorming the implementation
+You may have realized that the to-do list app is more complex than the password checker we built in chapter 2 or even the unit conversion app in chapter 3. In both cases, the user could ultimately take a single primary action—to evaluate the entered password in the former case and to perform the conversion in the latter.
+The to-do list includes four different actions a user can take:
+•	Add a task
+•	Mark the task as done
+•	Mark the task as not done
+•	Delete the task
+Let’s take a moment to brainstorm how to make this happen.
+Central to our implementation is the notion of a task and, by extension, a task list. In this app, a task is an object with two properties: a name and a status that can be “done” or “not done.” A task list is simply an ordered list of tasks. The four actions mentioned above are simply different ways to modify the task list. Adding a task adds an item to the list, marking it as done or not done updates the item’s status, and deleting a task removes it from the list. The app should always show the latest state of the task list.
+Therefore, we can divide the app into three parts:
+•	The task list
+•	Actions, which are wired up to buttons and checkboxes, and modify the task list
+•	Display logic, which renders the task list on the screen
+
+Whenever an action occurs, it updates the task list, and the display logic automatically updates what appears on the screen. As shown in figure 4.2, when you add a new task, the app appends it to the task list, and the display logic loops through all the tasks again and renders them on the screen based on several rules, such as “strikethrough if done.”
+
+4.2 Implementing and troubleshooting the app
+When we built the unit conversion app in chapter 3, we took the scenic route, walking through each step of the app development process in detail. But we didn’t dwell on what happens when things go wrong or how to troubleshoot the problem.
+This time, we’ll take a bumpier path—one that’s more representative of the real world. As we build the to-do list app, we’ll run into problems and errors. Those errors will push us to learn about Streamlit in more depth, and that deeper understanding will help us work through and fix the problems.
+Note Since this chapter focuses on giving hands-on experience troubleshooting app problems, we’ll eschew some of the best practices we learned in chapter 3 (such as maintaining a strict separation between backend and frontend or defining a clear API), in favor of more concise code.
+To begin, spin up a new file in your code editor and name it todo_list.py.
+
+4.2.1 Displaying the task list
+While we’ve done our planning upfront in one shot, when it comes to writing the actual code, we’re going to build our app iteratively, as we did in chapter 3, going part by part and viewing the results in Streamlit along the way. So, where do we start? What’s the first iteration?
+As discussed in the previous section, a task list is central to the app’s implementation. The display logic component always needs to show the latest state of the task list. Our first step can be as simple as creating the heading for the task list.
+st.header
+Streamlit provides several elements for displaying text in different sizes and formats. Earlier, we used st.title to render large titles. st.header is similar, but it displays text slightly smaller than st.title. Use it by putting the code in listing 4.1 into todo_list.py.
+
+import streamlit as st
+
+st.header("Today's to-dos:", divider="gray")
+Notice that we’ve included a divider argument, which simply displays a gray line beneath the header. Neat, huh?
+To see the app in action, save the file and run streamlit run todo_list.py or streamlit run <path to todo_list.py>, if you’re in a different working directory.
+
+Creating a task list
+Next, let’s turn to our notion of a task: it has a name and a status indicating whether it is done or not. We can therefore use a dataclass to represent a task with exactly those two fields: a string name and a boolean is_done to represent the task status. Listing 4.2 shows the Task class. Save this into a new file called task.py in the same directory as todo_list.py.
+
+from dataclasses import dataclass
+
+@dataclass
+class Task:
+    name: str
+    is_done: bool = False
+Notice the line is_done: bool = False. This sets is_done to False by default in case it’s not specified when creating an instance of Task. This will come in handy momentarily.
+
+Now that we have a task, the task list is a Python list of Task objects. Create this in todo_list.py with a couple of dummy tasks to test it out, like this:
+task_list = [Task("Buy milk"), Task("Walk the dog")]
+Because is_done defaults to False, there’s no need to set it for each Task instance.
+Don’t forget to import your Task class at the top of the file:
+from task import Task
+
+Checkboxes for tasks
+The display logic can be simple. Let’s display a checkbox for each task. We know how to create a static checkbox with a string label; recall that we used st.checkbox to make a checkbox that enables rounding the results of a unit conversion in chapter 3.
+But here, we don’t know each checkbox’s label ahead of time. Instead, we have to infer it from task_list. How do we do that? The answer, of course, is a loop. When a Streamlit element is placed in a loop, a new element is rendered whenever the loop runs. We’ve already encountered this in our initial password checker example in chapter 2, where we used st.success and st.error in a loop to display the green and red boxes indicating each condition’s pass/fail status.
+
+Create checkboxes from the task list like this:
+for task in task_list:
+    st.checkbox(task.name, task.is_done)
+Recall that the first argument passed to st.checkbox is the label (the task’s name in this case) and the second is a boolean indicating whether the checkbox should be rendered as checked. We want each checkbox to be checked if the task is done, so it makes sense to pass the task’s is_done field here directly.
+Listing 4.3 shows what todo_list.py looks like at this point.
+
+Listing 4.3 todo_list.py with checkboxes for each task
+import streamlit as st
+from task import Task
+
+task_list = [Task("Buy milk"), Task("Walk the dog")]
+
+st.header("Today's to-dos:", divider="gray")
+for task in task_list:
+    st.checkbox(task.name, task.is_done)
+Save the file and run it to see the output shown in figure 4.5.
+
+Adding delete buttons
+We want a button to delete each task in the list, situated to its right. Like the checkboxes, we will generate these buttons dynamically, so they should go into the loop we wrote earlier. But if we simply add the button inside the loop, Streamlit will put it under the checkbox for the task, not to the right of the task, because Streamlit renders elements vertically by default as we saw in chapter 3.
+As before, use st.columns to work around this. Create two columns—one for the checkbox and task text, and another for the button. Replace the existing for task in task_list loop with this:
+
+for task in task_list:
+    task_col, delete_col = st.columns([0.8, 0.2])
+    task_col.checkbox(task.name, task.is_done)
+    if delete_col.button("Delete"):
+        pass
+
+Notice that this code calls st.columns in a slightly different way than in the previous chapter: st.columns([0.8, 0.2]). Instead of passing the number of columns, it passes a list of numbers. This list specifies the relative widths of each column. The column with the task description takes up 80% of the horizontal space, and the column with the button takes up 20%. If only the number of columns is passed (for example, st.columns(2)), Streamlit makes the two columns equally wide, which doesn’t make sense because the task text can be arbitrarily long, while the button can’t.
+We’re not making the button do anything yet, so we wrote pass, a Python keyword that means “do nothing.”
+
+Figure 4.6 Streamlit throws an error when there are multiple identical widgets.
+There’s a button to the right of the first task, but not the second. Most importantly, a big red box underneath shows an error message. Streamlit complains because we created multiple st.button widgets with the same key. A key is text Streamlit uses to identify a widget—what we’ve been calling a Streamlit element, such as st.button, st.checkbox, and so on. Widget keys need to be unique so that Streamlit can distinguish one widget from another.
+Most of the time, there’s no need to manually specify a widget key because Streamlit generates keys internally based on the widget’s characteristics. For a button, Streamlit bases its internal key on the button text. So with two Delete buttons Streamlit assigns identical keys, breaking the uniqueness constraint.
+As the error description suggests, the way around this problem is to manually specify a unique key for each button you create. Since you need a unique key for every Delete button, one way to ensure uniqueness is to include the task’s index in the key. For instance, the key for the first task’s Delete button could be delete_0, the key for the second could be delete_1, and so on:
+for idx, task in enumerate(task_list):
+    task_col, delete_col = st.columns([0.8, 0.2])
+    task_col.checkbox(task.name, task.is_done)
+    if delete_col.button("Delete", key=f"delete_{idx}"):
+        pass
+To get both the task index and the task itself, change the for-loop header to for idx, task in enumerate(task_list).
+
+On enumerate
+enumerate is a handy little Python function that lets you iterate through a list elegantly, getting both the index and the element in one shot. The less elegant alternative is to write:
+for idx in range(len(task_list)):
+    task = task_list[idx]
+    ...
+You may now wonder “Why didn’t we need to pass a key to the checkboxes then?” Well, the checkboxes already had unique internal keys because their labels (the task names) were different. You’ll hit the same problem if you try to put two identical tasks in the list. For instance, if you change the task list to task_list = [Task("Buy milk"), Task("Buy milk")], you’ll see an error message similar to the one shown for the buttons.
+It’s probably a good idea to let users enter the same task twice if they want to, so we’ll fix the problem by passing a unique key to each checkbox:
+task_col.checkbox(task.name, task.is_done, key=f"task_{idx}")
+This lets you have two tasks with the same name without problems, as shown in figure 4.7.
+
+4.2.2 Enabling actions
+So far, we’ve set up the app to display tasks roughly as they should appear, using dummy tasks for testing. But we still need to let users interact with the tasks and modify them. In this section, we’ll do that. We’ll start by defining functions that update the task list, and then hook them up to Streamlit UI elements.
+Adding a task
+To add a task to the task list, we need a task name. Once we have one, we can add it by creating a Task object and appending it to the list.
+
+Write this as a simple add_task function in todo_list.py:
+def add_task(task_name: str):
+    task_list.append(Task(task_name))
+Marking a task done or not done
+The is_done field of a Task instance denotes the task’s status. To mark it done or not done, update this field. Let’s create two functions for this:
+def mark_done(task: Task):
+    task.is_done = True
+
+def mark_not_done(task: Task):
+    task.is_done = False
+The argument to these functions is the Task instance itself, not the task name string.
+
+Deleting a task
+Deleting a task is straightforward. This function needs the task index in the list so you can remove it.
+def delete_task(idx: int):
+    del task_list[idx]
+
+Enabling users to add tasks
+We now have an add_task function, so we no longer have to seed the task list with dummy tasks. Let’s replace the line task_list = [Task("Buy milk"), Task("Walk the dog")] with an empty list:
+task_list = []
+Next, we’ll add Streamlit elements so users can call the add_task function. We’ll need an st.text_input for entering the task name and an st.button to trigger the addition. We’ll wrap both in st.sidebar so they appear in a left-hand panel in the app. Again, if any of this sounds unfamiliar, review chapter 3.
+
+Note the type="primary" in st.button. The type parameter lets you emphasize a button (with a different color) to denote that it is linked to a “primary action”. In UI design, it helps to draw users’ attention to the actions they commonly perform. Here, adding a task is something users will do often, so using a primary button makes sense. If you don’t specify this parameter (as in the earlier examples), it defaults to “secondary,” which results in a white button. Note also that no widget key is needed for the button because there is only one Add Task button, and Streamlit can distinguish it from other buttons. At this point, the todo_list.py file should look like what’s shown in listing 4.4 
+
+Listing 4.4 todo_list.py so far
+import streamlit as st
+from task import Task
+
+task_list = []
+
+def add_task(task_name: str):
+    task_list.append(Task(task_name))
+
+def delete_task(idx: int):
+    del task_list[idx]
+
+def mark_done(task: Task):
+    task.is_done = True
+
+def mark_not_done(task: Task):
+    task.is_done = False
+
+with st.sidebar:
+    task = st.text_input("Enter a task")
+    if st.button("Add task", type="primary"):
+        add_task(task)
+
+st.header("Today's to-dos:", divider="gray")
+for idx, task in enumerate(task_list):
+    task_col, delete_col = st.columns([0.8, 0.2])
+    task_col.checkbox(task.name, task.is_done, key=f"task_{idx}")
+    if delete_col.button("Delete", key=f"delete_{idx}"):
+        pass
+
+Save and run the code. To check the result, enter a new task called Clean garage and click Add Task (see figure 4.8.)
+
+Figure 4.10 Clicking Delete removes the task even though we didn’t connect the button to anything.
+If you add the task again and click the checkbox, the task disappears. Try that out, too.
+What’s gone wrong?
+Clearly, the app isn’t working as intended. Streamlit doesn’t show an error, so we need to figure out what’s happening. Is the display logic showing only the most recently added task? Or is something wrong with the task list itself?
+Let’s find out. One of the most important parts of troubleshooting code is inspecting variable values while a program is running. In a normal Python script (that is, one you run from the command line rather than using Streamlit), you might include print statements to display a variable’s value. You could also use an IDE debugger or the pdb module.
+print statements don’t appear in the Streamlit app’s browser window. Instead, use an appropriate Streamlit element. To inspect the task_list variable, add the following code right under the line st.header("Today's to-dos:", divider="gray"), before the display-logic for loop:
+st.info(f"task_list: {task_list}")
+st.info displays text in a colored box. It belongs to a family of elements introduced in chapter 2 along with st.success, st.error, and st.warning, which also display text in colored boxes. For st.info, the box is blue.
+After you save and run the app (or refresh the page), a box with the text task_list: [] appears, since there are no tasks yet. Add a task as before to see the output in figure 4.11.
+
+Figure 4.11 task_list contains a single Task instance.
+As you can see, task_list now contains a single instance of Task, corresponding to Clean garage. After adding a second task, task_list contains only the new task. This shows that the display logic is not faulty; task_list itself has lost the Clean garage task. Checking the box next to the task or clicking Delete empties task_list again, so no tasks are displayed.
+Okay, so here’s what we know: adding a task seems to add a task to task_list correctly, but whenever you do anything else afterward—adding another task, clicking a checkbox, or clicking the Delete button—it removes the previously added task from task_list. To fix this, we need to understand why it happens. Let’s review how a Streamlit app actually works.
+
+4.3.1 Frontend and server
+A Streamlit app has two parts: a backend Streamlit server and a frontend. Here, a server is a software program that runs on a computer and waits for requests. In technical terms, a server listens on a port.
+A port is a virtual designation that identifies a particular communication channel, like an extension number in a large office. Just as an extension lets callers reach a specific person within a company, a port lets network communication reach a specific program running on a computer. When you enter streamlit run <filename.py> in a terminal, Streamlit prints output similar to the following:
+Local URL: http://localhost:8502
+A Streamlit server starts up and listens for requests on port 8502 (the exact port number may differ). When you open a browser and navigate to the address (for example, http://localhost:8502)—or when the server opens it automatically—the browser sends a request to the Streamlit server on port 8502.
+In response, the Streamlit server executes the Python script from top to bottom and sends a message back to the browser, telling it what to display (that is, the frontend). The frontend is the front-facing part of the app that users can see and interact with, and it runs in the web browser. It consists of HTML, CSS, and JavaScript code that the browser understands.
+
+4.3.2 App reruns
+Now, here’s the important part: the Streamlit server runs the Python script in its entirety whenever the page changes, including when a user interacts with a widget in the app. For example, figure 4.12 shows what happens when a user clicks a button.
+Figure 4.12 Whenever the user interacts with the app, the app reruns the Python script.
+Once the frontend detects the button click, it sends a message to the server to report it. The server responds by rerunning the Python code and setting the button to evaluateto True. After that, the server sends the frontend a message describing the required display updates. The frontend applies them, and the user sees the updated display.
+Note that such behavior isn’t unique to button clicks. It applies to any interaction or any time Streamlit determines the display needs to change. This means that whenever the user clicks a button, selects a different item from a dropdown, or moves a slider, the cycle repeats, and the server reruns the whole Python script.
+
+4.3.3 Applying reruns to the app
+With this knowledge of app reruns, let’s figure out what’s happening in the to-do list app. Listing 4.5 shows the code as it exists now 
+
+Listing 4.5 todo_list.py
+import streamlit as st
+from task import Task
+
+task_list = []
+
+def add_task(task_name: str):
+    task_list.append(Task(task_name))
+
+def delete_task(idx: int):
+    del task_list[idx]
+
+def mark_done(task: Task):
+    task.is_done = True
+
+def mark_not_done(task: Task):
+    task.is_done = False
+
+with st.sidebar:
+    task = st.text_input("Enter a task")
+    if st.button("Add task", type="primary"):
+        add_task(task)
+
+st.header("Today's to-dos:", divider="gray")
+st.info(f"task_list: {task_list}")
+for idx, task in enumerate(task_list):
+    task_col, delete_col = st.columns([0.8, 0.2])
+    task_col.checkbox(task.name, task.is_done, key=f"task_{idx}")
+    if delete_col.button("Delete", key=f"delete_{idx}"):
+        pass
+Next, we’ll walk through how this code runs at various points in the app.
+
+4.5.1 Adding session state
+When you last ran the app, the main problem was that the task_list variable, which holds all tasks, reset on every rerun. We will fix this by adding task_list to st.session_state. Replace the earlier line task_list = [] with the following code:
+
+4.5.1 Adding session state
+When you last ran the app, the main problem was that the task_list variable, which holds all tasks, reset on every rerun. We will fix this by adding task_list to st.session_state. Replace the earlier line task_list = [] with the following code:
+if "task_list" not in st.session_state:
+    st.session_state.task_list = []
+This mirrors the toy example from the previous section. The only difference is that the code stores task_list in st.session_state rather than a single number.
+We could modify the rest of the code to reference st.session_state.task_list wherever it currently references task_list, but that seems tedious and clunky. Instead, point the variable task_list to the version in st.session_state like this:
+task_list = st.session_state.task_list
+
+Listing 4.7 todo_list.py with st.session_state
+import streamlit as st
+from task import Task
+
+if "task_list" not in st.session_state:
+    st.session_state.task_list = []
+task_list = st.session_state.task_list
+
+def add_task(task_name: str):
+    task_list.append(Task(task_name))
+
+def delete_task(idx: int):
+    del task_list[idx]
+
+def mark_done(task: Task):
+    task.is_done = True
+
+def mark_not_done(task: Task):
+    task.is_done = False
+
+with st.sidebar:
+    task = st.text_input("Enter a task")
+    if st.button("Add task", type="primary"):
+        add_task(task)
+
+st.header("Today's to-dos:", divider="gray")
+st.info(f"task_list: {task_list}")
+for idx, task in enumerate(task_list):
+    task_col, delete_col = st.columns([0.8, 0.2])
+    task_col.checkbox(task.name, task.is_done, key=f"task_{idx}")
+    if delete_col.button("Delete", key=f"delete_{idx}"):
+        pass
+Save, rerun, and add multiple tasks. Figure 4.17 shows the result.
+
+Figure 4.17 With st.session_state, Streamlit remembers previous tasks.
+And voila! You can finally update task_list with multiple tasks, and the display logic shows everything.
+
+4.5.2 Wiring up the Delete buttons
+Now let’s get the Delete buttons working. Earlier, we made them do nothing by placing pass under the button code in the display loop.
+if delete_col.button("Delete", key=f"delete_{idx}"):
+    pass
+We’ve since created a delete_task function, so let’s call it here instead:
+if delete_col.button("Delete", key=f"delete_{idx}"):
+    delete_task(idx)
+If we now click Delete next to Buy bread after saving and rerunning (and adding the three tasks back in order if you refreshed the page), we see ... no change! But if we click the button a second time, the app removes the task. Something still isn’t right.
+I won’t detail all of it with screenshots, but if you experiment with the app at this point, more odd behavior shows up. The first time you click the Delete button next to the last task in the list, nothing happens. But the task disappears if you immediately click any checkbox.
+Or if you delete a task from the middle of the list, the next one disappears, not the one you deleted! But if you then do something else, like clicking a checkbox or adding another task, that task comes back, and the app correctly removes the one you intentionally deleted, and everything is the way it should be.
+All in all, there seems to be a lag between clicking the Delete button and removing the task. You need to do something else (anything else, like clicking one of the checkboxes or editing the text in the task entry textbox and clicking outside) after clicking the button for the correct results to be displayed.
+
+4.5.3 What’s happening behind the scenes
+To understand what’s going on, we need to take a deep dive into the app’s execution again. Assume we’re at the point where the user has entered three tasks, in order: Clean garage, Finalize project proposal, and Buy bread. At this point, task_list contains these three tasks.
+Stepping through the app’s execution
+Let’s say the user tries to delete the third task. Figure 4.18 shows what happens in the app. The Streamlit widget keys identify the Delete buttons (for example, delete_0, delete_1, and so on).
+Figure 4.18 Step-by-step app execution: the Delete button evaluates to True in the second run, but the app displays the task and button before it calls delete_task.
+The first run happens before you click the button. Streamlit simply loops through the task list, displaying each task along with its checkbox and Delete button. As discussed earlier in the chapter, each st.button evaluates to False, since you haven’t clicked any yet.
+When the user clicks the Delete button for Buy bread, the app reruns. Everything remains the same until the app displays the third task’s st.button. This time, the button evaluates to True because it was just clicked. The condition is now true, the app enters the code nested under st.button and calls delete_task(idx). Since idx is 2 in this iteration of the loop, the app calls delete_task(2) and removes Buy bread from task_list. Execution stops at this point.
+See the problem? The app displayed all three buttons before delete_task ran and updated task_list. And because no other user actions trigger reruns, nothing runs again. So delete_task updates task_list, but the display logic has already executed against the old version of task_list. That’s why the UI still shows the three tasks after you click Delete.
+But if the user does something else, like clicking a checkbox or clicking the Delete button again, that triggers another rerun. This time, the display logic runs over the latest version of task_list, so the UI finally shows the third task, and the app removes its checkbox and Delete button.
+Note Stepping through the execution like this can also explain the other odd behavior we noticed: when you click the Delete button for a task in the middle of the list, the next task disappears. This happens because delete_task moves the list indices up by one, and the next display loop iteration skips a task because its index changed.
+
+4.5.4 Triggering reruns automatically
+As we’ve seen, although the Delete button doesn’t work correctly right away, Streamlit eventually gets the results right, provided the user takes an extra action to trigger a rerun. We can use this behavior to our advantage. To do that, we need a way to trigger a rerun of the app in code rather than through a user action. Streamlit provides this functionality through st.rerun, and you can call it at any time without arguments, like here:
+st.rerun()
+When you call st.rerun, you tell Streamlit, “Quit the current run and start again from the top.” In our case, trigger the rerun after deleting a task:
+if delete_col.button("Delete", key=f"delete_{idx}"):
+    delete_task(idx)
+    st.rerun()
+After making this change, rerun and recreate the tasks, and try deleting Buy bread again. The output appears in figure 4.19.
+
+Figure 4.19 With st.rerun, clicking Delete works as expected.
+It worked! Buy bread is gone, and it’s also missing from task_list, as the st.info box in the screenshot shows.
+4.5.5 Wiring up the checkboxes
+Let’s move on to the next part of the app: the checkboxes. We’ve added them to the display, and you can check them, but they don’t do anything. Next, we’ll hook them up to the functionality we’ve defined for changing a task’s status.
+
+The current checkbox code is a single line:
+task_col.checkbox(task.name, task.is_done, key=f"task_{idx}")
+When the user checks a task checkbox, we want to accomplish two things:
+•	Mark the task as done, and
+•	Strike it through
+We also want to reverse the above changes if the user unchecks a box. To change a task’s status, we can use the functions created earlier, mark_done and mark_not_done.
+How do we achieve the strikethrough? Streamlit supports a language called markdown for this formatting effect (and several others). Markdown is a text-based notation that lets you apply various kinds of formatting to the text. It can display text in bold or italics, create links, lists, headings, and much more. Later chapters cover these features and for now we’ll focus on the strikethrough effect.
+To strike through a piece of text in Markdown, surround it with two pairs of tildes, like this:
+~~Text to be struck through~~
+This plugs into the checkbox through the label parameter, which supports Markdown. We’ll define a variable that contains just the task name when it’s not done, and the name with a Markdown strikethrough when it is done:
+label = f"~~{task.name}~~" if task.is_done else task.name
+We can then feed it into the checkbox:
+task_col.checkbox(label, task.is_done, key=f"task_{idx}")
+Finally, wire the checkboxes to the mark_* functions. Call mark_done when the checkbox is checked; otherwise, call mark_not_done. 
+Listing 4.8 todo_list.py after wiring up the task checkboxes
+import streamlit as st
+from task import Task
+
+if "task_list" not in st.session_state:
+    st.session_state.task_list = []
+task_list = st.session_state.task_list
+
+def add_task(task_name: str):
+    task_list.append(Task(task_name))
+
+def delete_task(idx: int):
+    del task_list[idx]
+
+def mark_done(task: Task):
+    task.is_done = True
+
+def mark_not_done(task: Task):
+    task.is_done = False
+
+with st.sidebar:
+    task = st.text_input("Enter a task")
+    if st.button("Add task", type="primary"):
+        add_task(task)
+
+st.header("Today's to-dos:", divider="gray")
+st.info(f"task_list: {task_list}")
+for idx, task in enumerate(task_list):
+    task_col, delete_col = st.columns([0.8, 0.2])
+    label = f"~~{task.name}~~" if task.is_done else task.name    #1
+    if task_col.checkbox(label, task.is_done, key=f"task_{idx}"):
+        mark_done(task)    #2
+    else:
+        mark_not_done(task)    #3
+    if delete_col.button("Delete", key=f"delete_{idx}"):
+        delete_task(idx)
+        st.rerun()
+
+#1 Add a strikethrough effect to the label if the task is done.
+#2 Call mark_done if the checkbox happens to be checked and therefore evaluates to True.
+#3 Call mark_not_done if the checkbox is not checked.
+Save, rerun, and add the tasks back. Then check one task to get result similar to figure 4.20.
+
+Figure 4.20 Checking a task doesn’t work immediately as expected
+Once again, we didn’t get the results we expected. Clean garage still isn’t struck through, and the info box shows that task_list hasn’t changed. Before you throw the computer out the window and dedicate the rest of your existence to sheep-farming, try checking off another task. Now the original task has a strikethrough, and the st.info box shows its is_done field is True.
+Does this sound familiar? There’s a lag of one user action between clicking a checkbox and seeing the result. What’s going on here is very similar to what we saw in the case of the Delete button. Clicking the checkbox triggers the function and sets is_done to True, but by that point, the app has already displayed the task and its label. Only the next rerun updates the actual display, and that rerun happens only when the user takes a further action. The solution is the same as before: trigger a manual rerun whenever one of the mark_* functions runs:
+if task_col.checkbox(label, task.is_done, key=f"task_{idx}"):
+    mark_done(task)
+    st.rerun()
+else:
+    mark_not_done(task)
+    st.rerun()
+Save the output, refresh the page, and try again. Figure 4.21 shows the result.
+
+Figure 4.21 The app hangs and never stops loading
+Something’s very wrong here. The app seems to stop responding entirely once we add the first task. The screen’s grayed out, and the RUNNING… indicator appears at the top.
+
+
+4.5.6 An infinite rerun loop
+You’ve just encountered your first Streamlit infinite rerun loop. Let’s try to understand what went wrong by stepping through the execution one more time. Figure 4.22 shows this in a diagram.
+
+Figure 4.22 Step-by-step app execution: a chain of st.reruns leads to an infinite loop.
+After adding the Clean garage task, task_list contains a single Task instance and stores False in its is_done field. Since task_list is non-empty, the code enters the display loop, which displays the Clean garage checkbox.
+Now, the task has branching logic:
+if task_col.checkbox(label, task.is_done, key=f"task_{idx}"):
+    mark_done(task)
+    st.rerun()
+else:
+    mark_not_done(task)
+    st.rerun()
+The checkbox evaluates to False since it is not checked, and the app enters the else clause. The code calls mark_not_done to set is_done to False (even though it’s already False), and then calls st.rerun() to force Streamlit to stop the current run and start again from the top. The code enters the loop once again, in the second run. The checkbox is still not checked, so the code calls mark_not_done again, then st.rerun(), which starts a third run, and so on. Since this chain of calls never ends, Streamlit chokes and stops responding.
+
+4.5.7 Preventing the infinite rerun
+The trouble here is that mark_not_done gets called even when it isn’t needed. Review the execution steps shown earlier, and you’ll notice that the Clean garage task’s is_done field was already set to False, so there was no need to call mark_not_done again.
+The code is set up so that, once you enter the display for loop, you can’t exit it. If the checkbox evaluates to True, st.rerun() runs after the mark_done function. If it evaluates to False, st.rerun() runs after the mark_not_done function.
+Ensure that the call happens only when it needs to. Call mark_done (and the associated st.rerun) only when the checkbox is checked and the task isn’t already marked as done. Similarly, call mark_not_done and its st.rerun only when the checkbox isn’t checked and the task is currently marked as done.
+You can do this by editing the code as follows:
+checked = task_col.checkbox(label, task.is_done, key=f"task_{idx}")    #1
+if checked and not task.is_done:    #2
+    mark_done(task)
+    st.rerun()
+elif not checked and task.is_done:    #3
+    mark_not_done(task)
+    st.rerun()
+#1 Save the checkbox’s value in a new variable called checked, for readability.
+#2 Only call mark_done if the checkbox is checked AND the task is not yet marked as done.
+#3 Only call mark_not_done if the checkbox is not checked AND the task is still marked as done.
+This way, when the checkbox is checked, the code sets the task’s status to done, but on the next rerun, both the if and elif clauses evaluate to False, and st.rerun never executes.
+Go ahead and try it out. The checkboxes should now work correctly, as shown in figure 4.23.
+
+Figure 4.23 Checkboxes now work as expected
+4.5.8 Adding the completion progress indicator
+We’re almost done with the app. The only functionality remaining from the earlier mock design is a progress indicator to give the user an extra sense of accomplishment.
+Adding a progress indicator is relatively straightforward. To make the indicator large, the st.metric, first introduced in chapter 3, seems ideal.
+To display the progress, get two values from task_list: the total number of tasks and the number of completed tasks. The code for st.metric could look like this:
+total_tasks = len(task_list)
+completed_tasks = sum(1 for task in task_list if task.is_done)
+metric_display = f"{completed_tasks}/{total_tasks} done"
+st.metric("Task completion", metric_display, delta=None)
+To get completed_tasks, use a list comprehension (the square brackets can be omitted when the expression is wrapped in a function) for conciseness. We can remove the info box (st.info) since we’re no longer in troubleshooting mode. The final code should look like in listing 4.9 
+
+Listing 4.9 The final version of todo_list.py
+import streamlit as st
+from task import Task
+
+if "task_list" not in st.session_state:
+    st.session_state.task_list = []
+task_list = st.session_state.task_list
+
+def add_task(task_name: str):
+    task_list.append(Task(task_name))
+
+def delete_task(idx: int):
+    del task_list[idx]
+
+def mark_done(task: Task):
+    task.is_done = True
+
+def mark_not_done(task: Task):
+    task.is_done = False
+
+with st.sidebar:
+    task = st.text_input("Enter a task")
+    if st.button("Add task", type="primary"):
+        add_task(task)
+
+total_tasks = len(task_list)
+completed_tasks = sum(1 for task in task_list if task.is_done)
+metric_display = f"{completed_tasks}/{total_tasks} done"
+st.metric("Task completion", metric_display, delta=None)
+
+st.header("Today's to-dos:", divider="gray")
+for idx, task in enumerate(task_list):
+    task_col, delete_col = st.columns([0.8, 0.2])
+    label = f"~~{task.name}~~" if task.is_done else task.name
+    checked = task_col.checkbox(label, task.is_done, key=f"task_{idx}")
+    if checked and not task.is_done:
+        mark_done(task)
+        st.rerun()
+    elif not checked and task.is_done:
+        mark_not_done(task)
+        st.rerun()
+    if delete_col.button("Delete", key=f"delete_{idx}"):
+        delete_task(idx)
+        st.rerun()
+Figure 4.24 provides a final glance at our app in all its glory.
+Figure 4.24 The final to-do list app
+That’s another full app under your belt and a tool you can use daily to stay productive. You’re ready to use Streamlit in projects of your own. In the next chapter, you’ll learn how to publish apps for others to use.

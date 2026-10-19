@@ -1,0 +1,28 @@
+1.5 When not to use Streamlit
+Like any technology, Streamlit has trade-offs. You may encounter these limitations as your app’s requirements become more sophisticated and nuanced. For example, I once started a project with Streamlit for rapid prototyping, but switched to a React-based app when UI requirements grew more complex. Let’s address this head-on by looking at a few things you can’t (or probably shouldn’t) develop with Streamlit.
+
+1.5.1 Complex, large-scale applications
+Streamlit apps are best suited for user bases in the hundreds or thousands, not millions. For concurrent users (those accessing your app simultaneously), performance may degrade as you scale up, depending on your app’s resource needs.
+Streamlit runs your entire Python script whenever something changes on the app screen. This can hurt performance, especially if your script runs heavy computations or loads large datasets. Streamlit’s caching can help, but you can’t always use it.
+Streamlit may not be suitable for large, production-grade applications, but you can often overcome these limitations by using third-party components. For instance, Streamlit doesn’t allow you to resize or drag most UI elements, but other people have created Streamlit components that add this functionality (for example, streamlit-elements).
+As your app becomes more complex, you may find it difficult to implement in Streamlit. The Streamlit forums can help identify workarounds, but at a certain point you may need to migrate to a different, more flexible framework (such as Flask or Django) with enhanced capabilities.
+
+1.5.2 Apps that require a high degree of UI customization
+Streamlit simplifies adding common UI elements, but offers limited control over interface behavior. While theming and custom components add some flexibility, Streamlit still restricts customization.
+If you need precise control over your app’s appearance or specific visual effects, Streamlit may not be the right choice for you. Consider alternatives like React, a framework known for its flexibility and extensive customization capabilities (explored in the following section), or even manual page design with traditional HTML and CSS.
+
+1.5.3 Native desktop or mobile apps
+Streamlit is a web framework that produces apps that run within a web browser. If you’re trying to develop desktop or mobile apps outside the browser, opt for native application frameworks such as PyQt or React Native. While Streamlit apps are accessible on mobile devices, it does not produce standalone Android or iOS apps that run independently of the browser.
+
+1.6 How is Streamlit different from other technologies?
+If you’ve researched ways to create interactive applications, chances are you’ve come across or used technologies similar to Streamlit. In this section, we compare Streamlit to some of them to clarify your understanding.
+
+1.6.1 Jupyter notebooks
+A Jupyter notebook is an interactive environment for data exploration, code development, and visualizations. You write Python code or text in Markdown in a “cell,” execute it, and see the output directly below. The output can be text, a visualization, or even something interactive. The notebook keeps the output of each cell, so you can see what came before it.
+Jupyter notebooks are a mainstay in the data science community. They are useful for explaining your thought process, playing around with data, and sharing your work with colleagues.
+Jupyter is similar to Streamlit in a few respects: both are Python-based, support tabular and graphical data, integrate with popular libraries like pandas, and are widely used in data science. Still, they differ in important ways:
+•	Jupyter is used to create interactive documents rather than actual apps. It is best suited for sharing code and explanations with collaborators rather than having that code executed by actual end users. Streamlit is used to create apps for end users.
+•	Jupyter’s support for engineering practices, such as version control, is limited. This is acceptable because it’s intended for exploratory analysis, not shipping production dashboards. Streamlit, on the other hand, fits nicely into a regular engineering workflow.
+•	Jupyter notebooks are generally intended for technical people, not laypeople. Streamlit doesn’t require your app’s users to be able to read or understand code.
+
+Jupyter notebooks are excellent for experimenting with code, data, and charts. Streamlit is ideal for building and sharing polished interactive experiences for users, often using the code, data, and charts you refined in your Jupyter notebook.

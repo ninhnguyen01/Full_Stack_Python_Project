@@ -1,0 +1,11 @@
+1.3.8 You can share your Streamlit apps for free, in record time
+Building a web app is one thing; making it available to others is another. For a public-¬facing web app that doesn’t use Streamlit, you usually need hosting—for example, a cloud provider like Amazon Web Service (AWS) or your own servers. That can be intimidating and expensive for time-strapped data scientists or casual hobbyists, especially for a simple app that doesn’t need to serve thousands of users.
+Streamlit Community Cloud is a free, fast way to deploy public Streamlit apps. You can publish an app by linking it to a GitHub repository, which helps you share code and track changes. Most projects and examples in this book are on GitHub and published to Streamlit Community Cloud, so you can try them out.
+Community Cloud has limitations and may not suit everyone, but it’s a hassle-free way to share your creations. We’ll cover deploying to Community Cloud in chapter 5, and we’ll discuss other options in chapter 12 if Community Cloud doesn’t meet your specific needs.
+
+1.3.10 You can extend Streamlit with third-party components or build your own
+As we’ve seen, Streamlit saves you time by providing pre-built UI elements and reducing customization options. Most of the time, that’s good because it lets you focus on the app’s logic. At other times, it can feel restrictive if you want to build a specific experience that you can’t easily create with Streamlit’s built-in elements.
+In these cases, Streamlit offers Streamlit Components. Third-party developers can create these modules to extend Streamlit’s functionality. Streamlit Components range from features that fill perceived gaps in Streamlit’s natively available elements—such as a search box with autocomplete—to entire mini-apps (like an audio recorder) that you can embed in your app.
+Streamlit publishes popular components in a gallery (https://streamlit.io/gallery) on its website, where you can see how they look and work. Installing a component is as easy as installing any other Python library.
+If you have some frontend development experience, you can even create your own components. This requires knowledge of HTML, CSS, and JavaScript but it can enable you to fine-tune the experience you create for your users.
+

@@ -1,0 +1,46 @@
+2 Getting started with Streamlit
+This chapter covers
+•	Setting up your development environment
+•	The Streamlit development workflow
+•	Building and running your first Streamlit app
+Welcome to chapter 2. This is where the rubber hits the road! By the end of this chapter, you’ll be interacting with your first very own Streamlit app!
+This book is not just about teaching you Streamlit. It’s also about helping you stay productive with Streamlit and well positioned to develop real-world apps. Before we jump into writing code, let’s take some time to set up your development environment. Specifically, we’ll discuss three key workflow considerations: version control with Git, code editing tools, and virtual environments.
+Next, we’ll examine the workflow you’ll follow when coding with Streamlit so you know what to expect as you build apps throughout this book. After that, we’ll work through a step-by-step process to create your first app: a password checker.
+
+2.1 Getting Streamlit up and running
+Before building any apps, you need to install Streamlit and get it ready to go. This involves two steps:
+1.	Install the correct version of Python (3.9 and above are currently supported, but I recommend 3.11+), and install pip (a tool that ships with Python and makes it easy to install Python packages).
+2.	Use pip to install Streamlit (spoiler alert: type pip install streamlit)
+
+2.2 Setting up your development environment
+The tools you use and the way you set up the environment in which you code your apps are largely a matter of preference. But over time, these choices can significantly affect your productivity as a developer, so it’s worth taking the time to consider them.
+I’ll briefly discuss a few important aspects of your development environment: version control, editing tool, and virtual environments. If you’re an experienced Python developer and already have a setup you’re comfortable with, skip to the section on running Streamlit for the first time.
+
+2.2.1 Version control with Git
+If you’ve never written code in a professional setting, you might not have used a version control system like Git before, or you might not fully understand what it’s for. Version control provides a structured way to track, manage, document, and experiment with changes to your programs. Think of it as a time machine for your code. Git is the most popular version control system today, so in this book, we’ll use the terms Git and version control interchangeably.
+While working on your apps, you’ll sometimes change your mind and decide to design something differently. In those situations, Git lets you “go back in time” to how your code used to be and apply changes from that point.
+You can also experiment with different versions of your code as you test multiple design options and easily switch between them with Git. Perhaps my favorite aspect of Git is that it lets you document changes to your code and gives you a place to explain your thought process behind the decisions you made. Trust me—you’ll thank yourself six months later when you’re reading through your code and trying to decipher it.
+These situations are extremely common when you’re working on a large project or collaborating with others. Even if that doesn’t currently apply to you, I highly recommend learning and incorporating Git into your development workflow because its benefits are too numerous to ignore. Section 5.2 has a minimal introduction to Git (just enough to deploy your app in production), but if you want to learn Git in some more depth, I recommend Atlassian’s Git tutorials at https://www.atlassian.com/git/tutorials (you can ignore the BitBucket Cloud parts).
+
+2.2.2 Code editors
+Streamlit apps, like all Python scripts, are just text files, so all you really need to write code is a simple text editor (like Notepad in Windows). But an advanced code editor or an Integrated Development Environment (IDE) makes you much more productive, with features like syntax highlighting, easy debugging tools, and code navigation—it’s hard not to recommend one. Many tools can fit the bill, but I’d like to mention two of the most popular ones here.
+Note Since this section was first written, software development has evolved rapidly, with many developers now preferring to use AI-first tools such as Codex, Claude Code, or Cursor to write their code. While these tools are incredibly powerful in day-to-day use, I'd recommend sticking with a regular non-AI-based IDE while you're in the process of learning.
+
+PyCharm
+PyCharm is an IDE that JetBrains developed specifically for Python. It provides comprehensive support for Python, including code completion, error detection, and quick-fix suggestions.
+PyCharm is an excellent choice if you’re seeking advanced functionality right after installation, without having to tinker too much. The Pro edition costs money, but PyCharm also offers a free Community Edition (see figure 2.1) at https://www.jetbrains.com/pycharm/download (scroll down to where it says Community Edition).
+
+Visual Studio Code
+Microsoft’s Visual Studio Code (or VS Code) is an immensely popular code editor that supports many languages. VS Code offers some essential functionality—such as syntax highlighting—right away, but its true strength lies in its ecosystem of plugins that can extend its capabilities. Indeed, with the correct set of plugins, you can make VS Code do essentially everything a paid version of PyCharm can do. Since VS Code is free, it’s an attractive proposition for learners willing to spend time setting everything up.
+Note Since both of these (and many others, such as Sublime Text and Notepad++) are viable code-editing tools, I won’t assume you’re using any particular one. As long as you have a terminal you can type commands into and a program to edit text files, you’re good to go.
+
+2.2.3 Virtual environments
+In most real-world Python projects you will rely on various libraries. These libraries constantly change, with new versions that add and remove features or modify existing ones. As you gain experience and create more complex applications, you’ll often find that updating a library for one project breaks another or leads to unpredictable bugs and conflicts.
+Virtual environments offer a way out of this dilemma. A virtual environment consists of an isolated instance of Python, along with a set of necessary libraries and dependencies. If you put each project you start in its own virtual environment, you’ll be able to modify the dependencies of one project without affecting others.
+Even if you’re just starting out and haven’t run into dependency management problems, it’s a great idea to get familiar with virtual environments. You can choose from several virtual environment-related libraries and tools, each with varying levels of sophistication. You may come across venv, pipenv, pyenv, poetry, and others.
+
+2.3 Running Streamlit for the first time
+This is where the fun begins! We’ll run a Streamlit app for the first time and get a first-hand look at the kind of things you can build with Streamlit. If you haven’t already done so, please go to the appendix and install Streamlit. If you have installed it, open a terminal window and let’s get started!
+We’ll run the Hello app included with Streamlit. To see it in action, type streamlit hello in your terminal. You should see output in the terminal that you can ignore for now. After a few seconds, your web browser should open and display the app.
+The Hello app showcases Streamlit’s capabilities, including animation, graph plotting, maps, and tables. As shown in figure 2.2, one demo is an animation built from a mathematical visualization. The sidebar on the left lets you navigate to other demos.
+

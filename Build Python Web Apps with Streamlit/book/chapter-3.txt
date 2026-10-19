@@ -1,0 +1,537 @@
+3 Taking an app from concept to code
+This chapter covers
+•	Defining the scope of an application
+•	Designing the user interface
+•	Organizing the code for an app
+•	Streamlit’s workhorse input widgets
+In my early days as a software engineer, I was often surprised by how much time I spent on activities other than writing code. I’d spend multiple days, or even weeks, simply understanding the problem I was trying to solve, and even more time on design, all before typing a single line of code.
+
+I felt anxious because I didn’t feel productive. Scribbled meeting notes and design docs didn’t do anything. Over time, I realized those days and weeks weren’t wasted. Deep thinking about what I was trying to do made the end product better. Likewise, this book is not just about teaching Streamlit code. It’s about helping readers develop apps in the real world. Planning and design are inescapable parts of the process.
+Though we don’t have weeks to spend on these topics, this chapter gives a taste of the end-to-end experience of developing an app. We’ll start with the app concept and convert it into a set of requirements. Then, we’ll develop a design that meets those requirements, working backward from the user experience, and considering code organization. Finally, we’ll walk through the code and logic, introducing some of Streamlit’s most common widgets along the way. There’s a lot to do, so let’s get started!
+
+3.1 Concept to code: A six-step process
+Writing a piece of software can be overwhelming once you get past the initial spark of inspiration. There are so many things to consider! Where do you start? What features will you develop, and how long will it take? How will users interact with the app? Should you start coding right away and figure things out as you go?
+Desmond Tutu said, “There is only one way to eat an elephant: a bite at a time.” In creating Streamlit apps, as in consuming large land mammals, the optimal approach is to break it down into smaller chunks. Figure 3.1 shows a simple six-step process of developing an app—or just about any piece of software.
+
+This may sound like a lot, and you might think, “Is this all really necessary? I’m not building enterprise software with a large team; I’m making a fairly small app for a handful of users.”
+The beauty of the above steps is that you can adjust them to suit the project’s needs. In large projects, each step may take a considerable amount of time because many people likely need to agree on the overall approach.
+But if you’re building a small app, you can scale each step down. For instance, you can define the requirements in a quick bullet-point list that takes five minutes to generate, and the visualization of the user experience can be a simple sketch. In the rest of this chapter, we’ll go through each of these steps in the context of an example app.
+
+3.2 Stating our concept: A unit converter
+Whether it’s while studying physics, cooking a meal from a recipe, or traveling internationally, many of us have had to convert between units of measurement. Often, that means looking up a conversion factor online and using a calculator to do the math. The app we’ll build in this chapter makes the task easier and more streamlined.
+As discussed in the previous section, the first step in the development process is to state the concept—that is, express the problem we want to solve succinctly, preferably in a single sentence or line.
+
+Here’s our concept:
+A Streamlit app that lets users convert between different units of measurement.
+Stating the concept uncovers the core of what you’re trying to do and focuses thinking, preventing it from wandering off in a dozen directions. Of course, this doesn’t mean the stated concept is set in stone. If you encounter an idea that significantly enriches the experience, you can offer it to users; however, if it doesn’t fit well with the concept, feel free to restate the concept. Stating the concept also provides a concise one-line description to share with others, helping them understand the work. This can be especially valuable for attracting users or finding collaborators.
+
+3.3 Defining the requirements
+The concept works well as an app’s mission statement, but it’s somewhat high level. The next step is to break it down into concrete requirements you can build toward. Think of these as a list of things stakeholders (users, teams you work with, and so on) would want the app to do.
+Requirements should
+•	express a capability the app should have
+•	be free of “implementation” language, e.g., it should not refer to any technology
+For an app you’re building in real life, creating a list of requirements might involve interviewing people to understand their needs. Here’s the list of requirements we’ll use as the foundation for our app:
+
+•	Users can enter a numeric quantity and the unit in which the quantity is expressed (the “from” unit).
+•	The user should be able to select a unit to convert to (the “to-unit”), which must measure the same type of thing as the from-unit. No converting from pounds to yards, for instance.
+•	The app displays the converted value as output.
+•	The app handles conversions within both imperial and metric systems (e.g., feet to inches or meters to centimeters), as well as conversions across systems (e.g., feet to meters).
+•	Adding new units or quantities in the app is straightforward.
+
+Note that the above points are much more concrete than the initial concept. Also, note that requirements don’t just come from the user; they can come from other people as well.
+To elaborate, the first four requirements listed above are things that the user wants, while the last one makes life easier for the developer or maintainer. You’d want to minimize the time spent responding to common requests, such as adding another unit of measurement to the app. In an organizational setting, you can also imagine requirements from other stakeholders, such as the analytics team (“we should be able to monitor and track usage of the app”) or the monetization team (“the app should allow the user to subscribe for a monthly fee”).
+The requirements don’t specify the technology to accomplish them. For example, they don’t say, “the app should display a Streamlit button the user can click to perform the conversion.” This is intentional. Requirements describe what stakeholders need; the developer decides how to fulfill them.
+
+3.3.1 Defining what the app won’t do
+While listing requirements is an important step that provides clear goals, it can sometimes feel like you’re stating the obvious. In practice, there’s value in doing it anyway, because what seems obvious to you may not be obvious to users or collaborators. People may assume that your app will have a feature you have no intention of building. For that reason, it’s vital—and possibly more enlightening—to also define what falls outside the app’s scope.
+For the unit conversion app in this chapter, we’ll keep things as simple as possible. We don’t want to spend too much time on it; we’re mainly building it to familiarize ourselves with Streamlit.
+We’ll remove any auxiliary functionality that doesn’t directly relate to the goal of unit conversion. We will not build usage logging or fancy visualizations and we will keep the conversion logic simple. Converting from pounds to kilograms is easy enough since you can bake the conversion factor into the app. But how about, say, currencies?
+Converting from dollars to euros is hard because the exchange rate changes daily, or even from hour to hour. Incorporating current rates means fetching exchange rates from somewhere, such as from an online API. Later projects in this book will include querying an API, but for now it’s best to avoid the additional complexity. So we’ll skip the currencies. To state it formally, here is what's out of scope:
+
+•	Usage tracking, logging, and visualizations that don’t directly relate to unit conversion.
+•	Conversions between units that don’t share a simple, constant conversion factor, such as those between currencies.
+This list can be a useful tool for prioritization and phasing. Even if you placed something out of scope now, you may want to build it later. Articulating the requirements and scope helps clarify which features are priorities and which to include in a future version. If additional stakeholders are involved, writing these down helps elicit feedback and start a conversation about prioritization.
+
+3.4 Visualizing the user experience
+So far, we’ve spent a fair amount of time thinking about the problem to solve. We’ve conceptualized what we’ll be building, refined what the app needs to do, and even articulated what it won’t do. Next, we can start designing a solution.
+When you start developing an app, you may wonder what to do first. Do you simply start coding your Python app from top to bottom, figuring out your design as you go? Do you figure out what the basic components of your app are and how they’ll fit together? Or you could work on what you think will be the hardest part of the problem to get it out of the way.
+Those are all valid approaches, and there are arguments to be made in favor of each. One approach I’ve always found valuable, which we’ll follow in this chapter, is to work backwards from the user experience.
+Starting with the user experience helps ensure end-product quality by putting the user front and center and addressing their needs and preferences. It also helps identify and resolve potential usability problems early in the process.
+
+3.4.1 Creating a mock
+What experience do we want app users to have? To answer that, let’s create a mock-up of the UI, as shown in figure 3.2. You can use any drawing software you like, or just pen and paper. Looking back at the requirements we listed in section 3.3, at its core, the app needs to:
+
+Figure 3.2 illustrates a preliminary UI design that meets these conditions. It’s quite simple: there’s a box where you can type in the value to convert and choose the from and to units from a select box. Once you’re done, click the Convert button, and the answer appears below.
+On the left, a unit category selector limits the units available in the two drop-down menus to the selected category, so the interface shows only units relevant to the current task.
+You can make a diagram like this using a pen and paper, a marker and whiteboard, or any graphics program you prefer. It doesn’t have to be elaborate or even particularly neat. It should show the end outcome you want to create, forcing you to think about the app from the user’s perspective.
+At this stage, the UI design isn’t necessarily final. As we move into implementation, you may spot optimizations to make. In the following sections, we’ll encounter a few and iterate on the design.
+
+Note Since you’ll implement the UI design using Streamlit, you might wonder, as you visualize the user experience, whether to keep Streamlit’s available elements in mind so you don’t design something you can’t build. In my opinion, that’s putting the cart before the horse. In an ideal world, determine the best user experience and then implement it using Streamlit. Don’t let Streamlit limit thinking about the ideal user experience. Of course, this carries some risk; Streamlit may not have the exact elements you hoped for in the design, and you’ll need to adjust the implementation. But that will enrich the learning journey by making Streamlit’s deficiencies clearer. It will also keep the user experience from being constrained by preconceptions about Streamlit’s feature set, which is constantly expanding.
+
+3.5 Brainstorming the implementation
+We now have a rough idea of what the end-user experience in the app will be like. Let’s turn our attention to making that experience a reality. In this step of the process, we’ll enumerate the various parts of the solution, discuss how they fit together, and map out the flow of thinking.
+Most applications have two primary components: a frontend and a backend. The frontend handles how users interact with an app—how it collects inputs and displays outputs. The backend is the app’s “brain”: it takes input from the frontend, processes it, and returns the output to the frontend for display.
+Based on the previous section, we already have a fair idea of what the app’s frontend looks like. We just need to translate the UI into the corresponding elements available in Streamlit, which we’ll do later in the code walkthrough. Next, we’ll turn our attention to the backend, starting with the unit conversion itself.
+
+3.5.1 Converting units
+Let’s say we want to convert 5 pounds (lb) to ounces (oz). According to an online search (I grew up with the metric system), 1 pound equals 16 ounces. So, to convert 5 pounds to ounces, multiply 16 by 5 to get 80 ounces. We’ll refer to 16 here as the lb-to-oz conversion factor.
+Each pair of units has a similar conversion factor. For instance, 1 yard equals 3 feet, so the yard-to-foot conversion factor is 3. For an imperial-to-metric example, 1 mile equals 1.609344 km, so the mile-to-km conversion factor is 1.609344.
+In general, for any pair of units X and Y, you can convert a value expressed in X to Y as follows:
+Value in unit Y = Value in unit X × X-to-Y conversion factor
+To do the reverse conversions (e.g., ounces to pounds), use a conversion factor calculated by dividing 1 by the original conversion factor:
+1 yard = 3 feet; 1 foot = ⅓ yard; foot-to-yard conversion factor = ⅓
+1 mile = 1.609344 km; 1 km = 1/1.609344 = 0.621372 miles; km-to-mile conversion factor = 0.621372
+
+With this information, it seems like all we need to do is collect the conversion factor for every pair of possible units within a quantity type and apply the formula given above. But there’s a problem: we could end up with a lot of conversion factors to keep track of. If there are 20 different units of length we want to convert between, we’d have to keep track of 190 conversion factors (there are 20 units, and each can be converted into 19 other units—but since we can get the reverse of a conversion factor by dividing 1 by it, we only need to store half of these, which gives us 20 × 19 / 2 = 190).
+Whew! That’s a lot of numbers to track in code. Clearly, calculating and storing conversion factors for every single pair of units is not sustainable. Instead, we will designate one unit from each category as the standard unit for that category, and keep track only of conversion factors to that unit from all the others. For instance, if we make meters the standard unit for distance, we would only keep track of the conversion factor from each unit to meters, i.e., “what is the value 1 in this unit when converted to meters?”
+To convert from unit X to unit Y, convert from unit X to meters and then from meters to unit Y. For example, to convert 5 yards to centimeters:
+Yard-to-meter conversion factor equals 0.9144
+Centimeter-to-meter conversion factor equals 0.01
+We can then follow a two-step conversion process (figure 3.3):
+
+Notice that since we always store the conversion factor of a unit to meters, in step 2, we had to divide 1 by the factor to get the reverse conversion factor, i.e., meter-¬to-centimeter.
+More generally, given a pair of units X and Y and a standard unit S, you can convert a value expressed in X to a value in Y like this:
+Value in unit S = Value in unit X × X-to-S conversion factor
+Value in unit Y = Value in unit S × 1 / Y-to-S conversion factor
+We now end up with a much more manageable number of conversion factors. Since we only care about how many standard units a given unit is equivalent to, we can get away with storing just one factor per unit.
+
+3.5.2 Tracking units and conversion factors
+Recall that one of the original requirements is that adding new units to the app must be straightforward. Here, “adding new units” means updating the app to include additional conversion units, not letting users add units dynamically.
+This is an example of a non-user requirement. Users presumably do not care how easy it is to add new units; they care that the units are available to convert between. So, who does care? The developer does.
+As a developer, you’re rarely done with a piece of software once you’ve launched it. If enough people use an app, you can count on a steady stream of feedback, bug reports, and feature requests, which can consume the time you planned to spend on other projects. Worse, someone else may end up maintaining the code and have no idea how it works.
+In this situation, if you haven’t designed the app’s implementation for ease of maintenance, someone will spend a significant amount of time digging through the code to determine where to make a change and ensure no unintended side effects occur. Even if you’re not feeling particularly charitable toward other developers, there’s always the likelihood that the other developer will be you. Speaking from personal experience, you’d be surprised at how little you’ll remember about code you wrote as recently as a month ago.
+
+Returning to the unit converter, one of the most common maintenance tasks is adding new units, so we want to keep that as simple as possible. Ideally, the code should have a single, obvious place to add a unit and its conversion factor.
+To achieve this, keep a master list of all quantities, units, and conversion factors in a single configuration file. Use an obvious format, and make adding a new unit as easy as appending a few lines to the file.
+Critically, this configuration file should be the only file that refers to specific quantities. That means no other parts of the app should refer to specific quantities or units. Otherwise, adding a new quantity or unit would require updating that code too, which breaks the requirement that updating the code should be straightforward.
+This has an interesting implication: quantities or units can’t be hard-coded into the UI code at any point. Information related to specific quantities or units should be pulled from the configuration file, and the rest of the code should be independent of them. We’ll see how to do this in the code walkthrough later in the chapter.
+
+Figure 3.4 Overall design and logic flow for the unit conversion app
+The configuration file from the previous section powers the quantity-selector radio buttons in the UI we visualized earlier (figure 3.5). After the user selects a quantity, the From Unit and To Unit drop down menus update based on that selection (again, powered by the configuration file). When the user selects the From and To units and clicks the Convert button, the frontend sends the entries to the backend. The backenduses the conversion factors from the configuration file to perform the two-step conversion outlined in section 3.5.1, and returns the converted value to the frontend for display.
+
+3.6 Writing code
+At this point, we’ve spent enough time thinking about the app design that we’re ready to write some code. In this section, we’ll create a dummy frontend, learning about the Streamlit widgets that make the UI possible as we do so. We’ll then implement the backend and logic flow we’ve been discussing, starting with the configuration file. We’ll define a contract or API between the frontend and backend, and make the backend fulfill that contract. Finally, we’ll wire the frontend to the backend, having it issue calls to the backend through the contract to close the loop.
+
+Figure 3.6 UI visualization for our Unit Converter app
+To start, create a new Python file called frontend.py and import Streamlit.
+import streamlit as st
+Save the file and run the following command in the terminal:
+streamlit run frontend.py
+Or run streamlit run <path to frontend.py> if the working directory is not the one that contains frontend.py.
+This opens a browser window showing the app (currently just a blank screen). Whenever you make a change, switch back to the browser window and click Rerun or Always Rerun to see the results.
+
+st.radio
+The first component of the UI we’ll focus on is the quantity selector, a panel on the left with a set of radio buttons. Radio buttons are UI elements that let users select a single item from a list. For example, if you append the following to the frontend.py file you just created:
+quantity = st.radio("Select a quantity", ["Mass", "Length", "Time"])
+Streamlit will display the question Select a quantity and a list of radio buttons with Mass, Length, and Time as options. Once the user has selected one, the variable quantity will contain the option that the user picked (i.e., the string Mass, Length, or Time).
+We eventually want to fetch the list of quantity names from the backend, but we’re hardcoding it for now since we don’t have a backend yet. The code we wrote so far produces the output shown in figure 3.7.
+
+Streamlit offers plenty of options for customizing st.radio. You can arrange the options horizontally instead of vertically, add a caption to each option, disable them altogether, and more. For a complete list of options, see the Streamlit docs at https://docs.streamlit.io/develop/api-reference/widgets/st.radio.
+
+st.sidebar
+We’ve created the radio buttons, but we need them in a panel on the left, as shown in figure 3.8. In Streamlit terminology, this kind of panel is called a sidebar. Sidebars are useful when you want to create links to different pages in the app, provide metainformation about the app, or offer additional content.
+
+Figure 3.8 st.sidebar in action with a set of radio buttons inside
+To use st.sidebar, you need to put content inside it. You can do this using a context manager (i.e., Python with statement) like this:
+with st.sidebar:
+    quantity = st.radio("Select a quantity", ["Mass", "Length", "Time"])
+Place any Streamlit element inside the with statement to show it in the sidebar.
+You can also use a dot notation and refer to an element you want to place inside the sidebar as a member of the sidebar, like so:
+quantity = st.sidebar.radio("Select a quantity", ["Mass", "Length", "Time"])
+Appending either of the above to frontend.py produces the output shown in figure 3.8.
+The UI displays a sidebar with an “X” icon that collapses it or a “>” icon that expands a collapsed sidebar.
+
+st.title
+With the sidebar in place, let’s focus on the main area of the app. Users need to know what the app is and what it does, so add a title:
+st.title("Unit Converter")
+This is pretty self-explanatory, but to say it explicitly, st.title writes the string you pass to it as a title—in large, bold text.
+
+st.text_input
+Next, we need the user to enter the value they want to convert. Let’s use a text input for this.
+st.text_input is Streamlit’s way of letting users enter single-line values. Write:
+input_num = st.text_input("Value to convert", value="0")
+to display a text input with the caption “Value to convert” and an initial value of 0. Note that st.text_input returns a string, so input_num has the string 0.
+To keep this as a number, we’ll also cast the value to a float:
+input_num = float(st.text_input("Value to convert", value="0"))
+With the title and text input, our app should look like figure 3.9.
+
+st.selectbox
+We need dropdowns for the user to select the From and To units, so let’s create those next.
+st.selectbox is what we need here. It displays a basic select widget with a label and a set of options. The arguments are similar to what you would pass to st.radio. For example, write
+unit = st.selectbox("Pick a unit", ["Kilograms", "Grams", "Pounds", "Ounces"])
+to display a unit dropdown with the variable unit containing the selected option. When the dropdown first renders, the first option (“Kilograms” in this case) is selected by default. For our use case, we have two dropdowns to populate, so we’ll define the list separately and use it in both:
+units = ["Kilograms", "Grams", "Pounds", "Ounces"]
+from_unit = st.selectbox("From", units)
+to_unit = st.selectbox("To", units, index=1)
+
+st.columns
+By default, Streamlit displays UI elements from top to bottom in the same order it encounters them in the code. That isn’t always ideal; sometimes a side-by-side layout works better. We saw how to do this with st.sidebar, but an app can only have one sidebar, and it appears to the left of the overall UI; it can’t be inline.
+st.columns is the answer here. To use it, first create a list of columns, specifying the number of columns you want:
+from_unit_col, to_unit_col = st.columns(2)
+Here, the call to st.columns(2) returns a list of two columns. This syntax is called list unpacking, and it assigns the individual list items to different variables. Here, from_unit_col contains the first column and to_unit_col contains the second.
+As in the case of st.sidebar, there are two ways to put something in a column: using the with context manager or the dot notation. So we could write:
+with from_unit_col:
+    from_unit = st.selectbox("From", units)
+with to_unit_col:
+    to_unit = st.selectbox("To", units, index=1)
+Or more concisely:
+from_unit = from_unit_col.selectbox("From", units)
+to_unit = to_unit_col.selectbox("To", units, index=1)
+
+st.button
+With all inputs captured, we’re ready to add the Convert button. Recall st.button from chapter 2—Streamlit’s ol’ faithful make-something-happen element. To add the button, write:
+if st.button("Convert"):
+    pass # Placeholder for future statements to execute
+
+3.6.2 Implementing the backend
+We now have a dummy frontend with interactive widgets. To make the app useful, we need to define and implement the actions those widgets trigger. We’ll start this section by creating a configuration file that lists the quantities and units to support. After that, we’ll define a contract between the frontend and backend and write a backend that implements it.
+
+Creating the configuration file
+The configuration file holds information about the quantities and units the app understands. Our design requires the app to look up the units for a given quantity. Also, given a unit, it needs to look up its conversion factor relative to the standard unit for that quantity.
+A Python dictionary is ideal for this task. Each key represents a quantity, and the associated values are a list of units—or better yet, another dictionary whose keys are units and whose values are the corresponding conversion factors.
+
+
+from dataclasses import dataclass
+
+@dataclass
+class Unit:
+    abbrev: str
+    value_in_std_units: float
+A dataclass is an easy way to create a class with some standard basic functionality. For instance, with dataclasses, you don’t need to specify a __init__ method as you would do with a normal class, and once you have an object of the dataclass, you can access its attributes with the dot-notation, like this:
+gram = Unit(abbrev="g", value_in_std_units=0.001)
+print(gram.abbrev) # Prints 'g'
+To achieve the same functionality with a regular class, you would have to write:
+class Unit:
+    def __init__(self, abbrev, value_in_std_units):
+        self.abbrev: str = abbrev
+        self.value_in_std_units: float = value_in_std_units
+With dataclasses, you can write the more concise syntax shown in listing 3.2 by adding the @dataclass decorator above the class definition. Looking at the class contents, the structure is simple: an abbrev string field holds the unit abbreviation, and value_in_std_units—a floating-point number—represents the conversion factor discussed in section 3.5.1.
+The : str and : float from listing 3.2 are called type annotations. They specify the data type of a field. Type annotations aren’t strictly required, but it’s a good practice to include them, since (among other things) they make code easier to understand and let code editors or IDEs catch and highlight errors early. Notice that we haven’t included a name field in the Unit class. We’ll discuss the reason when we get to the configuration file.
+
+from dataclasses import dataclass
+from typing import Dict
+
+from unit import Unit
+
+@dataclass
+class Quantity:
+    std_unit: str
+    units: Dict[str, Unit]
+In listing 3.3, you can see the Quantity class with two fields: units and std_unit. Here, std_unit is the name of the standard unit for the quantity.
+Notice the more complex type annotation used for the units field. Dict[str, Unit] means that units is a dictionary where each key is a string (the unit’s name) and the corresponding value is an object of the Unit class. Annotations for some of the more advanced types (such as Dict and List, which appear later) must be imported from the typing module. Also notice the line that imports the Unit class we wrote earlier in unit.py:
+from unit import Unit
+The file unit.py is a module and we refer to it without the .py extension. Splitting code into modules is a great way to organize it and avoid putting everything in a single, overwhelming script. Modules promote code reusability; functions and classes defined in a module can be imported and used in other Python files.
+Now create the final configuration file, as shown in listing 3.4.
+
+from typing import Dict
+
+from quantity import Quantity
+from unit import Unit
+
+unit_config: Dict[str, Quantity] = {
+    "Mass": Quantity(
+        std_unit="Kilograms",
+        units={
+            "Kilograms": Unit(abbrev="kg", value_in_std_units=1),
+            "Grams": Unit(abbrev="g", value_in_std_units=0.001),
+            "Pounds": Unit(abbrev="lb", value_in_std_units=0.453592),
+            "Ounces": Unit(abbrev="oz", value_in_std_units=0.0283495),
+            # Add more units here
+        }
+    ),
+    "Length": Quantity(
+        std_unit="Meters",
+        units={
+            "Meters": Unit(abbrev="m", value_in_std_units=1),
+            "Centimeters": Unit(abbrev="cm", value_in_std_units=0.01),
+            "Inches": Unit(abbrev="in", value_in_std_units=0.0254),
+            "Feet": Unit(abbrev="ft", value_in_std_units=0.3048),
+        }
+    ),
+    "Time": Quantity(
+        std_unit="Seconds",
+        units={
+            "Seconds": Unit(abbrev="s", value_in_std_units=1),
+            "Minutes": Unit(abbrev="min", value_in_std_units=60),
+            "Hours": Unit(abbrev="hr", value_in_std_units=3600),
+            "Days": Unit(abbrev="d", value_in_std_units=86400),
+        }
+    ),
+    # Add more quantities here
+}
+
+
+The configuration is still a dictionary, but each value is now an object of the Quantity class (imported from the quantity.py module). The file includes three quantities: Mass, Length, and Time.
+Let’s inspect one of these:
+"Mass": Quantity(
+        std_unit="Kilograms",
+        units={
+            "Kilograms": Unit(abbrev="kg", value_in_std_units=1),
+            "Grams": Unit(abbrev="g", value_in_std_units=0.001),
+            "Pounds": Unit(abbrev="lb", value_in_std_units=0.453592),
+            "Ounces": Unit(abbrev="oz", value_in_std_units=0.0283495),
+            # Add more units here
+        }
+    )
+This is quite readable. It configures a quantity named Mass as a Quantity object with a standard unit of kilograms. The units dictionary has four entries, one for each unit; each value is a Unit object with an abbreviation and conversion factor. Since Kilograms is the standard unit, its value_in_std_units is 1.
+You may now also realize why neither of the Unit and Quantity classes have a name field. Since the unit and quantity names are already incorporated into the dictionary keys in unit_config.py, including them in the class is unnecessary and would make the configuration file longer and less readable.
+Adding more units is easy: add new entries to the units dictionary within Quantity. Similarly, to add new quantities, append to the unit_config dictionary, following the format of the previous entries. This approach keeps the configuration file easy to update. Next, we’ll design and build the backend that uses the configurations we’ve defined.
+
+The backend API
+A key concept in software development is the separation of concerns. In essence, each building block in a piece of software should focus on one aspect of the overall system’s functionality and remain independent of the other building blocks. When one block interacts with another, it should do so in strictly controlled ways as defined by a contract.
+To better understand this concept, consider how a drive-in fast-food restaurant typically operates. A person at the front takes orders from customers, and a kitchen prepares the food according to the menu. The order-taker doesn’t care what ingredients the kitchen uses as long as it can prepare the items on the menu, and the kitchen doesn’t care what language the order-taker uses to communicate with the customer, as long as the customer orders items from the menu.
+If the kitchen wants to hire new cooks or use different ingredients, it can do so without informing the order-taker, as long as the kitchen prepares dishes that match the menu. If the restaurant replaces the in-person order taker with someone on the phone, it can do that too without affecting the kitchen. The menu makes this possible. It serves as a shared contract between the order-taker and the kitchen.
+Similarly, it’s a good idea to develop an app by separating its components and having them interact exclusively through a contract called an Application Programming Interface (API for short). In this app, we’ll keep the frontend and backend separate. That means the frontend should interact with the backend only to request a specific set of actions.
+What exactly are these actions? Let’s revisit the logic flow diagram in figure 3.13. There are four arrows running between the frontend and the backend:
+•	One where the frontend pulls in the quantities to show users
+•	One where it pulls in the units for the quantity the user selected
+•	One where the frontend provides the values for conversion, and
+•	One where the backend returns the conversion value
+
+Implementing the API
+Next, we’ll implement the actions the backend needs to support: list-quantities, list-units, and convert-value. Each action will be a function in the backend. For each one, we’ll first create the function signature, and then implement it.
+Before you start, create a file called backend.py and import the main items you need: unit_config from unit_config.py, the Result class (which we haven’t defined yet, but will shortly), and List for type definitions.
+from unit_config import unit_config
+from result import Result
+from typing import List
+
+
+Turning to the API actions themselves, List-quantities is pretty simple; it asks the backend for a list of all the quantities it knows. It requires no arguments, and the output is likely a list of strings. Thus:
+def list_quantities() -> List[str]
+How do we implement this? We need the quantities that are the keys of the configuration object in unit_config.py (listing 3.4). So we simply write:
+def list_quantities() -> List[str]:
+    return list(unit_config.keys())
+List-units does take an argument (the quantity to list units for), and it again returns a list of strings. This yields:
+def list_units(quantity_name) -> List[str]
+Implementing this is fairly straightforward. The list we need consists of the keys in the units dictionary of the Quantity object corresponding to the quantity_name key in unit_config:
+def list_units(quantity_name) -> List[str]:
+    return list(unit_config[quantity_name].units.keys())
+Note Notice that the code doesn’t handle the case where quantity_name doesn’t exist in unit_config. In real-world code, you should add that check, but this chapter leaves out error handling to keep the code relatively concise. Later chapters cover error handling.
+Convert-value takes four arguments: a quantity name, the from and to units, and a value to convert. We want to include the quantity name because different quantities may use units with the same name (though the example configuration doesn’t).
+As for the return type, we could simply return the converted value—a floating-point number. But recall that the configuration also includes abbreviations for each unit. On conversion, it would be nice if we could also return the appropriate abbreviations to the frontend so it can display something like 15 ft = 5 yd.
+
+On the other hand, we don’t want to be prescriptive about how the frontend actually displays the results. That’s the frontend’s business—remember separation of concerns? If the frontend wants to show the converted number with no abbreviation, that’s totally fine too.
+One approach is to wrap any metadata the frontend might need in a dedicated Result class and let the frontend decide what to do with it.
+Let’s define the Result class in a new file called result.py, as shown in listing 3.5.
+Listing 3.5 The Result dataclass in result.py
+from dataclasses import dataclass
+from unit import Unit
+
+@dataclass
+class Result:
+    from_unit: Unit
+    to_unit: Unit
+    from_value: float
+    to_value: float
+Note that rather than placing just the abbreviation for each unit in the result, this approach includes the entire Unit. If the Unit class changes later and gains additional properties, this code won’t need to change.
+
+
+Now, we’re ready to define the signature for Convert-value:
+def convert_value(
+        quantity_name: str,
+        from_unit_name: str,
+        to_unit_name: str,
+        value: float) -> Result
+We already discussed how to implement the conversion; here it is in code form:
+def convert_value(
+        quantity_name: str,
+        from_unit_name: str,
+        to_unit_name: str,
+        value: float) -> Result:
+    quantity = unit_config[quantity_name]
+    from_unit = quantity.units[from_unit_name]
+    to_unit = quantity.units[to_unit_name]
+
+    # Two-step conversion: from-unit to standard unit, then to to-unit
+    value_in_to_units = (value *
+                         from_unit.value_in_std_units /
+                         to_unit.value_in_std_units)
+
+    return Result(from_unit, to_unit, value, value_in_to_units)
+Notice the two-step conversion discussed earlier. value * from_unit.value_in_std_units gives the value in standard units, and / to_unit.value_in_std_units converts it to the target unit.
+Listing 3.6 puts this all together in a single backend.py file 
+
+from unit_config import unit_config
+from result import Result
+from typing import List
+
+def list_quantities() -> List[str]:
+    return list(unit_config.keys())
+
+def list_units(quantity_name) -> List[str]:
+    return list(unit_config[quantity_name].units.keys())
+
+def convert_value(
+        quantity_name: str,
+        from_unit_name: str,
+        to_unit_name: str,
+        value: float) -> Result:
+    quantity = unit_config[quantity_name]
+    from_unit = quantity.units[from_unit_name]
+    to_unit = quantity.units[to_unit_name]
+
+    # Two-step conversion: from-unit to standard unit, then to-unit
+    value_in_to_units = (value *
+                         from_unit.value_in_std_units /
+                         to_unit.value_in_std_units)
+
+    return Result(from_unit, to_unit, value, value_in_to_units)
+
+3.6.3 Wiring up the frontend and backend
+We’re close to a working app! Our frontend lays out beautiful widgets that collect inputs from the user, and our backend can perform the unit conversion, given those inputs. All that’s left to do is to wire the two up. We’ll be making changes to frontend.py again, so open it, and—to begin with—add imports at the top for the functions we just defined in backend.py:
+from backend import list_quantities, list_units, convert_value
+It’s time to fix all the hard-coded values added earlier, before there was a backend. The first instance is in the quantity selector, where we defined the radio button options like this:
+quantity = st.radio("Select a quantity", ["Mass", "Length", "Time"])
+The list_quantities function can now return the list of options directly, so replace the hardcoded list with a function call:
+quantity = st.sidebar.radio("Select a quantity", list_quantities())
+There’s another hardcoded list we need to get rid of—the unit list used for the dropdowns, which is currently unresponsive to the actual quantity the user chooses in the sidebar:
+units = ["Kilograms", "Grams", "Pounds", "Ounces"]
+We have a list_units function that returns the list of units from the configuration file when you pass it a quantity, so let’s use it to replace the preceding code with:
+units = list_units(quantity)
+Run the app now to see that the list of From and To unit options changes when you click a different quantity, as intended (figure 3.14).
+
+Figure 3.14 With the backend wired up, choosing a different quantity updates the unit dropdowns.
+Let’s pick up where we left off: the Convert button currently doesn’t do anything:
+if st.button("Convert"):
+    pass # Placeholder for future statements to execute
+What should the button do? The backend includes a convert_value function that performs unit conversion, so start by calling it:
+if st.button("Convert"):
+    result = convert_value(quantity, from_unit, to_unit, input_num)
+This call passes convert_value, the user-selected quantity, the from and to units, and the value to convert. Recall that convert_value returns a Result object (defined in result.py).The result variable now holds the conversion result, complete with the from/to values and abbreviations. All that remains is to display it on the screen.
+st.metric
+We could have displayed the result as plain old paragraph text, but this is the big outcome of the app—the grand finale. We want something that packs more punch.
+st.metric is a widget commonly used in dashboards to show important numbers—¬like a company’s revenue—and how they’re trending compared with a prior period.
+A single st.metric element represents a measure a user is interested in and consists of three parts: a text label, the number itself displayed in a large font, and a delta indicator, which shows how much the number has increased or decreased from a prior period. Use st.metric to display the from and to values along with the unit abbreviations. So, first prepare these:
+from_display = f"{result.from_value} {result.from_unit.abbrev}"
+to_display = f"{result.to_value} {result.to_unit.abbrev}"
+Because result is a Result object, form the display text by concatenating its from_value or to_value field and taking the abbreviation from from_unit or to_unit, which is an instance of Unit.
+To use st.metric, write:
+st.metric("From", from_display, delta=None)
+st.metric("To", to_display, delta=None)
+The delta indicator in st.metric doesn’t make sense, so set it to None to hide it.
+This code displays the from and to results vertically, but the layout needs them side by side, so use st.columns again:
+from_value_col, to_value_col = st.columns(2)
+from_value_col.metric("From", from_display, delta=None)
+to_value_col.metric("To", to_display, delta=None)
+Figure 3.15 shows the completed app. Listing 3.7 shows the frontend.py file you should have ended up with if you’ve been following along 
+
+Listing 3.7 The fleshed-out frontend in frontend.py
+import streamlit as st
+from backend import list_quantities, list_units, convert_value
+
+quantity = st.sidebar.radio("Select a quantity", list_quantities())
+
+st.title("Unit Converter")
+input_num = float(st.text_input("Value to convert", value="0"))
+
+units = list_units(quantity)
+from_unit_col, to_unit_col = st.columns(2)
+from_unit = from_unit_col.selectbox("From", units)
+to_unit = to_unit_col.selectbox("To", units, index=1)
+
+if st.button("Convert"):
+    result = convert_value(quantity, from_unit, to_unit, input_num)
+    from_display = f"{result.from_value} {result.from_unit.abbrev}"
+    to_display = f"{result.to_value} {result.to_unit.abbrev}"
+
+    from_value_col, to_value_col = st.columns(2)
+    from_value_col.metric("From", from_display, delta=None)
+    to_value_col.metric("To", to_display, delta=None)
+
+3.7 Iterating on the app
+Whew! We did it! We now have a fully functional app. In the real world, this is the start of the journey: you’d launch the app and show it to users. Users often provide very opinionated feedback about the experience you’ve built for them, which can help uncover usability problems and blind spots you may not have encountered in testing. In this section, we’ll simulate this process by using the app and identifying potential improvements.
+
+Figure 3.16 Converting metric units to imperial shows why rounding matters.
+The answer seems right, but that’s a lot of decimal places. Most people probably don’t need that level of precision; in fact, it probably detracts from their experience as it takes them a second to figure out why the displayed number is so long. It would be nice if users had the option of rounding the result to the precision they need. And come to think of it, for larger numbers, we should ideally separate the thousands by commas.
+To implement this, let’s first create a function called format_value in frontend.py that will format a number the way we want, i.e., with commas separating the thousands, and optionally rounded to a certain number of decimal points.
+format_value takes three arguments: the value to format, the abbreviation, and an optional number of decimal_places to round the value to. If you omit decimal_places (causing is_rounded to be False), the function does no rounding.
+def format_value(
+        value: float,
+        unit_abbrev: str,
+        decimal_places: int = None) -> str:
+    is_rounded = decimal_places is not None
+    rounded = round(value, decimal_places) if is_rounded else value
+    formatted = format(rounded, ",")
+    return f"{formatted} {unit_abbrev}"
+This code uses the round function to perform rounding when necessary and Python’s built-in format function to add commas, using “,” as the format spec. You can hard-code the number of decimal places to round to, but it’s better to let users decide, which means adding a new input widget.
+
+st.number_input
+st.number_input is Streamlit’s numeric input widget. It’s similar to st.text_input, but adds features such as minimum and maximum values and step buttons for increasing or decreasing the value with a click. We’ll use it to collect a user’s preferred number of decimal places. Add this line to frontend.py right after the From and To dropdowns:
+places = st.number_input("Decimal places to round to", value=3, min_value=0)
+We specify a default value of 3 and a minimum value of 0 because we can’t have a negative number of decimal places (trying to enter a lower value shows an error). places holds the number entered. This should produce the widget shown in figure 3.17.
+Figure 3.17 The numeric input widget produced by st.number_input.
+Notice the - and + buttons. They increase or decrease the value by 1. You can change the step interval by specifying the step parameter in st.number_input.
+You may wonder why we used st.text_input to collect the value to convert and then convert it to a float instead of using st.number_input. At the time of writing, Streamlit doesn’t provide an easy way to remove the - and + buttons from st.number_input. Those buttons make sense when collecting the number of decimal places (an integer in a tight range), but the value to convert is virtually unbounded, and no predefined step interval makes sense.
+With the decimal places set, you can apply formatting to the results. Update the from_display and to_display variables to use the format_value function we defined earlier:
+from_display = format_value(input_num, result.from_unit.abbrev)
+to_display = format_value(result.to_value, result.to_unit.abbrev, places)
+We pass places (which we collect from the user) to round the to_display variable. We could have done this for from_display as well, but it’s likely the user entered the precision they want to see in the from-value, so we don’t want to mess with that. This gives us figure 3.18.
+Figure 3.18 Unit Converter app with a decimal places input
+Note This won’t pad to-values with extra trailing zeroes. For instance, if the to-value is a whole number, say 600, it will be displayed as “600.0” with just one trailing zero.
+The formatted result looks much nicer, but we’ve added an extra numeric input that increases the user’s cognitive load. Let’s only introduce the decimal-places input if the user requests it.
+st.checkbox
+st.checkbox is a Streamlit checkbox, i.e., a box that you can, well, check. Please try to contain your shock, we have an app to ship.
+Like st.button, st.checkbox is a conditional element. You can use an if statement to branch the logic based on whether it’s checked.
+Our use case is to let the user decide if they want to round the conversion result, which we can do by modifying how we obtain the value of the places variable in frontend.py:
+places = None
+if st.checkbox("Round result?", value=False):
+    places = st.number_input(
+        "Decimal places to round to", value=2, min_value=0)
+The checkbox is unchecked by default because you pass False to the value parameter.
+Notice that the code sets places = None above the st.checkbox call. Later, the code refers to places outside the scope of the if st.checkbox block, so places needs an initial value in case the user leaves the box unchecked. The app should now match figure 3.19.
+3.7.2 Getting rid of the button
+The app works great now; it displays rounded output, but only when desired. But adding a click and a numeric input to enable rounding complicates the experience. Can we simplify it? Let’s turn to the Convert button. Do we even need it?
+The button only triggers the conversion, but an explicit trigger isn’t really necessary. Why not have the app always show the result based on the inputs entered? If the user changes the value, they immediately see the converted result rather than having to click the button.
+That seems like a more intuitive experience, so let’s make it happen. This is easy to do. Simply remove the line if st.button("Convert"): and move everything in that block outside. Listing 3.8 shows the final version of frontend.py (chapter_03/final/frontend.py in the GitHub repo).
+Listing 3.8 Final version of frontend.py
+import streamlit as st
+from backend import list_quantities, list_units, convert_value
+
+def format_value(
+        value: float,
+        unit_abbrev: str,
+        decimal_places: int = None) -> str:
+    is_rounded = decimal_places is not None
+    rounded = round(value, decimal_places) if is_rounded else value
+    formatted = format(rounded, ",")
+    return f"{formatted} {unit_abbrev}"
+
+quantity = st.sidebar.radio("Select a quantity", list_quantities())
+
+st.title("Unit Converter")
+input_num = float(st.text_input("Value to convert", value="0"))
+
+units = list_units(quantity)
+from_unit_col, to_unit_col = st.columns(2)
+from_unit = from_unit_col.selectbox("From", units)
+to_unit = to_unit_col.selectbox("To", units, index=1)
+
+places = None
+if st.checkbox("Round result?", value=False):
+    places = st.number_input(
+        "Decimal places to round to", value=2, min_value=0)
+
+result = convert_value(quantity, from_unit, to_unit, input_num)
+from_display = format_value(input_num, result.from_unit.abbrev)
+to_display = format_value(
+    result.to_value, result.to_unit.abbrev, places)
+
+from_value_col, to_value_col = st.columns(2)
+from_value_col.metric("From", from_display, delta=None)
+to_value_col.metric("To", to_display, delta=None)
+Figure 3.21 shows a final screenshot of the app.
+
+Figure 3.21 Unit Converter app without the Convert button
+Removing the button makes the app flow a lot better. For instance, changing the decimal places or the value updates the results instantly.
+I hope this chapter has been a lot of fun! I wanted to give a sense of what it’s like to develop Streamlit apps in the real world while working with real stakeholders. As this chapter has hopefully shown, there’s a lot more to the process than writing code; nailing the requirements and designing (and refining) the user experience are equally important.
+
+Summary
+•	Building an app from a concept involves much more than writing code.
+•	To create a Streamlit app in practice, follow these steps: state the concept, define the requirements, visualize the user experience, brainstorm the implementation, write the code, and iterate.
+•	Requirements can come from users or non-user stakeholders.
+•	It’s a good idea to visualize the user experience early by sketching mocks to create a concrete target. Brainstorming the implementation means analyzing trade-offs and mapping the logic flow.
+•	Separating frontend and backend code and defining an API for them to interact is a great way to organize an app.
+•	st.text_input and st.number_input let users enter text and numeric values.
+•	st.radio and st.selectbox let users select a value from a list.
+•	st.sidebar and st.columns are layout elements that let developers break the natural top-to-bottom way that Streamlit renders UI elements.
+•	Both st.button and st.checkbox are conditional elements.

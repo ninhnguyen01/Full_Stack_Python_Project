@@ -1,0 +1,80 @@
+Introduction to Streamlit (from book)
+
+This chapter:
+•	What you need to build web apps and where Streamlit fits in
+•	How Streamlit’s ease-of-use, LLM-friendliness, and other factors make it popular
+•	What makes Streamlit different from other similar technologies
+•	What you can (and can’t) build with Streamlit
+
+Welcome to the world of Streamlit! By picking up this book, you’ve joined the ranks of thousands of developers who have discovered Streamlit in recent years. These developers appreciate what Streamlit enables: web apps built entirely in Python, in just minutes!
+Consider why you chose this book. Maybe you have an idea for an app that will save your coworkers hours of repetitive, automatable work, and you want the fastest way to turn it into reality. Perhaps you’re aiming for a tech job and want to add front¬end development to your skill set. Maybe you’re a data analyst or scientist who needs to present findings in interactive dashboards for management. Or you’re a software engineer looking for a quick way to prototype apps. You might have heard about the buzz about Streamlit and AI and want to learn more.
+
+Whatever your motivation, this book will guide you step-by-step through creating powerful, interactive web applications. You’ll learn to use Python’s simplicity to build and deploy apps that can impress your audience, solve real problems, and advance your career.
+You’ll learn Streamlit by building real-world projects that gradually increase in complexity. Early projects include a password strength checker and a unit converter app to teach the basics. Later, you’ll build more advanced apps like a dynamic to-do list, an interactive metrics dashboard, and even an AI-powered trivia game and a customer support agent. Each project covers essential skills such as handling user input, managing app state, calling APIs, and working with LLMs. By the end, you’ll have a versatile portfolio of apps you can showcase or extend, all built quickly.
+Each chapter will deepen your understanding of Streamlit’s capabilities and teach you the overall process of app development, including UI design and code organization for maintainability. Whether you’re an experienced developer or a beginner, this book will be valuable.
+Eager to dive in? Let’s begin with the basics.
+
+1.1 Building web apps
+Streamlit lets you build graphical web apps. Unlike command-line programs, which require users to type text into a terminal, graphical apps let users click, scroll, and interact with a visual interface. These are much more approachable, especially for non-technical users.
+Web apps are graphical applications that run in a browser. You’ve used hundreds: Gmail, Netflix, Google Docs. Unlike desktop or mobile apps, web apps don’t require installation or updates—they simply work on any device with a browser. This makes them ideal for sharing.
+Suppose you’ve built a script that saves hours of manual work. If your teammates have to run it from a terminal, most won’t bother. Wrap it in a web app, and it becomes much more usable.
+
+1.1.1 What do you need to build a web app?
+Generally speaking (and simplifying somewhat), a web app has two main parts:
+•	The backend, where your app’s logic lives (e.g., crunching numbers, querying databases)
+•	The frontend, which contains the on-screen elements that users interact with, such as buttons, text boxes, and menus.
+
+You can write your backend logic in Python (which this book assumes you’re familiar with). But writing the frontend means focusing on the user experience, where there are fewer “right” answers. It has traditionally required learning a completely different skill set. Picking up these new tools often takes at least as much effort as learning Python in the first place.
+This challenge has stymied many busy Python developers who lack the time to acquire an entirely new skill set, preventing them from building full-fledged web apps. Fortunately, there’s a solution: Streamlit.
+
+1.2 What is Streamlit?
+Streamlit is a pure-Python frontend development framework for quickly creating web apps called Streamlit apps. Traditionally, Python developers either run scripts from the command line or write non-Python code to build web interfaces. Streamlit changes this by letting you build web-based UIs entirely in Python, combining frontend and backend code. I often describe Streamlit apps to newcomers as “Python scripts where you can click buttons and stuff.”
+Launched in 2019 with a focus on data visualization, Streamlit has rapidly grown in popularity. Its simple syntax, utility in data science, and support for building LLM-based chatbots have fueled its adoption. In 2022, Snowflake Inc. acquired it for $800 million.
+
+Streamlit has seen a steady rise in popularity, especially since 2022. In addition to its vibrant community of individual users, companies like Netflix, Airbnb, Stripe, OpenAI, and Square use Streamlit internally. Streamlit’s widespread adoption stems from many factors, chief among them its pure-Python nature and ease of use for data science and AI applications.
+
+1.3.1 Streamlit is pure Python
+Any code you write with Streamlit is Python. Traditionally, creating a web-based interface has required developers to write HTML, CSS, and JavaScript—the three core web languages. HyperText Markup Language (HTML) is used for page structure, Cascading Style Sheets (CSS) for appearance and layout, and JavaScript adds functionality.
+These languages (especially CSS and JavaScript) can be hard to master if you want to build anything complex. Some frameworks built on top of them help, but they often have their own learning curves. In any case, you need to know HTML, CSS, and Java¬Script to use them effectively.
+Python is popular among data scientists, hobbyists, and even semi-technical professionals because of its rich ecosystem of libraries for data wrangling and analysis (and because it’s fun). These groups, illustrated in figure 1.2, may not know the three web languages, or may have only a passing knowledge of them—usually not enough to create complex applications.
+
+Streamlit is a boon for these users because it removes a major barrier: it lets them create rich web applications without first investing time in learning another stack of languages.
+
+1.3.2 Streamlit lets you go from idea to app in minutes
+When you start using Streamlit, you’ll be impressed by how quickly you can create a working application. Because of its intuitiveness and sensible defaults (meaning you don’t have to customize or configure everything), you can develop Streamlit apps quickly. The time from idea to a fully working app is often measured in minutes, not hours or days.
+
+1.3.3 Streamlit makes beautiful apps
+Even if you know some web-based languages, knowing them is very different from being skilled at using them to create attractive web pages. In Streamlit, your apps look good by default. The elements Streamlit provides (individual parts of an app, such as buttons, checkboxes, or tabs) are pre-designed to look appealing. All you have to do is put them together.
+Anyone who has tried to style a webpage by hand with CSS knows how frustrating it can be to get the spacing or effects just right. Even if you manage to implement your vision, you still can’t guarantee it will look good because UI design is as much art as science. Streamlit doesn’t necessarily solve all those problems, but it does make it hard to create something that doesn’t look nice.
+
+1.3.4 Streamlit lets you focus on your app, not UI details
+Using pre-designed elements to build apps has another advantage: it frees you to focus on what you know best—your app’s logic. Streamlit intentionally limits your UI choices by making many decisions for you.
+For example, consider the snippet of code shown in listing 1.1 
+
+Note: The code listings in this chapter give you a sense of what Streamlit code looks like and what it can do before we dive in. If you’d like to run these examples, see the appendix for installation instructions, and section 2.4 for how to run the code. (You can’t run python <filename.py> as you would with regular Python scripts.)
+
+Tabs in Streamlit, illustrating how Streamlit makes UI choices for you
+Notice the line beneath the active tab and the highlight on the tab you’re hovering over. You can’t see it in a screenshot, but the transition between tabs includes a small animation where the orange line moves under the new tab.
+The following line produces the tab bar:
+tab1, tab2, tab3 = st.tabs(["Mission", "About us", "Careers"])
+Notice that this line doesn’t mention styling. We just said tabs, and Streamlit handled the details. Streamlit recognizes that most developers don’t want to design UI-related minutiae and would rather focus on business logic.
+As a consequence of this approach, Streamlit app developers are highly productive and can create sensible interfaces that complement, rather than detract from, the app’s functionality. You face a trade-off between hassle-free UI development and fine-grained control. Streamlit is ideal if you value the former, not the latter. If you want detailed control of your interface, Streamlit may not be the right tool.
+For example, as of this writing, if you want to put a shaded box around the current tab instead of a line underneath, you can’t do that easily unless you know HTML and CSS.
+
+1.3.5 Streamlit’s syntax is simple, concise, and intuitive
+Like Python itself, Streamlit code is self-documenting and often obvious. For example, suppose you want to simulate rolling a die and plot the results. 
+
+Output of a die roll simulator in Streamlit
+You can understand the code in listing 1.2 even if you’ve never seen a single line of Streamlit code before. The app shows a title. It displays a slider so the user can pick the number of die rolls to plot (between 10 and 100). It also shows a Plot Graph button. When the user clicks it, we generate the die rolls (random numbers between 1 and 6) and plot them in a line chart.
+There’s no setup code—as you’d see with other languages or libraries—such as event handlers or long lists of slider attributes. It’s short and simple.
+
+1.3.6 Streamlit works well with LLMs
+In 2022, technology saw a watershed moment with the launch of OpenAI’s generative AI chatbot, ChatGPT. To understand how the rise of generative AI fueled Streamlit’s popularity, consider the following:
+•	AI has captured the world’s imagination.
+•	Python is the most popular language for AI development due to its widespread adoption across the industry and its extensive ecosystem of AI-related libraries, including TensorFlow, PyTorch, scikit-learn, and LangChain.
+•	Streamlit is the fastest way to write visual apps in Python.
+
+Taken together, these facts mean developers of all kinds are flocking to Streamlit to build AI apps. Streamlit quickly capitalized on the popularity of large language models (LLMs) like GPT. For instance, Streamlit makes writing conversational chatbots a cinch by introducing chat elements.
+
+Note To use this example, create an OpenAI account, buy some credits (unless your account already has them), generate an API key, and plug it into the following line: os.environ["OPENAI_API_KEY"] = "sk-...". You’ll also need to install the OpenAI module with pip install openai. Importantly, this code is for demonstration purposes only. Never include API keys in any code you share. Later in this book, we’ll cover how to handle this securely.
+
