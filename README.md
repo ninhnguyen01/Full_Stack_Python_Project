@@ -63,6 +63,4 @@ amount of time.</b></p>
 <p>Source: High Scalability</p>
 </h2>
 
-<h2>Buy me a Kopiko</h2>
-<img src="asset/qr-code.png" width=200 height=200>
 <hr>
